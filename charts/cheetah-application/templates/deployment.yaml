@@ -1,0 +1,123 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cheetah-application.fullname" . }}
+  labels:
+    {{- include "cheetah-application.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cheetah-application.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cheetah-application.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "cheetah-application.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ required "either global.image.repository or image.repository is required" (((.Values.global).image).repository | default .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          {{- if .Values.monitoring.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.monitoring.port }}
+              protocol: TCP
+          {{- end }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 -}}
+          {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 -}}
+          {{- end }}
+          {{- if .Values.startupProbe.enabled }}
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- if .httpGet }}
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 -}}
+            {{- else if .exec }}
+            exec:
+              {{- toYaml .exec | nindent 14 -}}
+            {{- else }}
+            tcpSocket:
+              port: {{ $.Values.service.port }}
+            {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds}}
+            timeoutSeconds: {{ .timeoutSeconds }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- if .httpGet }}
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 -}}
+            {{- else if .exec }}
+            exec:
+              {{- toYaml .exec | nindent 14 -}}
+            {{- else }}
+            tcpSocket:
+              port: {{ $.Values.service.port }}
+            {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds}}
+            timeoutSeconds: {{ .timeoutSeconds }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- if .httpGet }}
+            httpGet:
+              {{- toYaml .httpGet | nindent 14 -}}
+            {{- else if .exec }}
+            exec:
+              {{- toYaml .exec | nindent 14 -}}
+            {{- else }}
+            tcpSocket:
+              port: {{ $.Values.service.port }}
+            {{- end }}
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            periodSeconds: {{ .periodSeconds}}
+            timeoutSeconds: {{ .timeoutSeconds }}
+          {{- end }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

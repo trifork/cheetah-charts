@@ -1,0 +1,147 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "required": [
+        "image"
+    ],
+    "properties": {
+        "filter": {
+            "type": "object",
+            "properties": {
+                "pattern": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "global": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "image": {
+            "type": "object",
+            "properties": {
+                "repository": {
+                    "type": "string"
+                }
+            }
+        },
+        "imagePullSecrets": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "imageUpdateAutomation": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "if": {
+                "properties": {
+                    "create": {
+                        "const": true
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "path"
+                ],
+                "properties": {
+                    "author": {
+                        "type": "object",
+                        "properties": {
+                            "email": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "checkoutBranch": {
+                        "type": "string"
+                    },
+                    "interval": {
+                        "type": "string"
+                    },
+                    "messageTemplate": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "pushBranch": {
+                        "type": "string"
+                    },
+                    "sourceRef": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "namespace": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "interval": {
+            "type": "string"
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "policy": {
+            "type": "object",
+            "properties": {
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "numerical",
+                        "alphabetical",
+                        "semver"
+                    ]
+                },
+                "order": {
+                    "type": "string",
+                    "enum": [
+                        "asc",
+                        "desc"
+                    ]
+                },
+                "range": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

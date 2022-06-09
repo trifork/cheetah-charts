@@ -1,0 +1,149 @@
+# Default values for skagerak-application.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.
+# Overrides the local values if given
+global:
+  image:
+    repository: ""
+  imagePullSecrets: []
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+containerPort: 80
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  # -- Whether to expose the service or not
+  enabled: false
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    # -- Which host to expose the service under
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    enabled: true
+    secretName: ""
+
+env: []
+# - name: SECRET_USERNAME
+#   valueFrom:
+#     secretKeyRef:
+#       name: mysecret
+#       key: username
+# - name: DEMO_GREETING
+#   value: "Hello from the environment"
+
+envFrom: []
+# - secretRef:
+#     name: very-secret-secret
+
+livenessProbe:
+  enabled: true
+  httpGet:
+    # -- Which path to look for liveness
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+readinessProbe:
+  enabled: true
+  httpGet:
+    # -- Which path to look for readiness
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+startupProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# -- Settings passed to the image-automation chart
+image-automation:
+  enabled: false
+
+# -- Observability settings
+monitoring:
+  enabled: false
+  port: 9090
+  path: "/metrics"

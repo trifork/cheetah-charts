@@ -1,0 +1,15 @@
+{{- if .Values.monitoring.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cheetah-application.fullname" . }}
+  labels:
+    {{- include "cheetah-application.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "cheetah-application.selectorLabels" . | nindent 6 }}
+  endpoints:
+    - targetPort: metrics
+      path: {{ .Values.monitoring.path }}
+{{- end }}

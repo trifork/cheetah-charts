@@ -1,0 +1,17 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: {{ include "image-automation.fullname" . }}
+  labels:
+    {{- include "image-automation.labels" . | nindent 4 }}
+spec:
+  image: {{ required "either global.image.repository or image.repository is required" (((.Values.global).image).repository | default .Values.image.repository) }}
+  interval: {{ .Values.interval | quote }}
+  {{- if (.Values.global).imagePullSecrets }}
+  secretRef:
+    {{- toYaml (index .Values.global.imagePullSecrets 0) | nindent 4 }}
+  {{- else if .Values.imagePullSecrets }}
+  secretRef:
+    {{- toYaml (index .Values.imagePullSecrets 0) | nindent 4 }}
+  {{- end }}

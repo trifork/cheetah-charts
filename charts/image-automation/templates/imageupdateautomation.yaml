@@ -1,0 +1,39 @@
+{{- if .Values.imageUpdateAutomation.create -}}
+{{- with .Values.imageUpdateAutomation }}
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: {{ include "image-automation.fullname" $ }}
+  labels:
+    {{- include "image-automation.labels" $ | nindent 4 }}
+spec:
+  git:
+    {{- with .checkoutBranch }}
+    checkout:
+      ref:
+        branch: {{ . | quote }}
+    {{- end }}
+    {{- with .pushBranch }}
+    push:
+      branch: {{ . | quote }}
+    {{- end }}
+    commit:
+      author:
+        email: {{ .author.email | quote }}
+        {{- with .author.name }}
+        name: {{ . | quote }}
+        {{- end }}
+      messageTemplate: {{ .messageTemplate | quote }}
+  interval: {{ .interval | quote }}
+  sourceRef:
+    kind: GitRepository
+    name: {{ .sourceRef.name | quote }}
+    {{- with .sourceRef.namespace }}
+    namespace: {{ . | quote }}
+    {{- end }}
+  update:
+    path: {{ .path | quote }}
+    strategy: Setters
+{{- end -}}
+{{- end -}}

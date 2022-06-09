@@ -1,0 +1,20 @@
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: {{ .Values.policy.name | default (include "image-automation.fullname" .) }}
+  labels:
+    {{- include "image-automation.labels" . | nindent 4 }}
+spec:
+  filterTags:
+    extract: {{ .Values.filter.tag | quote }}
+    pattern: {{ .Values.filter.pattern | quote }}
+  imageRepositoryRef:
+    name: {{ include "image-automation.fullname" . }}
+  policy:
+    {{ .Values.policy.mode }}:
+      {{- if eq .Values.policy.mode "semver" }}
+      range: {{ .Values.policy.range | quote}}
+      {{- else }}
+      order: {{ .Values.policy.order | quote}}
+      {{- end -}}
