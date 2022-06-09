@@ -12,9 +12,10 @@ spec:
     pullSecrets:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+  {{- with .Values.flink.envVars }}
   envVars:
-    {{- toYaml .Values.flink.envVars | nindent 4 }}
-
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.flink.jobManager }}
   jobManager:
     accessScope: {{ .accessScope }}

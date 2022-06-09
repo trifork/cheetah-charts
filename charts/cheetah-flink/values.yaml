@@ -67,7 +67,7 @@ flink:
       limits:
         memory: 1Gi
         # Only here, since the Flink operator requires a non-zero value
-        cpu: 5
+        cpu: "5"
       requests:
         memory: 256Mi
         cpu: 100m
