@@ -5,6 +5,6 @@ metadata:
   name: {{ template "cheetah-flink-native.fullname" . }}-s3
 type: Opaque
 data:
-  accessKey: ZmxpbmstczM=
-  secretKey: WjAwUEJtcFoyYUhYbHlqVnFBaWd2SzlLOFlKZ3M4S1Q=
+  accessKey: {{ .values.flink.savepoints.accessKey | b64enc }}
+  secretKey: {{ .values.flink.savepoints.secretKey | b64enc }}
 {{- end }}

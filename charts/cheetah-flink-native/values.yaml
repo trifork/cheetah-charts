@@ -46,6 +46,8 @@ flink:
     # Ignored if not greater than zero
     generation: 0
     endpoint: http://minio.minio.svc.cluster.local:9000
+    accessKey: flink-s3
+    secretKey: Z00PBmpZ2aHXlyjVqAigvK9K8YJgs8KT
 
   state:
     backend: hashmap
