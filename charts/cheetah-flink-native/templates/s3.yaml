@@ -1,0 +1,10 @@
+{{- if .Values.flink.savepoints.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "cheetah-flink-native.fullname" . }}-s3
+type: Opaque
+data:
+  accessKey: ZmxpbmstczM=
+  secretKey: WjAwUEJtcFoyYUhYbHlqVnFBaWd2SzlLOFlKZ3M4S1Q=
+{{- end }}

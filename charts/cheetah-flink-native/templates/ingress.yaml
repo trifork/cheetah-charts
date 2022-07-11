@@ -1,0 +1,35 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "cheetah-flink-native.fullname" . -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "cheetah-flink-native.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    cert-manager.io/cluster-issuer: letsencrypt-{{ .Values.ingress.certType }}
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
+  tls:
+    - hosts:
+        # HACK:
+        # To workaround ( https://github.com/cert-manager/cert-manager/issues/1462 ).
+        # We append a short dns name, such the longer is added to cert as alternative subject.
+        - {{ .Values.ingress.domain }}
+        - {{ include "cheetah-flink-native.hostname" . }}
+      secretName: {{ $fullName }}-{{ .Release.Namespace }}-{{ .Values.ingress.certType }}-tls
+  rules:
+  - host: {{ include "cheetah-flink-native.hostname" . }}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "cheetah-flink-native.jobmanager-name" $  }}
+            port:
+              number: {{ .Values.flink.jobManager.ports.ui }}
+{{- end }}
