@@ -51,6 +51,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Template labels
+*/}}
+{{- define "cheetah-application.TemplateLabels" -}}
+app.kubernetes.io/name: {{ include "cheetah-application.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+backstage.io/kubernetes-id: {{ .Release.Name }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "cheetah-application.serviceAccountName" -}}
