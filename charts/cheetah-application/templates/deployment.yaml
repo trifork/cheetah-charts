@@ -19,6 +19,7 @@ spec:
       {{- end }}
       labels:
         {{- include "cheetah-application.selectorLabels" . | nindent 8 }}
+        {{- include ".Values.podLabels" . | nindent 8 }}
     spec:
       {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
       imagePullSecrets:
