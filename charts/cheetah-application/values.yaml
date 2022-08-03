@@ -31,7 +31,7 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-podLabels: []
+podLabels: {}
 
 podSecurityContext:
   {}

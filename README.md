@@ -26,3 +26,11 @@ helm search repo cheetah-charts
 
 Linting will run on pull-requests to the main branch.
 After pushing/merging to the main branch, charts that have changed version, will be packaged and pushed to GCS.
+
+### Local testing
+
+```shell
+docker run -it --network host --workdir=/data --rm --volume $(pwd):/data quay.io/helmpack/chart-testing:v3.5.0 
+ct lint --config .github/ct-config.yaml # linting
+cd <CHART_DIR> && helm template my-test . -f ./ci/test.yaml > output.yaml # manual test
+```
