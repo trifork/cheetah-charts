@@ -51,11 +51,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Template labels
+Backstage labels
 */}}
-{{- define "cheetah-application.TemplateLabels" -}}
-app.kubernetes.io/name: {{ include "cheetah-application.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{- define "cheetah-application.backstageLabels" -}}
 backstage.io/kubernetes-id: {{ .Release.Name }}
 {{- end }}
 
