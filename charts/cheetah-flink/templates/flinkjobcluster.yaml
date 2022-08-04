@@ -16,69 +16,66 @@ spec:
   envVars:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.flink.jobManager }}
-  jobManager:
-    accessScope: {{ .accessScope }}
-    ports:
-      ui: {{ .ports.ui }}
-    {{- with .volumes }}
-    volumes:
-      {{- toYaml . | nindent 6}}
-    {{- end }}
-    {{- with .volumeMounts }}
-    volumeMounts:
-      {{- toYaml . | nindent 6}}
-    {{- end }}
-    {{- if .metrics.enabled }}
-    extraPorts:
-      {{- toYaml .metrics.extraPorts | nindent 6 }}
-    {{- end }}
-    resources:
-      {{- toYaml .resources | nindent 6 }}
-    {{- with .podLabels }}
-    podLabels:
-      {{- include "cheetah-flink.backstageLabels" . | nindent 6 }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .podAnnotations }}
-    podAnnotations:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .additionalConfigs }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
 
-  {{- with .Values.flink.taskManager }}
-  taskManager:
-    replicas: {{ .replicas }}
-    {{- with .volumes }}
+  jobManager:
+    accessScope: {{ .Values.flink.jobManager.accessScope }}
+    ports:
+      ui: {{ .Values.flink.jobManager.ports.ui }}
+    {{- with .Values.flink.jobManager.volumes }}
     volumes:
       {{- toYaml . | nindent 6}}
     {{- end }}
-    {{- with .volumeMounts }}
+    {{- with .Values.flink.jobManager.volumeMounts }}
     volumeMounts:
       {{- toYaml . | nindent 6}}
     {{- end }}
-    {{- if .metrics.enabled }}
+    {{- if .Values.flink.jobManager.metrics.enabled }}
     extraPorts:
-      {{- toYaml .metrics.extraPorts | nindent 6 }}
+      {{- toYaml .Values.flink.jobManager.metrics.extraPorts | nindent 6 }}
     {{- end }}
     resources:
-      {{- toYaml .resources | nindent 6 }}
-    {{- with .podLabels }}
+      {{- toYaml .Values.flink.jobManager.resources | nindent 6 }}
     podLabels:
       {{- include "cheetah-flink.backstageLabels" . | nindent 6 }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .podAnnotations }}
+      {{- range $key, $val := .Values.flink.jobManager.podLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
+    {{- with .Values.flink.jobManager.podAnnotations }}
     podAnnotations:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    {{- with .additionalConfigs }}
+    {{- with .Values.flink.jobManager.additionalConfigs }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- end }}
+
+  taskManager:
+    replicas: {{ with .Values.flink.taskManager.replicas }}
+    {{- with .Values.flink.taskManager.volumes }}
+    volumes:
+      {{- toYaml . | nindent 6}}
+    {{- end }}
+    {{- with .Values.flink.taskManager.volumeMounts }}
+    volumeMounts:
+      {{- toYaml . | nindent 6}}
+    {{- end }}
+    {{- if .Values.flink.taskManager.metrics.enabled }}
+    extraPorts:
+      {{- toYaml .Values.flink.taskManager.metrics.extraPorts | nindent 6 }}
+    {{- end }}
+    resources:
+      {{- toYaml .Values.flink.taskManager.resources | nindent 6 }}
+    podLabels:
+      {{- include "cheetah-flink.backstageLabels" . | nindent 6 }}
+      {{- range $key, $val := .Values.flink.taskManager.podLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
+    {{- with .Values.flink.taskManager.podAnnotations }}
+    podAnnotations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.flink.taskManager.additionalConfigs }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 
 
   {{- with .Values.flink.job }}
