@@ -37,7 +37,7 @@ spec:
       {{- toYaml .resources | nindent 6 }}
     {{- with .podLabels }}
     podLabels:
-      {{- include "cheetah-application.backstageLabels" . | nindent 6 }}
+      {{- include "cheetah-flink.backstageLabels" . | nindent 6 }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .podAnnotations }}
@@ -68,7 +68,7 @@ spec:
       {{- toYaml .resources | nindent 6 }}
     {{- with .podLabels }}
     podLabels:
-      {{- include "cheetah-application.backstageLabels" . | nindent 6 }}
+      {{- include "cheetah-flink.backstageLabels" . | nindent 6 }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .podAnnotations }}

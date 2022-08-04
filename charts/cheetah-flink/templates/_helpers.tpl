@@ -66,7 +66,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Backstage labels
 */}}
-{{- define "cheetah-application.backstageLabels" -}}
+{{- define "cheetah-flink.backstageLabels" -}}
 backstage.io/kubernetes-id: {{ .Release.Name }}
 app: {{ .Release.Name }}
 {{- end }}
