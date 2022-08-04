@@ -55,6 +55,7 @@ Backstage labels
 */}}
 {{- define "cheetah-application.backstageLabels" -}}
 backstage.io/kubernetes-id: {{ .Release.Name }}
+app: {{ .Release.Name }}
 {{- end }}
 
 {{/*
