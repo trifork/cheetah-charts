@@ -19,6 +19,10 @@ spec:
       {{- end }}
       labels:
         {{- include "cheetah-application.selectorLabels" . | nindent 8 }}
+        {{- include "cheetah-application.backstageLabels" . | nindent 8 }}
+        {{- range $key, $val := .Values.podLabels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
     spec:
       {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
       imagePullSecrets:

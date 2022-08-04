@@ -3,6 +3,10 @@ image:
   tag: main-2058545582 # {"$imagepolicy": "query-trifork-team:webapi-automation:tag"}
 imagePullSecrets:
   - name: accesstoken-ghcr-io
+podAnnotations:
+  linkerd.io/inject: disabled
+podLabels:
+  mynameis: georgio
 resources:
   requests:
     memory: "64Mi"
