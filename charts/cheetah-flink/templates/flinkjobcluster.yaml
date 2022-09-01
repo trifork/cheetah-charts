@@ -88,12 +88,12 @@ spec:
     {{- with .args }}
     args:
      {{- range $key, $val := $.Values.flink.topics }}
-      - {{ printf "---%s" ($val.name) | quote }}
+      - {{ printf "--%s" ($val.name) | quote }}
       - {{ printf "%s" ($val.value) | quote }}
       {{- end }}
       {{- range . }}
       - {{ . | quote }}
-      {{- end }}
+      {{- end -}}
     {{- end }}
     parallelism: {{ .parallelism }}
     restartPolicy: {{ .restartPolicy }}
