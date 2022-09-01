@@ -51,6 +51,13 @@ flink:
 
   envVars: []
 
+  # Declare topics and expose them as environment variables
+  topics: []
+# - name: input-kafka-topic
+#   value: SourceTopic
+# - name: output-kafka-topic
+#   value: OttoReading
+
   jobManager:
     accessScope: Cluster
     ports:
