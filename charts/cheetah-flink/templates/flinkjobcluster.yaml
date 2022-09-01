@@ -12,10 +12,12 @@ spec:
     pullSecrets:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{- with .Values.flink.envVars }}
+  {{- $topicsAndEnv := concat $.Values.flink.envVars $.Values.flink.topics -}}
+  {{- with $topicsAndEnv }}
   envVars:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+
   {{- with .Values.flink.jobManager }}
   jobManager:
     accessScope: {{ .accessScope }}
@@ -85,9 +87,13 @@ spec:
     className: {{ .className | quote }}
     {{- with .args }}
     args:
+     {{- range $key, $val := $.Values.flink.topics }}
+      - {{ printf "---%s" ($val.name) | quote }}
+      - {{ printf "%s" ($val.value) | quote }}
+      {{- end }}
       {{- range . }}
       - {{ . | quote }}
-      {{- end -}}
+      {{- end }}
     {{- end }}
     parallelism: {{ .parallelism }}
     restartPolicy: {{ .restartPolicy }}

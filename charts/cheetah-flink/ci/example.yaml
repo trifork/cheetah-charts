@@ -19,14 +19,18 @@ flink:
   checkpoints:
     enabled: true
 
+  topics:
+    - name: input-kafka-topic
+      value: "SourceTopic"
+    - name: output-kafka-topic
+      value: "OttoReading"
+
   version: 1.14.4
   job:
     jarFile: /opt/flink/usrlib/artifacts/processing-1.0-SNAPSHOT.jar
     className: com.trifork.cheetah.processing.ExampleJob
     name: ExampleJob
     args:
-      - ---input-kafka-topic
-      - processed
       - ---input-kafka-bootstrap-servers
       - kafka-brokers.kafka:9092
       - ---input-kafka-group.id
