@@ -32,5 +32,6 @@ After pushing/merging to the main branch, charts that have changed version, will
 ```shell
 docker run -it --network host --workdir=/data --rm --volume $(pwd):/data quay.io/helmpack/chart-testing:v3.5.0 
 ct lint --config .github/ct-config.yaml # linting
-cd <CHART_DIR> && helm template my-test . -f ./ci/test.yaml > output.yaml # manual test
+helm template my-test <CHART_DIR> -f <CHART_DIR>/ci/example.yaml > output.yaml # manual test
+
 ```

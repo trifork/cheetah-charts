@@ -37,10 +37,12 @@ spec:
     {{- end }}
     resources:
       {{- toYaml .resources | nindent 6 }}
-    {{- with .podLabels }}
     podLabels:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- include "cheetah-flink.backstageLabels" $ | nindent 6 }}
+      {{- include "cheetah-flink.selectorLabels" $ | nindent 6 }}
+      {{- range $key, $val := .podLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
     {{- with .podAnnotations }}
     podAnnotations:
       {{- toYaml . | nindent 6 }}
@@ -67,10 +69,12 @@ spec:
     {{- end }}
     resources:
       {{- toYaml .resources | nindent 6 }}
-    {{- with .podLabels }}
     podLabels:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- include "cheetah-flink.backstageLabels" $ | nindent 6 }}
+      {{- include "cheetah-flink.selectorLabels" $ | nindent 6 }}
+      {{- range $key, $val := .podLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
     {{- with .podAnnotations }}
     podAnnotations:
       {{- toYaml . | nindent 6 }}
@@ -108,10 +112,12 @@ spec:
     volumeMounts:
       {{ toYaml . | nindent 6}}
     {{- end }}
-    {{- with .podLabels }}
     podLabels:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- include "cheetah-flink.backstageLabels" $ | nindent 6 }}
+      {{- include "cheetah-flink.selectorLabels" $ | nindent 6 }}
+      {{- range $key, $val := .podLabels }}
+      {{ $key }}: {{ $val | quote }}
+      {{- end }}
     {{- with .podAnnotations }}
     podAnnotations:
       {{- toYaml . | nindent 6 }}
