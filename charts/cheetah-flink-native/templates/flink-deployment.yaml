@@ -8,8 +8,8 @@ spec:
   serviceAccount: {{ template "cheetah-flink-native.serviceAccountName" . }}
   flinkVersion: {{ .Values.flink.version | quote }}
 
-  {{- if .Values.restartNonce }}
-  restartNonce: {{ .Values.restartNonce }}
+  {{- with .Values.restartNonce }}
+  restartNonce: {{ . }}
   {{- end }}
 
   job:
@@ -24,22 +24,21 @@ spec:
     {{- end }}
     state: {{ .Values.flink.job.state }}
 
-    {{- if .Values.flink.job.savepointTriggerNonce }}
-    savepointTriggerNonce: {{ .Values.flink.job.savepointTriggerNonce }}
+    {{- with .Values.flink.job.savepointTriggerNonce }}
+    savepointTriggerNonce: {{ . }}
     {{- end }}
-    {{- if .Values.flink.job.initialSavepointPath }}
-    initialSavepointPath: {{ .Values.flink.job.initialSavepointPath }}
+    {{- with .Values.flink.job.initialSavepointPath }}
+    initialSavepointPath: {{ . }}
     {{- end }}
 
-    {{- if .Values.flink.job.allowNonRestoredState }}
-    allowNonRestoredState: {{ .Values.flink.job.allowNonRestoredState }}
+    {{- with .Values.flink.job.allowNonRestoredState }}
+    allowNonRestoredState: {{ . }}
     {{- end }}
 
     upgradeMode: {{ .Values.flink.job.upgradeMode | quote }}
 
   flinkConfiguration:
     {{- if .Values.flink.savepoints.enabled }}
-    s3.endpoint: {{ .Values.flink.savepoints.endpoint | quote }}
     s3.path-style-access: "true"
     state.savepoints.dir: "{{ include "cheetah-flink-native.storageDir" . }}/savepoints"
     state.checkpoints.dir: "{{ include "cheetah-flink-native.storageDir" . }}/checkpoints"

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cheetah-flink-s3
+type: Opaque
+data:
+  accessKey: ZmxpbmstczM=
+  secretKey: WjAwUEJtcFoyYUhYbHlqVnFBaWd2SzlLOFlKZ3M4S1Q=
+  endpoint: aHR0cDovL21pbmlvLm1pbmlvLnN2Yy5jbHVzdGVyLmxvY2FsOjkwMDA=

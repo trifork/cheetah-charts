@@ -1,0 +1,45 @@
+image:
+  repository: ghcr.io/trifork/cheetah-example-processing
+  tag: main
+
+imagePullSecrets:
+  - name: pullsecret-ghcr-io
+
+ingress:
+  enabled: false
+  certType: staging
+
+monitoring:
+  enabled: true
+
+flink:
+  savepoints:
+    enabled: true
+
+  checkpoints:
+    enabled: true
+
+  version: v1_14
+  job:
+    # upgradeMode: stateless
+    jarURI: /opt/flink/usrlib/artifacts/cheetah-example-processing-1.0-SNAPSHOT.jar
+    className: com.example.cheetah.processing.job.OttoEventIngestJob
+    name: OttoEventIngestJob
+    parallelism: 1
+    args:
+      - --input-kafka-topic
+      - OTTOMetrics-Dev
+      - --input-kafka-bootstrap-servers
+      - iothub-ns-ottometric-16955964-29592abee7.servicebus.windows.net:9093
+      - --input-sasl-jaas-config
+      - 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://iothub-ns-ottometric-16955964-29592abee7.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=eWyohBokmJryB8X2Fii7jOSKPvHMe0DezQbjtD7oTvk=;EntityPath=ottometrics-dev";'
+      - --output-kafka-bootstrap-servers
+      - cheetah-kafka-kafka-brokers.kafka:9092
+      - --output-kafka-topic
+      - OttoReading-new-flink
+  flinkProperties:
+    taskmanager.numberOfTaskSlots: 1
+    # # scheduler-mode: reactive  # Currently not working
+    # rest.flamegraph.enabled: true
+    # execution.checkpointing.interval: 20 seconds
+    # execution.checkpointing.min-pause: 10 seconds

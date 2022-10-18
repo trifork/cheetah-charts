@@ -22,6 +22,12 @@ restartNonce:
 
 serviceAccount:
   create: true
+  name: ""
+
+rbac:
+  create: true
+  # -- Additional rules to add to the role
+  additionalRules: []
 
 imagePullSecrets: []
 
@@ -39,15 +45,13 @@ flink:
   # -- Which Flink version to use
   version: v1_14
 
-  savepoints:
+  storage:
     enabled: true
     # -- If the job changes too much, the savepoints of an earlier job cannot be used.
     # The generation is added as a suffix to the savepoints directory, fixing the problem.
     # Ignored if not greater than zero
     generation: 0
-    endpoint: http://minio.minio.svc.cluster.local:9000
-    accessKey: flink-s3
-    secretKey: Z00PBmpZ2aHXlyjVqAigvK9K8YJgs8KT
+    secretName: cheetah-flink-s3
 
   state:
     backend: hashmap
@@ -78,8 +82,6 @@ flink:
     additionalConfigs: {}
 
   taskManager:
-    replicas: 1
-
     volumes: []
     volumeMounts: []
 
@@ -92,7 +94,7 @@ flink:
           protocol: TCP
 
     resource:
-      memory: 512Mb
+      memory: 1Gb
       cpu: 0.5
 
     podLabels: {}

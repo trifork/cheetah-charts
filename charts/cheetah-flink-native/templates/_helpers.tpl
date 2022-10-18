@@ -104,18 +104,19 @@ Get the savepoints directory
 {{/*
 Add environment variables for S3-storage
 */}}
-{{- define "cheetah-flink-native.storageCredentials" -}}
+{{- define "cheetah-flink-native.storageConfig" -}}
 - name: AWS_ACCESS_KEY
   valueFrom:
     secretKeyRef:
-      name: {{ (include "cheetah-flink-native.fullname" .) }}-s3
+      name: {{ .Values.flink.storage.secretName }}
       key: accessKey
       optional: false
-
 - name: AWS_SECRET_KEY
   valueFrom:
     secretKeyRef:
-      name: {{ include "cheetah-flink-native.fullname" . }}-s3
+      name: {{ .Values.flink.storage.secretName }}
       key: secretKey
       optional: false
+- name: FLINK_S3_ENDPOINT
+  value: http://minio.minio.svc.cluster.local:9000
 {{- end -}}

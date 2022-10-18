@@ -1,10 +1,7 @@
-{{- if .Values.flink.savepoints.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "cheetah-flink-native.fullname" . }}-s3
+  name: {{ include "cheetah-flink-native.fullname" . }}-s3
 type: Opaque
 data:
-  accessKey: {{ .Values.flink.savepoints.accessKey | b64enc | quote }}
-  secretKey: {{ .Values.flink.savepoints.secretKey | b64enc | quote }}
-{{- end }}
+  test.yaml: czMuZW5kcG9pbnQ6IGh0dHA6Ly9taW5pby5taW5pby5zdmMuY2x1c3Rlci5sb2NhbDo5MDAw
