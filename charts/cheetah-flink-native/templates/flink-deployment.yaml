@@ -2,71 +2,60 @@ apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   name: {{ template "cheetah-flink-native.fullname" $ }}
+  annotations:
+    {{ if .Values.flink.vault.enabled }}
+    {{ with .Values.flink.vault }}
+    vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
+    vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
+    {{ end }}
+    {{ end }}
 spec:
   image: {{ include "cheetah-flink-native.image" . | quote }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   serviceAccount: {{ template "cheetah-flink-native.serviceAccountName" . }}
   flinkVersion: {{ .Values.flink.version | quote }}
-
   {{- with .Values.restartNonce }}
   restartNonce: {{ . }}
   {{- end }}
 
+  {{- with .Values.flink.job }}
   job:
-    jarURI: local://{{ .Values.flink.job.jarURI }}
-    parallelism: {{ int .Values.flink.job.parallelism }}
-    entryClass: {{ .Values.flink.job.className }}
-    {{- with .Values.flink.job.args }}
+    jarURI: {{ .jarURI }}
+    parallelism: {{ int .parallelism }}
+    {{ if .className}}
+    entryClass: {{ .className }}
+    {{ end }}
+    {{- with .args }}
     args:
       {{- range . }}
       - {{ . | quote }}
       {{- end -}}
     {{- end }}
-    state: {{ .Values.flink.job.state }}
+    state: {{ .state }}
 
-    {{- with .Values.flink.job.savepointTriggerNonce }}
+    {{- with .savepointTriggerNonce }}
     savepointTriggerNonce: {{ . }}
     {{- end }}
-    {{- with .Values.flink.job.initialSavepointPath }}
+    {{- with .initialSavepointPath }}
     initialSavepointPath: {{ . }}
     {{- end }}
-
-    {{- with .Values.flink.job.allowNonRestoredState }}
+    {{- with .allowNonRestoredState }}
     allowNonRestoredState: {{ . }}
     {{- end }}
+    upgradeMode: {{ .upgradeMode | quote }}
+  {{- end }}
 
-    upgradeMode: {{ .Values.flink.job.upgradeMode | quote }}
-
+  {{- with .Values.flink.configuration }}
   flinkConfiguration:
-    {{- if .Values.flink.savepoints.enabled }}
-    s3.path-style-access: "true"
-    state.savepoints.dir: "{{ include "cheetah-flink-native.storageDir" . }}/savepoints"
-    state.checkpoints.dir: "{{ include "cheetah-flink-native.storageDir" . }}/checkpoints"
-    state.backend: {{ .Values.flink.state.backend | quote }}
-    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
-    high-availability.storageDir: "{{ include "cheetah-flink-native.storageDir" . }}/ha"
+    {{- toYaml . | nindent 4 }}
+    {{ if $.Values.monitoring.enabled }}
+      {{ with $.Values.monitoring.flinkProperties -}}
+        {{ toYaml . | nindent 4 }}
+        # {{ range $key, $val := . }}
+        #   {{ $key | nindent 4 }}: {{ $val | quote -}}
+        # {{ end }}
+      {{- end }}
     {{- end }}
-    {{- if .Values.monitoring.enabled }}
-      {{- range $key, $val := .Values.monitoring.flinkProperties }}
-        {{- $key | nindent 4 }}: {{ $val | quote -}}
-      {{ end }}
-    {{- end }}
-    {{- range $key, $val := .Values.flink.flinkProperties }}
-      {{- $key | nindent 4 }}: {{ $val | quote -}}
-    {{ end }}
-
-  podTemplate:
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: pod-template
-    spec:
-    {{- with coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 6 }}
-    {{- end }}
-
-  {{ include "cheetah-flink-native.job-manager" (dict "value" .Values.flink.jobManager "context" $ ) | nindent 2 }}
-
-  {{ include "cheetah-flink-native.task-manager" (dict "value" .Values.flink.taskManager "context" $ ) | nindent 2 }}
-
+  {{- end -}}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "jobManager" "value" .Values.flink.jobManager "context" $) | nindent 2 }}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "taskManager" "value" .Values.flink.taskManager "context" $) | nindent 2 }}

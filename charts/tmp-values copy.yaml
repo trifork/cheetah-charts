@@ -1,0 +1,44 @@
+image:
+  repository: ghcr.io/trifork/cheetah-example-processing
+  tag: main-2911358819
+imagePullSecrets:
+  - name: pullsecret-ghcr-io
+ingress:
+  enabled: true
+  domain: flink.cheetah.trifork.dev
+  certType: prod
+monitoring:
+  enabled: true
+image-automation:
+  enabled: false
+flink:
+  topics:
+    - name: input-kafka-topic
+      value: OTTOMetrics-Dev
+    - name: output-kafka-topic
+      value: OttoReading
+  savepoints:
+    enabled: true
+    generation: 1
+  version: 1.14.4
+  taskManager:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 500m
+      limits:
+        memory: 4Gi
+  job:
+    jarFile: /opt/flink/usrlib/artifacts/cheetah-example-processing-1.0-SNAPSHOT.jar
+    className: com.example.cheetah.processing.job.OttoEventIngestJob
+    name: OttoEventIngestJob
+    args:
+      - --input-kafka-bootstrap-servers
+      - iothub-ns-ottometric-16955964-29592abee7.servicebus.windows.net:9093
+      - --input-sasl-jaas-config
+      - "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$$ConnectionString\" password=\"Endpoint=sb://iothub-ns-ottometric-16955964-29592abee7.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=eWyohBokmJryB8X2Fii7jOSKPvHMe0DezQbjtD7oTvk=;EntityPath=ottometrics-dev\";"
+      - --output-kafka-bootstrap-servers
+      - cheetah-kafka-kafka-brokers.kafka:9092
+    parallelism: 1
+  flinkProperties:
+    taskmanager.numberOfTaskSlots: 1

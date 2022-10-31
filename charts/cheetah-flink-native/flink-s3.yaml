@@ -7,3 +7,17 @@ data:
   accessKey: ZmxpbmstczM=
   secretKey: WjAwUEJtcFoyYUhYbHlqVnFBaWd2SzlLOFlKZ3M4S1Q=
   endpoint: aHR0cDovL21pbmlvLm1pbmlvLnN2Yy5jbHVzdGVyLmxvY2FsOjkwMDA=
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: flink-s3
+  labels:
+    app.kubernetes.io/part-of: flink-teste
+  annotations:
+    vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+    vault.security.banzaicloud.io/vault-serviceaccount: default
+stringData:
+  accesskey: "vault:secret/data/flink-teste/cheetah-flink-s3#accessKey"
+  secretKey: "vault:secret/data/flink-teste/cheetah-flink-s3#secretKey"
+  endpoint: "vault:secret/data/flink-teste/cheetah-flink-s3#endpoint"

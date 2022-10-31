@@ -1,0 +1,108 @@
+---
+# Source: cheetah-flink-native/templates/flink-deployment.yaml
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: tmp-flink-cheetah-flink-native
+spec:
+  image: "ghcr.io/trifork/cheetah-example-processing:test-environment-patch"
+  imagePullPolicy: Always
+  serviceAccount: tmp-flink-cheetah-flink-native
+  flinkVersion: "v1_14"
+  job:
+    jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+    parallelism: 2
+    entryClass:
+    state: running
+    upgradeMode: "savepoint"
+  flinkConfiguration:
+    execution.checkpointing.interval: 10 minutes
+    execution.checkpointing.min-pause: 10 minutes
+    execution.checkpointing.timeout: 5 minutes
+    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    high-availability.storageDir: s3p://flink/test-cheetah-flink-native/ha
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+    metrics.reporter.prom.port: "9249"
+    metrics.reporters: prom
+    rest.flamegraph.enabled: "true"
+    s3.access-key: vault:secret/data/flink-teste/cheetah-flink-s3#accessKey
+    s3.endpoint: vault:secret/data/flink-teste/cheetah-flink-s3#endpoint
+    s3.path-style-access: "true"
+    s3.secret-key: vault:secret/data/flink-teste/cheetah-flink-s3#secretKey
+    state.backend: hashmap
+    state.checkpoints.dir: s3p://flink/test-cheetah-flink-native/checkpoints
+    state.savepoints.dir: s3p://flink/test-cheetah-flink-native/savepoints
+    taskmanager.numberOfTaskSlots: "2"
+  jobManager:
+    replicas: 1
+    resource:
+      cpu: 0.5
+      memory: 1Gb
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: jobManager-pod-template
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+              - containerPort: 9249
+                name: metrics
+            env:
+              - name: AWS_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cheetah-flink-s3
+                    key: accessKey
+                    optional: false
+              - name: AWS_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cheetah-flink-s3
+                    key: secretKey
+                    optional: false
+              - name: FLINK_S3_ENDPOINT
+                value: http://minio.minio.svc.cluster.local:9000
+            volumeMounts:
+              - mountPath: /opt/flink/conf/extra
+                name: s3-config
+        volumes:
+          - name: s3-config
+            secret:
+              items:
+                - key: test.yaml
+                  path: test.yaml
+              secretName: cheetah-flink-native-s3
+  taskManager:
+    replicas:
+    resource:
+      cpu: 0.5
+      memory: 1Gb
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: taskManager-pod-template
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+              - containerPort: 9249
+                name: metrics
+                protocol: TCP
+            env:
+              - name: AWS_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cheetah-flink-s3
+                    key: accessKey
+                    optional: false
+              - name: AWS_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cheetah-flink-s3
+                    key: secretKey
+                    optional: false
+              - name: FLINK_S3_ENDPOINT
+                value: http://minio.minio.svc.cluster.local:9000

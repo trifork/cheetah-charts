@@ -19,13 +19,13 @@ spec:
         # To workaround ( https://github.com/cert-manager/cert-manager/issues/1462 ).
         # We append a short dns name, such the longer is added to cert as alternative subject.
         - {{ .Values.ingress.domain }}
-        - {{ include "cheetah-flink-native.hostname" . }}
+        #- {{/* include "cheetah-flink-native.hostname" . */}}
       secretName: {{ $fullName }}-{{ .Release.Namespace }}-{{ .Values.ingress.certType }}-tls
   rules:
-  - host: {{ include "cheetah-flink-native.hostname" . }}
+  - host: {{ .Values.ingress.domain }}
     http:
       paths:
-      - path: /
+      - path: {{ include "cheetah-flink-native.ingresspath" . }}
         pathType: ImplementationSpecific
         backend:
           service:
@@ -33,3 +33,14 @@ spec:
             port:
               number: {{ .Values.flink.jobManager.ports.ui }}
 {{- end }}
+
+
+{{/*
+
+  ingress:
+    template: "flink.cheetah.trifork.dev/{{namespace}}/{{name}}(/|$)(.*)"
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+
+*/}}

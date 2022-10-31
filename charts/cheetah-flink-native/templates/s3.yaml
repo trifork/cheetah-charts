@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "cheetah-flink-native.fullname" . }}-s3
+  name: {{ include "cheetah-flink-native.secretname" (dict "secret" .Values.flink.storage.secretName "default" (include "cheetah-flink-native.fullname" $)) }}
 type: Opaque
 data:
   test.yaml: czMuZW5kcG9pbnQ6IGh0dHA6Ly9taW5pby5taW5pby5zdmMuY2x1c3Rlci5sb2NhbDo5MDAw

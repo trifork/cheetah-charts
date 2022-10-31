@@ -11,13 +11,15 @@ secretName: &secretname "auto"
 global:
   image:
     repository: ""
-  imagePullSecrets: []
+  imagePullSecrets:
+  - name: pullsecret-ghcr-io
 
 image:
-  repository: flink
+  repository: ghcr.io/trifork/cheetah-example-processing
   pullPolicy: Always
-  tag: "main"
+  tag: "test-environment-patch"
   sha: ""
+  
 
 restartNonce:
 
@@ -32,11 +34,12 @@ rbac:
 
 ingress:
   # -- Whether to expose the Flink UI
-  enabled: false
-  certType: "staging"
+  enabled: true
+  certType: "prod"
   domain: flink.cheetah.trifork.dev
   ingressClassName: nginx
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
@@ -44,21 +47,24 @@ flink:
   # -- Which Flink version to use
   version: v1_14
 
-  storage:
-    secretName: *secretname
+  savepoints:
     enabled: true
-    # -- If the job changes too much, the savepoints of an earlier job cannot be used.
-    # The generation is added as a suffix to the savepoints directory, fixing the problem.
-    # Ignored if not greater than zero
-    generation: 0
-
-  state:
-    backend: hashmap
 
   vault:
     enabled: true
     tlsSecret: vault-tls
     serviceaccount: default
+
+  storage:
+    enabled: true
+    # -- If the job changes too much, the savepoints of an earlier job cannot be used.
+    # The generation is added as a suffix to the savepoints directory, fixing the problem.
+    # Ignored if not greater than zero
+    generation: 0
+    #secretName: cheetah-flink-s3
+
+  state:
+    backend: hashmap
 
   envVars: []
 
@@ -72,14 +78,14 @@ flink:
     metrics.reporter.prom.class: "org.apache.flink.metrics.prometheus.PrometheusReporter"
     metrics.reporter.prom.port: "9249"
     metrics.reporters: "prom"
-    execution.checkpointing.interval: "10 minutes"
-    execution.checkpointing.min-pause: "10 minutes"
-    execution.checkpointing.timeout: "5 minutes"
+    execution.checkpointing.interval: "1 minutes"
+    execution.checkpointing.min-pause: "1 minutes"
+    execution.checkpointing.timeout: "30 seconds"
     rest.flamegraph.enabled: "true"
     taskmanager.numberOfTaskSlots: "2"
-    s3.access-key: "vault:secret/data/flink-teste/cheetah-flink-s3#accessKey"
-    s3.secret-key: "vault:secret/data/flink-teste/cheetah-flink-s3#secretKey"
-    s3.endpoint: "vault:secret/data/flink-teste/cheetah-flink-s3#endpoint"
+    s3.access-key: "vault:secret/data/flink-test/cheetah-flink-s3#accessKey"
+    s3.secret-key: "vault:secret/data/flink-test/cheetah-flink-s3#secretKey"
+    s3.endpoint: "vault:secret/data/flink-test/cheetah-flink-s3#endpoint"
 
   jobManager:
     replicas: 1
@@ -102,7 +108,7 @@ flink:
           items:
             - key: test.yaml
               path: test.yaml
-
+              
     volumeMounts:
       - name: s3-config
         mountPath: /opt/flink/conf/extra
@@ -112,8 +118,6 @@ flink:
 
     # -- Any additional configuration passed to the jobmanager
     additionalConfigs: {}
-
-    imagePullSecrets: []
 
     ports:
       ui: 8081
@@ -143,12 +147,11 @@ flink:
     # -- Any additional configuration passed to the taskmanager
     additionalConfigs: {}
 
-    imagePullSecrets: []
-
   job:
-    jarURI: ""
+    jarURI: "local:///opt/flink/examples/streaming/StateMachineExample.jar"
     className: ""
-    args: []
+    args: 
+      - --emptyarg="testing"
 
     # -- Must be either: running or suspended
     state: running
@@ -179,9 +182,9 @@ flink:
     taskmanager.numberOfTaskSlots: 1
     # scheduler-mode: reactive  # Currently not working
     rest.flamegraph.enabled: true
-    execution.checkpointing.interval: 10 minutes
-    execution.checkpointing.timeout: 5 minutes
-    execution.checkpointing.min-pause: 10 minutes
+    execution.checkpointing.interval: 1 minutes
+    execution.checkpointing.timeout: 30 seconds
+    execution.checkpointing.min-pause: 1 minutes
 
 # -- Settings passed to the image-automation chart
 # Image-automation is not possible when using image-sha as a tagging strategy

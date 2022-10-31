@@ -12,6 +12,19 @@ Hostname to expose flink ui on
 {{- printf "%s-%s.%s" (.Release.Name) (.Release.Namespace) .Values.ingress.domain }}
 {{- end }}
 
+{{- define "cheetah-flink-native.ingresspath" -}}
+{{- printf "/%s/%s%s" (.Release.Namespace) (.Release.Name) "(/|$)?(.*)" }}
+{{- end }}
+
+{{- define "cheetah-flink-native.secretname" -}}
+{{- $secretname := default "auto" .secret }}
+{{- if ne $secretname "auto" -}}
+{{- $secretname -}}
+{{- else -}}
+{{- printf "%s-s3" .default -}}
+{{- end -}}
+{{- end }}
+
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -86,7 +99,7 @@ Create the name of the service account to use
 Create the name of the service account to use
 */}}
 {{- define "cheetah-flink-native.jobmanager-name" -}}
-{{ printf "%s-jobmanager" (include "cheetah-flink-native.fullname" . ) }}
+{{ printf "%s-rest" (include "cheetah-flink-native.fullname" . ) }}
 {{- end }}
 
 {{/*
@@ -108,13 +121,13 @@ Add environment variables for S3-storage
 - name: AWS_ACCESS_KEY
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.flink.storage.secretName }}
+      name: {{ include "cheetah-flink-native.secretname" (dict "secret" .Values.flink.storage.secretName "default" (include "cheetah-flink-native.fullname" $)) }}
       key: accessKey
       optional: false
 - name: AWS_SECRET_KEY
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.flink.storage.secretName }}
+      name: {{ include "cheetah-flink-native.secretname" (dict "secret" .Values.flink.storage.secretName "default" (include "cheetah-flink-native.fullname" $)) }}
       key: secretKey
       optional: false
 - name: FLINK_S3_ENDPOINT
