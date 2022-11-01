@@ -104,7 +104,7 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 1
 startupProbe:
-  enabled: true
+  enabled: false
   httpGet:
     path: /
     port: http
