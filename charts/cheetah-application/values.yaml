@@ -146,5 +146,5 @@ image-automation:
 # -- Observability settings
 monitoring:
   enabled: false
-  port: 9090
+  port: 1854
   path: "/metrics"
