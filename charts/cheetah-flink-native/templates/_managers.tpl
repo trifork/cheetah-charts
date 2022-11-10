@@ -2,7 +2,7 @@
 {{- define "cheetah-flink-native.manager" -}}
 {{ .manager }}:
   replicas: {{ .value.replicas }}
-  resource: 
+  resource:
     {{- toYaml .value.resource | nindent 4 }}
 
   podTemplate:

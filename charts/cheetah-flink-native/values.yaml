@@ -109,7 +109,7 @@ flink:
       # rpc: 6123
       # blob: 6124
       # query: 6125
-    
+
     env: []
 
   taskManager:
