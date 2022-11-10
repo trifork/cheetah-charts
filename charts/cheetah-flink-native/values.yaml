@@ -203,6 +203,7 @@ monitoring:
   # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors
   podMonitorSelectorLabels:
     prometheus: cluster-metrics
+    cheetah-monitoring: "true"
 
   podMetricsEndpoints:
     - port: metrics
