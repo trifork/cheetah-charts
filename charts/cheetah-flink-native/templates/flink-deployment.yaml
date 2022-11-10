@@ -2,6 +2,8 @@ apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
   name: {{ template "cheetah-flink-native.fullname" $ }}
+  labels:
+    {{- include "cheetah-flink-native.labels" . | nindent 4 }}
   annotations:
     {{ if .Values.flink.vault.enabled }}
     {{ with .Values.flink.vault }}
@@ -22,8 +24,8 @@ spec:
   job:
     jarURI: {{ .jarURI }}
     parallelism: {{ int .parallelism }}
-    {{ if .className}}
-    entryClass: {{ .className }}
+    {{ with .className}}
+    entryClass: {{ . }}
     {{ end }}
     {{- with .args }}
     args:
@@ -51,9 +53,6 @@ spec:
     {{ if $.Values.monitoring.enabled }}
       {{ with $.Values.monitoring.flinkProperties -}}
         {{ toYaml . | nindent 4 }}
-        # {{ range $key, $val := . }}
-        #   {{ $key | nindent 4 }}: {{ $val | quote -}}
-        # {{ end }}
       {{- end }}
     {{- end }}
   {{- end -}}

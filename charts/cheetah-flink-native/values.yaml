@@ -4,7 +4,6 @@
 
 nameOverride: ""
 fullnameOverride: ""
-secretName: &secretname "auto"
 
 # -- Only used to decrease duplicate configuration of this chart, if image-automation is used as a sub chart.
 # Overrides the local values if given
@@ -44,13 +43,13 @@ flink:
   # -- Which Flink version to use
   version: v1_14
 
-  storage:
-    secretName: *secretname
-    enabled: true
-    # -- If the job changes too much, the savepoints of an earlier job cannot be used.
-    # The generation is added as a suffix to the savepoints directory, fixing the problem.
-    # Ignored if not greater than zero
-    generation: 0
+  # storage:
+  #   secretName: *secretname
+  #   enabled: true
+  #   # -- If the job changes too much, the savepoints of an earlier job cannot be used.
+  #   # The generation is added as a suffix to the savepoints directory, fixing the problem.
+  #   # Ignored if not greater than zero
+  #   generation: 0
 
   state:
     backend: hashmap
@@ -87,25 +86,15 @@ flink:
     # enable metrics ports for jobManager
     metrics:
       enabled: true
-      extraPorts:
-        - name: metrics
-          containerPort: 9249
+      extraPorts: []
 
     resource:
       memory: 1Gb
       cpu: 0.5
 
-    volumes:
-      - name: s3-config
-        secret:
-          secretName: *secretname
-          items:
-            - key: test.yaml
-              path: test.yaml
+    volumes: []
 
-    volumeMounts:
-      - name: s3-config
-        mountPath: /opt/flink/conf/extra
+    volumeMounts: []
 
     podLabels: {}
     podAnnotations: {}
@@ -120,6 +109,8 @@ flink:
       # rpc: 6123
       # blob: 6124
       # query: 6125
+    
+    env: []
 
   taskManager:
     volumes: []
@@ -144,6 +135,8 @@ flink:
     additionalConfigs: {}
 
     imagePullSecrets: []
+
+    env: []
 
   job:
     jarURI: ""

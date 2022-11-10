@@ -8,6 +8,9 @@ metadata:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^([^.?]*[^/])$ $1/ redirect;
     {{- toYaml . | nindent 4 }}
   {{- end }}
     cert-manager.io/cluster-issuer: letsencrypt-{{ .Values.ingress.certType }}
@@ -15,11 +18,7 @@ spec:
   ingressClassName: {{ .Values.ingress.ingressClassName | quote }}
   tls:
     - hosts:
-        # HACK:
-        # To workaround ( https://github.com/cert-manager/cert-manager/issues/1462 ).
-        # We append a short dns name, such the longer is added to cert as alternative subject.
         - {{ .Values.ingress.domain }}
-        #- {{/* include "cheetah-flink-native.hostname" . */}}
       secretName: {{ $fullName }}-{{ .Release.Namespace }}-{{ .Values.ingress.certType }}-tls
   rules:
   - host: {{ .Values.ingress.domain }}
@@ -33,14 +32,3 @@ spec:
             port:
               number: {{ .Values.flink.jobManager.ports.ui }}
 {{- end }}
-
-
-{{/*
-
-  ingress:
-    template: "flink.cheetah.trifork.dev/{{namespace}}/{{name}}(/|$)(.*)"
-    className: "nginx"
-    annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-
-*/}}

@@ -5,24 +5,8 @@ Expand the name of the chart.
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Hostname to expose flink ui on
-*/}}
-{{- define "cheetah-flink-native.hostname" -}}
-{{- printf "%s-%s.%s" (.Release.Name) (.Release.Namespace) .Values.ingress.domain }}
-{{- end }}
-
 {{- define "cheetah-flink-native.ingresspath" -}}
-{{- printf "/%s/%s%s" (.Release.Namespace) (.Release.Name) "(/|$)?(.*)" }}
-{{- end }}
-
-{{- define "cheetah-flink-native.secretname" -}}
-{{- $secretname := default "auto" .secret }}
-{{- if ne $secretname "auto" -}}
-{{- $secretname -}}
-{{- else -}}
-{{- printf "%s-s3" .default -}}
-{{- end -}}
+{{- printf "/%s/%s%s" .Release.Namespace .Release.Name "(/|$)?(.*)" }}
 {{- end }}
 
 {{/*
@@ -67,7 +51,7 @@ Builds the image identifier with either sha or tag
 {{/*
 Common labels
 */}}
-{{- define "cheetah-flink-native.labels" -}}
+{{- define "cheetah-flink-native.labels" }}
 helm.sh/chart: {{ include "cheetah-flink-native.chart" . }}
 {{ include "cheetah-flink-native.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -101,35 +85,3 @@ Create the name of the service account to use
 {{- define "cheetah-flink-native.jobmanager-name" -}}
 {{ printf "%s-rest" (include "cheetah-flink-native.fullname" . ) }}
 {{- end }}
-
-{{/*
-Get the savepoints directory
-*/}}
-{{- define "cheetah-flink-native.storageDir" -}}
-{{- $dir := printf "s3p://flink/%s" (include "cheetah-flink-native.fullname" . ) -}}
-{{- if gt (int64 .Values.flink.savepoints.generation) 0 }}
-{{- $dir = printf "%s-%v" $dir .Values.flink.savepoints.generation }}
-{{- end }}
-{{- $dir }}
-{{- end }}
-
-
-{{/*
-Add environment variables for S3-storage
-*/}}
-{{- define "cheetah-flink-native.storageConfig" -}}
-- name: AWS_ACCESS_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "cheetah-flink-native.secretname" (dict "secret" .Values.flink.storage.secretName "default" (include "cheetah-flink-native.fullname" $)) }}
-      key: accessKey
-      optional: false
-- name: AWS_SECRET_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "cheetah-flink-native.secretname" (dict "secret" .Values.flink.storage.secretName "default" (include "cheetah-flink-native.fullname" $)) }}
-      key: secretKey
-      optional: false
-- name: FLINK_S3_ENDPOINT
-  value: http://minio.minio.svc.cluster.local:9000
-{{- end -}}
