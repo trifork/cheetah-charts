@@ -1,12 +1,12 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: {{ template "cheetah-flink-native.fullname" $ }}
+  name: {{ include "cheetah-flink-native.fullname" $ }}
   labels:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
   annotations:
-    {{ if .Values.flink.vault.enabled }}
-    {{ with .Values.flink.vault }}
+    {{ if .Values.vault.enabled }}
+    {{ with .Values.vault }}
     vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
     vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
     {{ end }}
@@ -14,7 +14,7 @@ metadata:
 spec:
   image: {{ include "cheetah-flink-native.image" . | quote }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
-  serviceAccount: {{ template "cheetah-flink-native.serviceAccountName" . }}
+  serviceAccount: {{ include "cheetah-flink-native.serviceAccountName" . }}
   flinkVersion: {{ .Values.flink.version | quote }}
   {{- with .Values.restartNonce }}
   restartNonce: {{ . }}

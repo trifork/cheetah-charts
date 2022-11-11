@@ -6,11 +6,11 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/configuration-snippet: |
       rewrite ^([^.?]*[^/])$ $1/ redirect;
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
     cert-manager.io/cluster-issuer: letsencrypt-{{ .Values.ingress.certType }}
@@ -19,7 +19,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.domain }}
-      secretName: {{ $fullName }}-{{ .Release.Namespace }}-{{ .Values.ingress.certType }}-tls
+      secretName: {{ $fullName }}-{{ .Values.ingress.certType }}-tls
   rules:
   - host: {{ .Values.ingress.domain }}
     http:
@@ -28,7 +28,7 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "cheetah-flink-native.jobmanager-name" $  }}
+            name: {{ include "cheetah-flink-native.fullname" . }}-rest
             port:
               number: {{ .Values.flink.jobManager.ports.ui }}
 {{- end }}

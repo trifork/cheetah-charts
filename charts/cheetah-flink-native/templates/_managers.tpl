@@ -22,12 +22,12 @@
       containers:
         - name: flink-main-container
           ports:
-          {{- with .value.metrics.extraPorts -}}
+          {{- with .value.extraPorts -}}
           {{ toYaml . | nindent 10}}
           {{- end -}}
           {{- if .value.metrics.enabled }}
-          - name: metrics
-            containerPort: 9249
+          - name: {{ .value.metrics.portName }}
+            containerPort: {{ .value.metrics.port }}
           {{- end }}
 
           {{- with .value.env -}}

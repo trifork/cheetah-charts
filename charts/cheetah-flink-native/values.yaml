@@ -18,7 +18,9 @@ image:
   tag: "main"
   sha: ""
 
-restartNonce:
+# change this to force a restart of the job
+# see https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/ for more info
+restartNonce: 0
 
 serviceAccount:
   create: true
@@ -31,6 +33,7 @@ rbac:
 
 ingress:
   # -- Whether to expose the Flink UI
+  # The UI will be exposed under https://<.ingress.domain>/<release-namespace>/<release-name> by default
   enabled: false
   certType: "staging"
   domain: flink.cheetah.trifork.dev
@@ -39,25 +42,14 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
+vault:
+  enabled: true
+  tlsSecret: vault-tls
+  serviceaccount: default
+
 flink:
   # -- Which Flink version to use
   version: v1_14
-
-  # storage:
-  #   secretName: *secretname
-  #   enabled: true
-  #   # -- If the job changes too much, the savepoints of an earlier job cannot be used.
-  #   # The generation is added as a suffix to the savepoints directory, fixing the problem.
-  #   # Ignored if not greater than zero
-  #   generation: 0
-
-  state:
-    backend: hashmap
-
-  vault:
-    enabled: true
-    tlsSecret: vault-tls
-    serviceaccount: default
 
   envVars: []
 
@@ -76,9 +68,9 @@ flink:
     execution.checkpointing.timeout: "5 minutes"
     rest.flamegraph.enabled: "true"
     taskmanager.numberOfTaskSlots: "2"
-    s3.access-key: "vault:secret/data/flink-teste/cheetah-flink-s3#accessKey"
-    s3.secret-key: "vault:secret/data/flink-teste/cheetah-flink-s3#secretKey"
-    s3.endpoint: "vault:secret/data/flink-teste/cheetah-flink-s3#endpoint"
+    s3.access-key: "vault:secret/data/global/cheetah-flink-s3#accessKey"
+    s3.secret-key: "vault:secret/data/global/cheetah-flink-s3#secretKey"
+    s3.endpoint: "vault:secret/data/global/cheetah-flink-s3#endpoint"
 
   jobManager:
     replicas: 1
@@ -86,7 +78,10 @@ flink:
     # enable metrics ports for jobManager
     metrics:
       enabled: true
-      extraPorts: []
+      portName: metrics
+      port: 9249
+
+    extraPorts: []
 
     resource:
       memory: 1Gb
@@ -119,10 +114,9 @@ flink:
     # enable metrics ports for taskManager
     metrics:
       enabled: true
-      extraPorts:
-        - name: metrics
-          containerPort: 9249
-          protocol: TCP
+      portName: metrics
+      port: 9249
+    extraPorts: []
 
     resource:
       memory: 1Gb
@@ -149,9 +143,13 @@ flink:
     # -- Must be either: savepoint, last_state, stateless
     upgradeMode: "savepoint"
 
-    savepointTriggerNonce:
+    # change this to trigger a savepoint manually
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    savepointTriggerNonce: 0
 
-    initialSavepointPath:
+    # change this to force a manual recovery checkpoint
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    initialSavepointPath: ""
 
     allowNonRestoredState: false
 
@@ -182,15 +180,10 @@ image-automation:
   enabled: false
 
 monitoring:
-  enabled: false
+  enabled: true
   podTargetLabels:
     - component
     - cluster
-
-  flinkProperties:
-    metrics.reporters: prom
-    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-    metrics.reporter.prom.port: 9249
 
   # include the podMonitorSelectorLabel which you have set in your prometheus-operator
   # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors

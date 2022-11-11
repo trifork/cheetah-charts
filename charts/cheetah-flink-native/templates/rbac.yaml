@@ -28,12 +28,12 @@ kind: RoleBinding
 metadata:
   labels:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
-  name: {{ template "cheetah-flink-native.name" . }}-role-binding
+  name: {{ include "cheetah-flink-native.name" . }}-role-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "cheetah-flink-native.name" . }}-role
+  name: {{ include "cheetah-flink-native.name" . }}-role
 subjects:
 - kind: ServiceAccount
-  name: {{ template "cheetah-flink-native.serviceAccountName" . }}
+  name: {{ include "cheetah-flink-native.serviceAccountName" . }}
 {{- end }}
