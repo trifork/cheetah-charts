@@ -30,5 +30,5 @@ spec:
           service:
             name: {{ include "cheetah-flink-native.fullname" . }}-rest
             port:
-              number: {{ .Values.flink.jobManager.ports.ui }}
+              number: {{ .Values.flink.ui.port }}
 {{- end }}

@@ -22,6 +22,10 @@
       containers:
         - name: flink-main-container
           ports:
+          {{ if and (.context.Values.flink.ui.enabled) (eq .manager "jobManager") -}}
+          - name: ui
+            containerPort: {{ .context.Values.flink.ui.port }}
+          {{- end -}}
           {{- with .value.extraPorts -}}
           {{ toYaml . | nindent 10}}
           {{- end -}}
@@ -45,7 +49,7 @@
           {{- end }}
       {{ with .value.volumes -}}
       volumes:
-        {{- include "cheetah-flink-native.volume" (dict "values" . "context" $.context) | nindent 6 }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{ $imagepullsecret := default .context.Values.global.imagePullSecrets .value.imagePullSecrets }}
       {{- with $imagepullsecret -}}
