@@ -8,6 +8,8 @@ on:
     paths:
       - "charts/**"
   workflow_dispatch:
+    branches:
+      - "main"
 
 env:
   HELM_GCS_VERSION: 0.3.19
@@ -15,9 +17,34 @@ env:
   HELM_REPO: "cheetah-charts"
 
 jobs:
+  docs:
+    name: Render documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.18.0"
+
+      - name: Install helm-docs
+        run: |
+          go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
+
+      - name: Render documentation
+        run: |
+          helm-docs --sort-values-order file --chart-search-root charts/
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "[CI] Update chart README.md"
+          file_pattern: charts/*/README.md
+
   release:
     name: Release
     runs-on: ubuntu-latest
+    needs: docs
     steps:
       - name: Checkout
         uses: actions/checkout@v2
