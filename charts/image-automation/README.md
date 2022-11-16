@@ -1,30 +1,33 @@
 # image-automation
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 A Helm chart for automatic image updates
 
 ## Values
 
-| Key                                       | Type   | Default                                                             | Description                                                                                                                                |
-| ----------------------------------------- | ------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| filter.pattern                            | string | `"[a-zA-Z0-9]+-(?P<ts>[0-9]+)"`                                     | regex to use. "[a-z0-9]+-(?P<ts>[0-9]+)" is useful for a tagging strategy using 'gitSha-timestamp' where timestamp is extracted and sorted |
-| filter.tag                                | string | `"$ts"`                                                             | which field is extracted and sorted                                                                                                        |
-| fullnameOverride                          | string | `""`                                                                |                                                                                                                                            |
-| image.repository                          | string | `""`                                                                |                                                                                                                                            |
-| imagePullSecrets                          | list   | `[]`                                                                | Name of a secret containing image pull secrets (only the first in the array is used)                                                       |
-| imageUpdateAutomation.author              | object | `{"email":"fluxcdbot@users.noreply.github.com","name":"fluxcdbot"}` | author information for commits                                                                                                             |
-| imageUpdateAutomation.checkoutBranch      | string | `""`                                                                | which branch to check out. Defaults to the branch of the GitRepository                                                                     |
-| imageUpdateAutomation.create              | bool   | `false`                                                             | whether to add an ImageUpdateAutomation resource. Only one should be deployed per namespace                                                |
-| imageUpdateAutomation.interval            | string | `"5m0s"`                                                            |                                                                                                                                            |
-| imageUpdateAutomation.messageTemplate     | string | `"{{ range .Updated.Images }}{{ println . }}{{ end }}"`             | commit message template using Go template                                                                                                  |
-| imageUpdateAutomation.path                | string | `""`                                                                | which path in the sourceRef to look for markers                                                                                            |
-| imageUpdateAutomation.pushBranch          | string | `"main"`                                                            | which branch to push to                                                                                                                    |
-| imageUpdateAutomation.sourceRef           | object | `{"name":"cheetah-example-gitops","namespace":"flux-system"}`       | gitRepository to look in                                                                                                                   |
-| imageUpdateAutomation.sourceRef.namespace | string | `"flux-system"`                                                     | (optional) namespace of the GitRepository                                                                                                  |
-| interval                                  | string | `"1m0s"`                                                            | Which interval to check for new image versions                                                                                             |
-| nameOverride                              | string | `""`                                                                |                                                                                                                                            |
-| policy.mode                               | string | `"numerical"`                                                       | mode must be numerical, alphabetical, or semver                                                                                            |
-| policy.name                               | string | `""`                                                                | name of the imagePolicy resource                                                                                                           |
-| policy.order                              | string | `"asc"`                                                             | if mode=numerical or alphabetical, determines whether tags are sorted using ascend(asc) or descend(desc).                                  |
-| policy.range                              | string | `">=0.0.0"`                                                         | if mode=semver, find the lastest image tag in this range                                                                                   |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| nameOverride | string | `""` |  |
+| fullnameOverride | string | `""` |  |
+| image.repository | string | `""` |  |
+| imagePullSecrets | list | `[]` | Name of a secret containing image pull secrets (only the first in the array is used) |
+| interval | string | `"1m0s"` | Which interval to check for new image versions |
+| filter.pattern | string | `"[a-zA-Z0-9]+-(?P<ts>[0-9]+)"` | regex to use. "[a-z0-9]+-(?P<ts>[0-9]+)" is useful for a tagging strategy using 'gitSha-timestamp' where timestamp is extracted and sorted |
+| filter.tag | string | `"$ts"` | which field is extracted and sorted |
+| policy.name | string | `""` | name of the imagePolicy resource |
+| policy.mode | string | `"numerical"` | mode must be numerical, alphabetical, or semver |
+| policy.order | string | `"asc"` | if mode=numerical or alphabetical, determines whether tags are sorted using ascend(asc) or descend(desc). |
+| policy.range | string | `">=0.0.0"` | if mode=semver, find the lastest image tag in this range |
+| imageUpdateAutomation.create | bool | `false` | whether to add an ImageUpdateAutomation resource. Only one should be deployed per namespace |
+| imageUpdateAutomation.author | object | `{"email":"fluxcdbot@users.noreply.github.com","name":"fluxcdbot"}` | author information for commits |
+| imageUpdateAutomation.messageTemplate | string | `"{{ range .Updated.Images }}{{ println . }}{{ end }}"` | commit message template using Go template |
+| imageUpdateAutomation.sourceRef | object | `{"name":"cheetah-example-gitops","namespace":"flux-system"}` | gitRepository to look in |
+| imageUpdateAutomation.sourceRef.namespace | optional | `"flux-system"` | namespace of the GitRepository |
+| imageUpdateAutomation.path | string | `""` | which path in the sourceRef to look for markers |
+| imageUpdateAutomation.interval | string | `"5m0s"` |  |
+| imageUpdateAutomation.checkoutBranch | string | `""` | which branch to check out. Defaults to the branch of the GitRepository |
+| imageUpdateAutomation.pushBranch | string | `"main"` | which branch to push to |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
