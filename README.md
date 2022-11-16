@@ -1,7 +1,7 @@
 # cheetah-charts
 
 [![Chart linting and testing](https://github.com/trifork/cheetah-charts/actions/workflows/helm-lint.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/helm-lint.yaml)
-[![Release Helm charts to GCS](https://github.com/trifork/cheetah-charts/actions/workflows/helm-ci.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/helm-ci.yaml)
+[![Release Helm charts to GCS](https://github.com/trifork/cheetah-charts/actions/workflows/helm-release.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/helm-release.yaml)
 
 Repository containing the source code for different Helm charts.
 
