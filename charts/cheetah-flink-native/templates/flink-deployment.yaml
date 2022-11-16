@@ -1,0 +1,60 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: {{ include "cheetah-flink-native.fullname" $ }}
+  labels:
+    {{- include "cheetah-flink-native.labels" . | nindent 4 }}
+  annotations:
+    {{ if .Values.vault.enabled }}
+    {{ with .Values.vault }}
+    vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
+    vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
+    {{ end }}
+    {{ end }}
+spec:
+  image: {{ include "cheetah-flink-native.image" . | quote }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  serviceAccount: {{ include "cheetah-flink-native.serviceAccountName" . }}
+  flinkVersion: {{ .Values.flink.version | quote }}
+  {{- with .Values.restartNonce }}
+  restartNonce: {{ . }}
+  {{- end }}
+
+  {{- with .Values.flink.job }}
+  job:
+    jarURI: {{ .jarURI }}
+    parallelism: {{ int .parallelism }}
+    {{ with .className}}
+    entryClass: {{ . }}
+    {{ end }}
+    {{- with .args }}
+    args:
+      {{- range . }}
+      - {{ . | quote }}
+      {{- end -}}
+    {{- end }}
+    state: {{ .state }}
+
+    {{- with .savepointTriggerNonce }}
+    savepointTriggerNonce: {{ . }}
+    {{- end }}
+    {{- with .initialSavepointPath }}
+    initialSavepointPath: {{ . }}
+    {{- end }}
+    {{- with .allowNonRestoredState }}
+    allowNonRestoredState: {{ . }}
+    {{- end }}
+    upgradeMode: {{ .upgradeMode | quote }}
+  {{- end }}
+
+  {{- with .Values.flink.configuration }}
+  flinkConfiguration:
+    {{- toYaml . | nindent 4 }}
+    {{ if $.Values.monitoring.enabled }}
+      {{ with $.Values.monitoring.flinkProperties -}}
+        {{ toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
+  {{- end -}}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "jobManager" "value" .Values.flink.jobManager "context" $) | nindent 2 }}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "taskManager" "value" .Values.flink.taskManager "context" $) | nindent 2 }}

@@ -1,0 +1,200 @@
+# Default values for cheetah-flink-native.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+# -- Only used to decrease duplicate configuration of this chart, if image-automation is used as a sub chart.
+# Overrides the local values if given
+global:
+  image:
+    repository: ""
+  imagePullSecrets: []
+
+image:
+  repository: flink
+  pullPolicy: Always
+  tag: "main"
+  sha: ""
+
+# -- change this to force a restart of the job,
+# see https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/ for more info
+restartNonce: 0
+
+serviceAccount:
+  create: true
+  name: ""
+
+rbac:
+  create: true
+  # -- Additional rules to add to the role
+  additionalRules: []
+
+ingress:
+  # -- Whether to expose the Flink UI,
+  # The UI will be exposed under https://<.ingress.domain>/<release-namespace>/<release-name> by default
+  enabled: false
+  certType: "staging"
+  domain: flink.cheetah.trifork.dev
+  ingressClassName: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  # -- the ui port. Ingress will hit the service on this port
+  uiPort: 8081
+
+vault:
+  enabled: true
+  tlsSecret: vault-tls
+  serviceaccount: default
+
+flink:
+  # -- Which Flink version to use
+  version: v1_14
+
+  configuration:
+    s3.path-style-access: "true"
+    state.savepoints.dir: "s3p://flink/test-cheetah-flink-native/savepoints"
+    state.checkpoints.dir: "s3p://flink/test-cheetah-flink-native/checkpoints"
+    state.backend: "hashmap"
+    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    high-availability.storageDir: "s3p://flink/test-cheetah-flink-native/ha"
+    execution.checkpointing.interval: "10 minutes"
+    execution.checkpointing.min-pause: "10 minutes"
+    execution.checkpointing.timeout: "5 minutes"
+    rest.flamegraph.enabled: "true"
+    taskmanager.numberOfTaskSlots: "2"
+    s3.access-key: "vault:secret/data/global/cheetah-flink-s3#accessKey"
+    s3.secret-key: "vault:secret/data/global/cheetah-flink-s3#secretKey"
+    s3.endpoint: "vault:secret/data/global/cheetah-flink-s3#endpoint"
+
+  jobManager:
+    replicas: 1
+
+    metrics:
+      # -- enable metrics ports for jobManager
+      enabled: true
+      portName: metrics
+      port: 9249
+
+    extraPorts: []
+
+    resource:
+      memory: 1Gb
+      cpu: 0.5
+
+    volumes: []
+
+    volumeMounts: []
+
+    podLabels: {}
+    podAnnotations: {}
+
+    # -- Any additional configuration passed to the jobmanager
+    additionalConfigs: {}
+
+    imagePullSecrets: []
+
+    env: []
+
+  taskManager:
+    replicas: 1
+    volumes: []
+    volumeMounts: []
+
+    metrics:
+      # -- enable metrics ports for taskManager
+      enabled: true
+      portName: metrics
+      port: 9249
+    extraPorts: []
+
+    resource:
+      memory: 1Gb
+      cpu: 0.5
+
+    podLabels: {}
+    podAnnotations: {}
+
+    # -- Any additional configuration passed to the taskmanager
+    additionalConfigs: {}
+
+    imagePullSecrets: []
+
+    env: []
+
+  job:
+    # -- the path of the job jar
+    jarURI: ""
+    # -- the name of the job class
+    className: ""
+    args: []
+
+    # -- Must be either: running or suspended
+    state: running
+
+    # -- Must be either: savepoint, last_state, stateless
+    upgradeMode: "savepoint"
+
+    # -- change this to trigger a savepoint manually,
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    savepointTriggerNonce: 0
+
+    # -- change this to force a manual recovery checkpoint,
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    initialSavepointPath: ""
+
+    # -- If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed.
+    allowNonRestoredState: false
+
+    # -- How many jobs to run in parallel,
+    # see more here: https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/
+    parallelism: 2
+    restartPolicy: Never
+    volumes: []
+    volumeMounts: []
+
+    podLabels: {}
+    podAnnotations:
+      # -- Explicit disable Linkerd proxy injection, as it makes the job hang
+      linkerd.io/inject: disabled
+
+    # -- Any additional configuration passed to the job
+    additionalConfigs: {}
+
+  flinkProperties:
+    taskmanager.numberOfTaskSlots: 1
+    # scheduler-mode: reactive  # Currently not working
+    rest.flamegraph.enabled: true
+    execution.checkpointing.interval: 10 minutes
+    execution.checkpointing.timeout: 5 minutes
+    execution.checkpointing.min-pause: 10 minutes
+
+# -- Settings passed to the image-automation chart,
+# Image-automation is not possible when using image-sha as a tagging strategy
+image-automation:
+  enabled: false
+
+monitoring:
+  # -- Enable monitoring. Define flinkProperties to define the monitoring properties
+  enabled: true
+  podTargetLabels:
+    - component
+    - cluster
+
+  # -- Define which monitoring system to use,
+  # See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/
+  flinkProperties:
+    metrics.reporters: prom
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+    metrics.reporter.prom.port: 9249
+
+  # include the podMonitorSelectorLabel which you have set in your prometheus-operator
+  # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors
+  podMonitorSelectorLabels:
+    prometheus: cluster-metrics
+    cheetah-monitoring: "true"
+
+  podMetricsEndpoints:
+    - port: metrics
