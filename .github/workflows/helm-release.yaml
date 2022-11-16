@@ -40,6 +40,7 @@ jobs:
         with:
           commit_message: "[CI] Update chart README.md"
           file_pattern: charts/*/README.md
+          push_options: "--force"
 
   release:
     name: Release
