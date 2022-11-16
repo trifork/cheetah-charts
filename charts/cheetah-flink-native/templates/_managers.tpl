@@ -22,9 +22,9 @@
       containers:
         - name: flink-main-container
           ports:
-          {{ if and (.context.Values.flink.ui.enabled) (eq .manager "jobManager") -}}
+          {{ if eq .manager "jobManager" -}}
           - name: ui
-            containerPort: {{ .context.Values.flink.ui.port }}
+            containerPort: {{ .context.Values.ingress.uiPort}}
           {{- end -}}
           {{- with .value.extraPorts -}}
           {{ toYaml . | nindent 10}}

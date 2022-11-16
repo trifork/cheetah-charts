@@ -41,6 +41,8 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  # -- the ui port. Ingress will hit the service on this port
+  uiPort: 8081
 
 vault:
   enabled: true
@@ -66,16 +68,12 @@ flink:
     s3.access-key: "vault:secret/data/global/cheetah-flink-s3#accessKey"
     s3.secret-key: "vault:secret/data/global/cheetah-flink-s3#secretKey"
     s3.endpoint: "vault:secret/data/global/cheetah-flink-s3#endpoint"
-  
-  ui:
-    enabled: true
-    port: 8081
 
   jobManager:
     replicas: 1
 
-    # -- enable metrics ports for jobManager
     metrics:
+      # -- enable metrics ports for jobManager
       enabled: true
       portName: metrics
       port: 9249
@@ -105,8 +103,8 @@ flink:
     volumes: []
     volumeMounts: []
 
-    # -- enable metrics ports for taskManager
     metrics:
+      # -- enable metrics ports for taskManager
       enabled: true
       portName: metrics
       port: 9249
@@ -140,18 +138,18 @@ flink:
     upgradeMode: "savepoint"
 
     # -- change this to trigger a savepoint manually,
-    # -- see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
     savepointTriggerNonce: 0
 
     # -- change this to force a manual recovery checkpoint,
-    # -- see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
+    # see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/
     initialSavepointPath: ""
 
     # -- If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed.
     allowNonRestoredState: false
 
     # -- How many jobs to run in parallel,
-    # -- see more here: https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/
+    # see more here: https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/
     parallelism: 2
     restartPolicy: Never
     volumes: []
@@ -186,7 +184,7 @@ monitoring:
     - cluster
 
   # -- Define which monitoring system to use,
-  # -- See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/
+  # See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/
   flinkProperties:
     metrics.reporters: prom
     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
