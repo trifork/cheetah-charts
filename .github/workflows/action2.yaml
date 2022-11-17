@@ -21,7 +21,7 @@ jobs:
           out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time")
           echo '::set-output name=SCRIPT2::$(out)'
           echo $out
-          echo "{SCRIPT2}={$out}" >> $GITHUB_OUTPUT
+          echo "SCRIPT2=$out" >> $GITHUB_ENV
           echo $GITHUB_OUTPUT
 
   jobTest:
@@ -29,4 +29,4 @@ jobs:
     needs: print-from-script
     steps:
       - name: print variable
-        run: echo 'Prints variable out ${{ steps.python.outputs.SCRIPT2 }}'
+        run: echo 'Prints variable out' ${{ env.SCRIPT2 }}
