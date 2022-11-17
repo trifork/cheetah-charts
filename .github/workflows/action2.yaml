@@ -18,4 +18,3 @@ jobs:
 
     - name: Check latest
       run: python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time"
-      shell: sh
