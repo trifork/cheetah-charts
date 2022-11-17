@@ -22,7 +22,7 @@ jobs:
           echo '::set-output name=SCRIPT2::$(out)'
           echo $out
           echo "SCRIPT2=$out" >> $GITHUB_ENV
-          echo $GITHUB_OUTPUT
+          echo ${{ env.SCRIPT2 }}
 
   jobTest:
     runs-on: ubuntu-latest
