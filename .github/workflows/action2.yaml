@@ -21,18 +21,9 @@ jobs:
           out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time")
           echo '::set-output name=SCRIPT2::$(out)'
 
-  job2:
-    runs-on: ubuntu-latest
-    needs: print-from-script
-    steps:
-      - run: echo "Venter på print-from-script"
-
   jobTet:
     runs-on: ubuntu-latest
     needs: print-from-script
     steps:
-      - name: set-selected-color
-        run: echo '::set-output name=SELECTED_COLOR::green'
-        id: random-color-generator
-      - name: Get color
-        run: echo "pleas work ${{ steps.python.outputs.SCRIPT2 }}"
+      - name: print variable
+        run: echo 'Prints variable out ${{ steps.python.outputs.SCRIPT2 }}'
