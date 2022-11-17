@@ -18,7 +18,7 @@ jobs:
       - name: Check latest
         run: |
           out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time")
-          echo $out
+          echo '::set-output name=SCRIPT::$out'
 
   job2:
     runs-on: ubuntu-latest
@@ -33,4 +33,4 @@ jobs:
         run: echo '::set-output name=SELECTED_COLOR::green'
         id: random-color-generator
       - name: Get color
-        run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
+        run: echo "pleas work ${{ steps.random-color-generator.outputs.SCRIPT }}"
