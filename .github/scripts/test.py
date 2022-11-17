@@ -69,5 +69,5 @@ if __name__ == '__main__':
         if x["name"] == name:
              print("true")
         else:
-            print("false")
+            None
 
