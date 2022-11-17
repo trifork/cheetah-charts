@@ -20,9 +20,9 @@ jobs:
         run: |
           out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time")
           echo '::set-output name=SCRIPT2::$(out)'
-          echo $out
+          echo $(out)
 
-  jobTet:
+  jobTest:
     runs-on: ubuntu-latest
     needs: print-from-script
     steps:
