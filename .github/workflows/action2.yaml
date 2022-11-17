@@ -1,24 +1,34 @@
-name: outputs
-on:
-  push:
+on: [push]
+
+env:
+  DEVOPS_DIR: cheetah-charts-test
+
 jobs:
-  job1:
+  print-from-script:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Do Work
-        run: |
-          echo '::set-output name=FAV_NUMBER::3'
-          echo '::set-output name=FAV_COLOR::blue'
-        id: abc
-      - name: Read output
-        run: |
-          echo "${{steps.abc.outputs.FAV_NUMBER}}"
-          echo "${{steps.abc.outputs.FAV_COLOR}}"
-    outputs:
-      fav-animal: tiger
-      fav-number: ${{steps.abc.outputs.FAV_NUMBER}}
+      - name: Check-out devops repository
+        uses: actions/checkout@v2
+        with:
+          repository: kasttrifork/cheetah-charts-test
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ env.DEVOPS_DIR }}
+
+      - name: Check latest
+        run: python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time" >> $GITHUB_OUTPUT
+
   job2:
     runs-on: ubuntu-latest
-    needs: job1
+    needs: print-from-script
     steps:
-      - run: echo "${{needs.job1.outputs.fav-animal}}
+      - run: echo ${{needs.job1.outputs.output1}}
+
+  jobTet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: set-selected-color
+        run: echo '::set-output name=SELECTED_COLOR::green'
+        id: random-color-generator
+      - name: Get color
+        run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
