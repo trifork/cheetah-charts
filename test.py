@@ -1,12 +1,7 @@
-from dateutil import parser as dateutil
-import yaml
-from string import Template
 import argparse
-import os
 import requests
 import sys
-from pathlib import Path
-import re
+
 
 # GH API docs https://docs.github.com/en/rest/releases/releases#list-releases
 
