@@ -16,4 +16,4 @@ jobs:
         env:
           Version: ${{ steps.yaml-data.outputs.data }}
       - name: Display read-yaml output
-        run: echo "Version"
+        run: echo "${{ env.Version }}"
