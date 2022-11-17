@@ -34,8 +34,8 @@ jobs:
           key-path: '["version"]' # Access the runs key then the using key and retuns the value.
       - name: Display read-yaml output
         run: echo "cheetah-application-V${{ steps.yaml-data.outputs.data }}"
-
-    build:
+    
+    create-release:
       name: Create Release
       runs-on: ubuntu-latest
       steps:
