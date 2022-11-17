@@ -2,7 +2,7 @@ name: test read yaml action
 on: [push]
 
 env:
-  DEVOPS_DIR: ""
+  DEVOPS_DIR: cheetah-charts-test
 
 jobs:
   test-yaml-reader:
@@ -23,13 +23,8 @@ jobs:
     name: Hello world
     runs-on: ubuntu-latest
     steps:
-    - name: Check-out devops repository
-      uses: actions/checkout@v2
-      with:
-        repository: jcdan3/devops
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: ${{ env.DEVOPS_DIR }}
+      - uses: actions/checkout@v1
 
     - name: Hello World
-      run: python .\.github\scripts\test.py --name "first time"
+      run: python ${{ env.DEVOPS_DIR }}/test.py --name "first time"
       shell: sh
