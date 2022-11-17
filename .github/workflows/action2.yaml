@@ -1,0 +1,21 @@
+on: [push]
+
+env:
+  DEVOPS_DIR: cheetah-charts-test
+
+
+jobs:
+  print-from-script:    
+    name: Print from script
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check-out devops repository
+      uses: actions/checkout@v2
+      with:
+        repository: kasttrifork/cheetah-charts-test
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ${{ env.DEVOPS_DIR }}
+
+    - name: Check latest
+      run: python ${{ env.DEVOPS_DIR }}.github\scripts\test.py --name "first time"
+      shell: sh
