@@ -6,8 +6,9 @@ env:
 
 jobs:
   print-from-script:    
-    name: Print from script
     runs-on: ubuntu-latest
+    output:
+      output1: ${{ steps.step1.outputs.test}}
     steps:
     - name: Check-out devops repository
       uses: actions/checkout@v2
@@ -17,4 +18,10 @@ jobs:
         path: ${{ env.DEVOPS_DIR }}
 
     - name: Check latest
-      run: python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time"
+      run: python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time" >> $GITHUB_OUTPUT
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: print-from-script
+    steps:
+      - run: echo ${{needs.job1.outputs.output1}}
