@@ -16,9 +16,9 @@ jobs:
           path: ${{ env.DEVOPS_DIR }}
 
       - name: Check latest
-      run: |
-        python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time"
-        echo 'test'
+        run: |
+          python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "first time"
+          echo 'test'
 
   job2:
     runs-on: ubuntu-latest
