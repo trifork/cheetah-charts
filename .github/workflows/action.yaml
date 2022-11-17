@@ -14,6 +14,6 @@ jobs:
           file: './charts/cheetah-application/Chart.yaml'          # File to read from
           key-path: '["version"]' # Access the runs key then the using key and retuns the value.
         env:
-          Version: ${{ steps.yaml-data.outputs.data }}
+          Version: "${{ steps.yaml-data.outputs.data }}""
       - name: Display read-yaml output
         run: echo "${{ env.Version }}"
