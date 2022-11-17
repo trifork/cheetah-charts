@@ -1,5 +1,9 @@
 name: test read yaml action
-on: [push, pull_request]
+on: [push]
+
+env:
+  DEVOPS_DIR: ""
+
 jobs:
   test-yaml-reader:
     runs-on: ubuntu-latest
@@ -15,3 +19,17 @@ jobs:
           key-path: '["version"]' # Access the runs key then the using key and retuns the value.
       - name: Display read-yaml output
         run: echo "cheetah-application-V${{ steps.yaml-data.outputs.data }}"
+  print-from-script:
+    name: Hello world
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check-out devops repository
+      uses: actions/checkout@v2
+      with:
+        repository: jcdan3/devops
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ${{ env.DEVOPS_DIR }}
+
+    - name: Hello World
+      run: ./test.py --name "first time"
+      shell: sh
