@@ -1,5 +1,4 @@
-on:
-  push: [push, pull_request]
+on: [push, pull_request]
 jobs:
   test-yaml-reader:
     runs-on: ubuntu-latest
