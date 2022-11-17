@@ -31,5 +31,5 @@ jobs:
         path: ${{ env.DEVOPS_DIR }}
 
     - name: Hello World
-      run: python test.py --name "first time"
+      run: python .\.github\scripts\test.py --name "first time"
       shell: sh
