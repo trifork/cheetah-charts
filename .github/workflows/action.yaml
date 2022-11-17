@@ -30,12 +30,12 @@ jobs:
     name: Hello world
     runs-on: ubuntu-latest
     steps:
-    - name: Check-out devops repository
-      uses: actions/checkout@v2
-      with:
-        repository: kasttrifork/cheetah-charts-test
-        token: ${{ secrets.GITHUB_TOKEN }}
-        path: ${{ env.DEVOPS_DIR }}
+      - name: Check-out devops repository
+        uses: actions/checkout@v2
+        with:
+          repository: kasttrifork/cheetah-charts-test
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ env.DEVOPS_DIR }}
 
       - name: Run read-yaml action
         id: yaml-data
@@ -62,11 +62,9 @@ jobs:
             - Second Change
           draft: false
           prerelease: false
-
-
-    - name: Hello World
-      run: python ${{ env.DEVOPS_DIR }}/test.py --name "first time"
-      shell: sh
+      - name: Hello World
+        run: python ${{ env.DEVOPS_DIR }}/test.py --name "first time"
+        shell: sh
 
 
     
