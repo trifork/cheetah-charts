@@ -5,14 +5,12 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Do Work
+      - name: Do Work
         run: |
           echo '::set-output name=FAV_NUMBER::3'
           echo '::set-output name=FAV_COLOR::blue'
         id: abc
-      -
-        name: Read output
+      - name: Read output
         run: |
           echo "${{steps.abc.outputs.FAV_NUMBER}}"
           echo "${{steps.abc.outputs.FAV_COLOR}}"
@@ -23,6 +21,4 @@ jobs:
     runs-on: ubuntu-latest
     needs: job1
     steps:
-      - run: |
-        echo "${{needs.job1.outputs.fav-animal}}"
-        echo "${{needs.job1.outputs.fav-number}}"
+      - run: echo "${{needs.job1.outputs.fav-animal}}
