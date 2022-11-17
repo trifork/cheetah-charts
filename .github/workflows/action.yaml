@@ -9,7 +9,12 @@ jobs:
     name: Hello world
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+    - name: Check-out devops repository
+      uses: actions/checkout@v2
+      with:
+        repository: kasttrifork/cheetah-charts-test
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: ${{ env.DEVOPS_DIR }}
 
     - name: Hello World
       run: python ${{ env.DEVOPS_DIR }}/test.py --name "first time"
