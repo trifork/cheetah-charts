@@ -1,6 +1,6 @@
 # cheetah-flink-native
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -75,7 +75,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.taskManager.resource.memory | string | `"1Gb"` |  |
 | flink.taskManager.resource.cpu | float | `0.5` |  |
 | flink.taskManager.podLabels | object | `{}` |  |
-| flink.taskManager.podAnnotations | object | `{}` |  |
+| flink.taskManager.podAnnotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"true"` |  |
 | flink.taskManager.additionalConfigs | object | `{}` | Any additional configuration passed to the taskmanager |
 | flink.taskManager.imagePullSecrets | list | `[]` |  |
 | flink.taskManager.env | list | `[]` |  |
