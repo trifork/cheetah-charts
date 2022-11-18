@@ -115,7 +115,9 @@ flink:
       cpu: 0.5
 
     podLabels: {}
-    podAnnotations: {}
+    podAnnotations:
+      # workaround to the flink-operator using pods instead of deployments
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
     # -- Any additional configuration passed to the taskmanager
     additionalConfigs: {}
