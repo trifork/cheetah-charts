@@ -85,3 +85,10 @@ Create the name of the service account to use
 {{- define "cheetah-flink-native.jobmanager-name" -}}
 {{ printf "%s-rest" (include "cheetah-flink-native.fullname" . ) }}
 {{- end }}
+
+{{/*
+Backstage labels
+*/}}
+{{- define "cheetah-flink-native.backstageLabels" -}}
+backstage.io/kubernetes-id: {{ .Release.Name }}
+{{- end }}
