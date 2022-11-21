@@ -49,6 +49,8 @@ vault:
   tlsSecret: vault-tls
   serviceaccount: default
 
+
+
 flink:
   # -- Which Flink version to use
   version: v1_14
@@ -164,6 +166,18 @@ flink:
 
     # -- Any additional configuration passed to the job
     additionalConfigs: {}
+
+
+    # -- Define the topics this job will consume
+    # must be defined as follows
+    # - name: <name of variable>
+    #   value: <name of topic>
+    # ie:
+    # - name: input-kafka-topic
+    #   value: "sourceTopic"
+    # - name: output-kafka-topic
+    #   value: "sinkTopic"
+    topics: []
 
   flinkProperties:
     taskmanager.numberOfTaskSlots: 1
