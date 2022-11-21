@@ -167,7 +167,6 @@ flink:
     # -- Any additional configuration passed to the job
     additionalConfigs: {}
 
-
     # -- Define the topics this job will consume
     # must be defined as follows
     # - name: <name of variable>
