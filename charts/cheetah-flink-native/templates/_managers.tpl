@@ -25,7 +25,7 @@
       containers:
         - name: flink-main-container
           ports:
-          {{ if eq .manager "jobManager" -}}
+          {{- if eq .manager "jobManager" }}
           - name: ui
             containerPort: {{ .context.Values.ingress.uiPort}}
           {{- end -}}
@@ -36,8 +36,11 @@
           - name: {{ .value.metrics.portName }}
             containerPort: {{ .value.metrics.port }}
           {{- end }}
-
-          {{- with .value.env -}}
+          {{- $topicsAndEnv := concat .value.env -}}
+          {{ if eq .manager "jobManager" -}}
+          {{ $topicsAndEnv = concat $topicsAndEnv (.context.Values.flink.job.topics | default list) }}
+          {{- end -}}
+          {{- with $topicsAndEnv }}
           env:
           {{- toYaml . | nindent 10 }}
           {{- end }}

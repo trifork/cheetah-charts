@@ -27,11 +27,13 @@ spec:
     {{ with .className}}
     entryClass: {{ . }}
     {{ end }}
-    {{- with .args }}
     args:
-      {{- range . }}
+    {{- range $key,$val := $.Values.flink.job.topics }}
+      - {{ printf "---%s" $val.name | quote }}
+      - {{ printf "%s" $val.value | quote }}
+    {{- end }}
+    {{- range .args }}
       - {{ . | quote }}
-      {{- end -}}
     {{- end }}
     state: {{ .state }}
 
