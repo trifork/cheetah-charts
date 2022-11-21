@@ -38,19 +38,16 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | vault.serviceaccount | string | `"default"` |  |
 | flink.version | string | `"v1_14"` | Which Flink version to use |
 | flink.configuration."s3.path-style-access" | string | `"true"` |  |
-| flink.configuration."state.savepoints.dir" | string | `"s3p://flink/test-cheetah-flink-native/savepoints"` |  |
-| flink.configuration."state.checkpoints.dir" | string | `"s3p://flink/test-cheetah-flink-native/checkpoints"` |  |
 | flink.configuration."state.backend" | string | `"hashmap"` |  |
 | flink.configuration.high-availability | string | `"org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory"` |  |
-| flink.configuration."high-availability.storageDir" | string | `"s3p://flink/test-cheetah-flink-native/ha"` |  |
 | flink.configuration."execution.checkpointing.interval" | string | `"10 minutes"` |  |
 | flink.configuration."execution.checkpointing.min-pause" | string | `"10 minutes"` |  |
 | flink.configuration."execution.checkpointing.timeout" | string | `"5 minutes"` |  |
 | flink.configuration."rest.flamegraph.enabled" | string | `"true"` |  |
 | flink.configuration."taskmanager.numberOfTaskSlots" | string | `"2"` |  |
-| flink.configuration."s3.access-key" | string | `"vault:secret/data/global/cheetah-flink-s3#accessKey"` |  |
-| flink.configuration."s3.secret-key" | string | `"vault:secret/data/global/cheetah-flink-s3#secretKey"` |  |
-| flink.configuration."s3.endpoint" | string | `"vault:secret/data/global/cheetah-flink-s3#endpoint"` |  |
+| flink.configuration."s3.access-key" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#accessKey"` |  |
+| flink.configuration."s3.secret-key" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#secretKey"` |  |
+| flink.configuration."s3.endpoint" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#endpoint"` |  |
 | flink.jobManager.replicas | int | `1` |  |
 | flink.jobManager.metrics.enabled | bool | `true` | enable metrics ports for jobManager |
 | flink.jobManager.metrics.portName | string | `"metrics"` |  |
