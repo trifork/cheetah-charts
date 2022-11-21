@@ -10,13 +10,16 @@
     kind: Pod
     metadata:
       name: {{ .manager }}-pod-template
-      {{- with .value.podLabels }}
+      
       labels:
-        {{ toYaml . | nindent 6 }}
+      {{- include "cheetah-flink-native.backstageLabels" .context | nindent 8 }}
+      {{- include "cheetah-flink-native.selectorLabels" .context | nindent 8 }}
+      {{- with .value.podLabels }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
       {{- with .value.podAnnotations }}
       annotations:
-        {{ toYaml . | nindent 6 }}
+        {{ toYaml . | nindent 8 }}
       {{- end }}
     spec:
       containers:
