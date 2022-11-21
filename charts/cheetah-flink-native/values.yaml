@@ -36,7 +36,7 @@ ingress:
   # The UI will be exposed under https://<.ingress.domain>/<release-namespace>/<release-name> by default
   enabled: false
   certType: "staging"
-  domain: flink.cheetah.trifork.dev
+  domain: ""
   ingressClassName: nginx
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
