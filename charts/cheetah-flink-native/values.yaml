@@ -49,8 +49,6 @@ vault:
   tlsSecret: vault-tls
   serviceaccount: default
 
-
-
 flink:
   # -- Which Flink version to use
   version: v1_14
