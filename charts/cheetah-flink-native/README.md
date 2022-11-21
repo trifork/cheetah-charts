@@ -94,6 +94,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.job.podLabels | object | `{}` |  |
 | flink.job.podAnnotations."linkerd.io/inject" | string | `"disabled"` | Explicit disable Linkerd proxy injection, as it makes the job hang |
 | flink.job.additionalConfigs | object | `{}` | Any additional configuration passed to the job |
+| flink.job.topics | list | `[]` | Define the topics this job will consume must be defined as follows - name: <name of variable>   value: <name of topic> ie: - name: input-kafka-topic   value: "sourceTopic" - name: output-kafka-topic   value: "sinkTopic" |
 | flink.flinkProperties."taskmanager.numberOfTaskSlots" | int | `1` |  |
 | flink.flinkProperties."rest.flamegraph.enabled" | bool | `true` |  |
 | flink.flinkProperties."execution.checkpointing.interval" | string | `"10 minutes"` |  |
