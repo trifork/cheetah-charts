@@ -44,7 +44,7 @@ jobs:
         run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
 
       - name: Print Branch
-        run: echo '${{env.branchMain}} vs ${{github.ref_name}}'
+        run: echo '${{github.ref_name}}'
 
       - name: Check if a new release or prerelease should be created
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
