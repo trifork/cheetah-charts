@@ -1,4 +1,8 @@
-on: [push]
+on: 
+    push:
+    pull_request:
+      
+
 
 env:
   DEVOPS_DIR: cheetah-charts-test
@@ -10,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
+
       - name: Check-out devops repository
         uses: actions/checkout@v2
         with:
@@ -28,6 +32,9 @@ jobs:
       - name: read-yaml-output
         run: echo "${{ steps.yaml-data.outputs.data }}"
 
+      - name: Print GitHub event action
+        run: |
+          echo "${{ github.event.action }}"
 
       - name: Check latest
         id: python
