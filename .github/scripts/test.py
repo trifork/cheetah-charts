@@ -100,7 +100,7 @@ if __name__ == '__main__':
         quit()
     else:
         for x in releases:
-            if x["name"] == name+version:
+            if x["name"] == name+version or x["name"] == name+version+"-preRelease":
                 print("true")
                 quit()
         print("false")
