@@ -40,6 +40,9 @@ jobs:
           echo "::set-output name=SCRIPT2::${out}"
           echo $out
 
+      - name: print variable
+        run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
+
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
       - name: Check if a new release or prerelease should be created
         uses: actions/checkout@v2
