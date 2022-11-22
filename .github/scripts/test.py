@@ -53,10 +53,13 @@ def parse_args():
     argparser = argparse.ArgumentParser(description='Find the latest release of the chart')
     argparser.add_argument(
         '--name',
-        '--version',
-        dest='name',
-        dest='version',      
+        dest='name',     
         help='The name of the chart to search for',
+    )
+    argparser.add_argument(
+        '--version',
+        dest='version',
+        help='The version that the script checks exists ',
     )
     return argparser.parse_args()
 
