@@ -59,7 +59,7 @@ def fetch_releases(token, name):
 
 
 def read_repos_from_config():
-    CONFIG_FILE_NAME = '../config/applications-that-needs-releases.yaml'
+    CONFIG_FILE_NAME = 'config/applications-that-needs-releases.yaml'
 
     pwd = os.path.dirname(os.path.realpath(__file__))
     project_root = Path(pwd).parent.parent.absolute()
