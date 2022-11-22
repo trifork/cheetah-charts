@@ -7,7 +7,7 @@ env:
   DEVOPS_DIR: cheetah-charts-test
   myBoolean: ${{ 'false' }}
   applicationName: cheetah-application
-  brachMain: ${{ 'main' }}
+  branchMain: ${{'main'}}
 
 jobs:
   print-from-script:
@@ -43,12 +43,15 @@ jobs:
       - name: print variable
         run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
 
+      - name: Print Branch
+        run: echo '${{env.branchMain}} vs ${{github.ref_name}}'
+
       - name: Check if a new release or prerelease should be created
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
         uses: actions/checkout@v2
 
       - name: Create preRelease
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && ${{ github.ref_name }} != ${{ env.branchMain }} }}
+        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean &&  github.ref_name != env.branchMain }}
         id: create_Prerelease
         uses: actions/create-release@v1
         env:
