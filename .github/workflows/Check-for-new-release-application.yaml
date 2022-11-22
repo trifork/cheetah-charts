@@ -55,7 +55,7 @@ jobs:
 
       - name: Create Release
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name != env.branchMain}}
-        id: create_release
+        id: create_Prerelease
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
