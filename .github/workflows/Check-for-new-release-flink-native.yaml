@@ -7,7 +7,7 @@ env:
   branchMain: ${{'main'}}
 
 jobs:
-  print-from-script:
+  Check-if-a-new-release-or-prerelease-is-required:
     runs-on: ubuntu-latest
 
     steps:
