@@ -1,7 +1,5 @@
 on: 
     push:
-    pull_request:
-      types: [opened]
       
 
 
@@ -9,6 +7,7 @@ env:
   DEVOPS_DIR: cheetah-charts-test
   myBoolean: ${{ 'false' }}
   applicationName: cheetah-application
+  brachMain: ${{ 'main' }}
 
 jobs:
   print-from-script:
@@ -34,6 +33,7 @@ jobs:
         run: echo "${{ steps.yaml-data.outputs.data }}"
 
       - name: Print GitHub event action
+        if: ${{ github.ref_name != env.branchMain}}
         run: |
           echo "${{ github.ref_name }}"
 
