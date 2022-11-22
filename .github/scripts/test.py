@@ -53,7 +53,9 @@ def parse_args():
     argparser = argparse.ArgumentParser(description='Find the latest release of the chart')
     argparser.add_argument(
         '--name',
+        '--version',
         dest='name',
+        dest='version',      
         help='The name of the chart to search for',
     )
     return argparser.parse_args()
@@ -61,12 +63,13 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     name = args.name
+    version = args.version
     # github token, used to access github's api
     token = "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"
 
     releases = fetch_releases(token)
     for x in releases:
-        if x["name"] == name:
+        if x["name"] == name and :
              print("true")
         else:
             None
