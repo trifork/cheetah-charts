@@ -14,58 +14,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Check-out devops repository
+      - name: Check-out repository
         uses: actions/checkout@v2
         with:
           repository: kasttrifork/${{ env.DEVOPS_DIR }}
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ env.DEVOPS_DIR }}
 
-      - name: read-yaml 
+      - name: Read Chart.yaml and collect version
         id: yaml-data
         uses: jbutcher5/read-yaml@1.6     # You may wish to replace main with a version tag such as '1.6' etc.
         with:
           file: '${{ env.DEVOPS_DIR }}/charts/${{ env.applicationName }}/Chart.yaml'          # File to read from
           key-path: '["version"]' # Access the runs key then the using key and returns the value.  
 
-      - name: read-yaml-output
-        run: echo "${{ steps.yaml-data.outputs.data }}"
-
-      - name: Print GitHub event action
-        if: ${{ github.ref_name != env.branchMain}}
-        run: |
-          echo "${{ github.ref_name }}"
-
-      - name: Check latest
+      - name: Check that version matches the latest version in releases
         id: python
         run: |
           out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "${{ env.applicationName }}-V" --version '${{ steps.yaml-data.outputs.data }}' )
           echo "::set-output name=SCRIPT2::${out}"
           echo $out
 
-      - name: print variable
-        run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
-
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
-      - name: Checkout code
+      - name: Check if a new release or prerelease should be created
         uses: actions/checkout@v2
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
-      - name: Create Release
+      - name: Create preRelease
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name != env.branchMain}}
         id: create_Prerelease
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         
-        
+
         with:
           tag_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}-preRelease
           release_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}-preRelease
           body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+            Be aware that this a prerelease. This version is not stable
           draft: false
           prerelease: true
 
@@ -80,8 +66,6 @@ jobs:
           tag_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
           release_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
           body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+            This is a stable release
           draft: false
           prerelease: false
