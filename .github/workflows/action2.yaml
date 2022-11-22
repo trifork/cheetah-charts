@@ -36,14 +36,14 @@ jobs:
       - name: print variable
         run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
 
-        if: ${{ ${{ steps.python.outputs.SCRIPT2 }} == "false"}}
+        if: ${{ steps.python.outputs.SCRIPT2 == "false"}}
     
       - name: Checkout code
         uses: actions/checkout@v2
-        if: ${{ ${{ steps.python.outputs.SCRIPT2 }} == "false"}}
+        if: ${{ steps.python.outputs.SCRIPT2 == "false"}}
 
       - name: Create Release
-        if: ${{ ${{ steps.python.outputs.SCRIPT2 }} == "false"}}
+        if: ${{ steps.python.outputs.SCRIPT2 == "false"}}
         id: create_release
         uses: actions/create-release@v1
         env:
