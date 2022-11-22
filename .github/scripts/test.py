@@ -83,6 +83,12 @@ def parse_args():
         dest='version',
         help='The version that the script checks exists ',
     )
+
+    argparser.add_argument(
+        '--branch',
+        dest='branch',
+        help='The working branch ',
+    )
     return argparser.parse_args()
 
 
@@ -90,6 +96,7 @@ if __name__ == '__main__':
     args = parse_args()
     name = args.name
     version = args.version
+    branch = args.branch
     # github token, used to access github's api
     token = "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"
     applications = read_repos_from_config()
@@ -100,8 +107,11 @@ if __name__ == '__main__':
         quit()
     else:
         for x in releases:
-            print(x)
-            if x["name"] == name+version:
+            if branch == "main":
+                if x["name"] == name+version:
+                     print("true")
+                     quit()
+            elif x["name"] == name+version+"-preRelease":
                 print("true")
                 quit()
         print("false")
