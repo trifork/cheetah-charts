@@ -74,6 +74,9 @@ if __name__ == '__main__':
     for x in releases:
         if x["name"] == name+version:
              print("true")
-        else:
-            print("false")
+             raise SystemExit
+        else: 
+            if x["name"] == name:
+                print("false")
+                raise SystemExit
 
