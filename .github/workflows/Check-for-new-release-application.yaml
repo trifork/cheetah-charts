@@ -48,11 +48,9 @@ jobs:
         run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
 
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
-    
       - name: Checkout code
         uses: actions/checkout@v2
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
-
       - name: Create Release
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name != env.branchMain}}
         id: create_Prerelease
