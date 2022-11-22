@@ -51,6 +51,9 @@ spec:
 
   {{- with .Values.flink.configuration }}
   flinkConfiguration:
+    state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "savepoints") }}
+    state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "checkpoints") }}
+    high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "ha") }}
     {{- toYaml . | nindent 4 }}
     {{ if $.Values.monitoring.enabled }}
       {{ with $.Values.monitoring.flinkProperties -}}

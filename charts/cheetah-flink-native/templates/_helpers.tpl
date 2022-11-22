@@ -92,3 +92,10 @@ Backstage labels
 {{- define "cheetah-flink-native.backstageLabels" -}}
 backstage.io/kubernetes-id: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Get the s3 main directory
+*/}}
+{{- define "cheetah-flink-native.s3Dir" -}}
+{{- printf "s3p://flink/%s/%s" (include "cheetah-flink-native.fullname" .context) .dir -}}
+{{- end }}
