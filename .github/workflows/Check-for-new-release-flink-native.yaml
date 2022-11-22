@@ -31,7 +31,7 @@ jobs:
       - name: Check latest
         id: python
         run: |
-          out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "${{ env.applicationName }}" --version "-V${{ steps.yaml-data.outputs.data }}" )
+          out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test.py --name "${{ env.applicationName }}-V" --version '${{ steps.yaml-data.outputs.data }}' )
           echo "::set-output name=SCRIPT2::${out}"
           echo $out
 
