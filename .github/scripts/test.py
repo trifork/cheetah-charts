@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     releases = fetch_releases(token)
     for x in releases:
-        if x["name"] == name and :
+        if x["name"] == name
              print("true")
         else:
             None
