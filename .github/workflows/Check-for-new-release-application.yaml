@@ -43,17 +43,16 @@ jobs:
       - name: print variable
         run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
 
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
       - name: Check if a new release or prerelease should be created
-        uses: actions/checkout@v2
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
+        uses: actions/checkout@v2
+
       - name: Create preRelease
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name != env.branchMain}}
+        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && ${{ github.ref_name }} != ${{ env.branchMain }} }}
         id: create_Prerelease
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        
 
         with:
           tag_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}-preRelease
@@ -62,6 +61,9 @@ jobs:
             Be aware that this a prerelease. This version is not stable
           draft: false
           prerelease: true
+
+
+
 
       - name: Create Release
         if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name == env.branchMain}}
