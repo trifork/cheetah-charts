@@ -1,7 +1,9 @@
 {{/*Helper function to generate manager specs*/}}
 {{- define "cheetah-flink-native.manager" -}}
 {{ .manager }}:
+  {{ if eq .manager "jobManager" -}}
   replicas: {{ .value.replicas }}
+  {{- end }}
   resource:
     {{- toYaml .value.resource | nindent 4 }}
 
