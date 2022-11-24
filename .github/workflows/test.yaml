@@ -9,9 +9,9 @@ jobs:
       - uses: actions/checkout@v2.1.0
       - run: |
           out=$(python .github/scripts/test2.py testmig)
-          out2="${output//'%'/'%25'}"
-          out3="${output//$'\n'/'%0A'}"
-          out4="${output//$'\r'/'%0D'}" 
+          out2="${out//'%'/'%25'}"
+          out3="${out//$'\n'/'%0A'}"
+          out4="${out//$'\r'/'%0D'}" 
           echo "::set-output name=changelog::$out"
           echo "::set-output name=changelog2::$out2"
           echo "::set-output name=changelog3::$out3"
