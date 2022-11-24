@@ -8,14 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2.1.0
       - run: |
-          output=$(python .github/scripts/test2.py testmig)
-          output2="${output//'%'/'%25'}"
-          output3="${output//$'\n'/'%0A'}"
-          output4="${output//$'\r'/'%0D'}" 
-          echo "::set-output name=changelog::$output"
-          echo "::set-output name=changelog2::$output2"
-          echo "::set-output name=changelog3::$output3"
-          echo "::set-output name=changelog4::$output4"
+          out=$(python .github/scripts/test2.py testmig)
+          out2="${output//'%'/'%25'}"
+          out3="${output//$'\n'/'%0A'}"
+          out4="${output//$'\r'/'%0D'}" 
+          echo "::set-output name=changelog::$out"
+          echo "::set-output name=changelog2::$out2"
+          echo "::set-output name=changelog3::$out3"
+          echo "::set-output name=changelog4::$out4"
         id: step1
       - name: Print changelog
         run: | 
