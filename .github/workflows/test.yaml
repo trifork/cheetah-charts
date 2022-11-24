@@ -10,12 +10,16 @@ jobs:
       - run: |
           output=$(python .github/scripts/test2.py testmig)
           output2="${output//'%'/'%25'}"
-          output="${output//$'\n'/'%0A'}"
-          output="${output//$'\r'/'%0D'}" 
+          output3="${output//$'\n'/'%0A'}"
+          output4="${output//$'\r'/'%0D'}" 
           echo "::set-output name=changelog::$output"
           echo "::set-output name=changelog2::$output2"
+          echo "::set-output name=changelog3::$output3"
+          echo "::set-output name=changelog4::$output4"
         id: step1
       - name: Print changelog
         run: | 
           echo "${{ steps.step1.outputs.changelog }}"
           echo "${{ steps.step1.outputs.changelog2 }}"
+          echo "${{ steps.step1.outputs.changelog3 }}"
+          echo "${{ steps.step1.outputs.changelog4 }}"
