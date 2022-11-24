@@ -9,10 +9,13 @@ jobs:
       - uses: actions/checkout@v2.1.0
       - run: |
           output=$(python .github/scripts/test2.py testmig)
-          output="${output//'%'/'%25'}"
+          output2="${output//'%'/'%25'}"
           output="${output//$'\n'/'%0A'}"
           output="${output//$'\r'/'%0D'}" 
           echo "::set-output name=changelog::$output"
+          echo "::set-output name=changelog2::$output2"
         id: step1
       - name: Print changelog
-        run: echo "${{ steps.step1.outputs.changelog }}"
+        run: | 
+          echo "${{ steps.step1.outputs.changelog }}"
+          echo "${{ steps.step1.outputs.changelog2 }}"
