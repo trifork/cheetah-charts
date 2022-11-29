@@ -16,6 +16,10 @@ jobs:
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
+        with:
+          repository: ${{ env.DEVOPS_DIR }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ${{ env.DEVOPS_DIR }}
 
       - uses: actions/setup-python@v4
         with:
