@@ -21,6 +21,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ env.DEVOPS_DIR }}
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - name: intall requirements
+        run: pip install pyyaml requests
 
       - name: Check that version matches the latest version in releases
         id: python
@@ -29,7 +35,6 @@ jobs:
           out2="${output//'%'/'%25'}"
           out3="${output//$'\n'/'%0A'}"
           out4="${output//$'\r'/'%0D'}" 
-          echo "::set-output name=changelog::$out"
           echo "::set-output name=changelog2::$out2"
           echo "::set-output name=changelog3::$out3"
           echo "::set-output name=changelog4::$out4"
@@ -38,6 +43,8 @@ jobs:
         run: |
           echo "${{ steps.python.outputs.changelog4 }} log4"
           echo "${{ steps.python.outputs.changelog3 }} log3"
+          echo "${{ steps.python.outputs.changelog3 }} log2"
+
 
       - name: Print Branch
         run: echo '${{github.ref_name}}'

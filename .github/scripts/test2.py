@@ -121,12 +121,12 @@ if __name__ == '__main__':
         if  branch == "main":
             for release in releases:
                 if release["name"] == app+"-V"+version:
-                    print("true")
+                    print("true " + app)
                     
         elif  branch != "main":
            for prerelease in prereleases:
                 if prerelease["name"] == app+"-V"+version+"-preRelease":
-                    print("true")
+                    print("true " + app)
                     
  
         
