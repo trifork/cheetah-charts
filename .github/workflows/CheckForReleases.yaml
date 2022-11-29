@@ -36,7 +36,8 @@ jobs:
 
       - name: print variable
         run: |
-          echo "${{ steps.python.outputs.changelog4 }}"
+          echo "${{ steps.python.outputs.changelog4 }} log4"
+          echo "${{ steps.python.outputs.changelog3 }} log3"
 
       - name: Print Branch
         run: echo '${{github.ref_name}}'
