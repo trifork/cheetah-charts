@@ -35,7 +35,11 @@ jobs:
           echo "::set-output name=changelog4::$out4"
 
       - name: print variable
-        run: echo 'Prints variable out' ${{ steps.python.outputs.SCRIPT2 }}
+        run: |
+          echo "::set-output name=changelog::$out"
+          echo "::set-output name=changelog2::$out2"
+          echo "::set-output name=changelog3::$out3"
+          echo "::set-output name=changelog4::$out4"
 
       - name: Print Branch
         run: echo '${{github.ref_name}}'
@@ -63,7 +67,7 @@ jobs:
 
 
       - name: Create Release
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean && github.ref_name == env.branchMain}}
+        if: ${{ steps.python.outputs.out2 == env.myBoolean && github.ref_name == env.branchMain}}
         id: create_release
         uses: actions/create-release@v1
         env:
