@@ -120,13 +120,14 @@ if __name__ == '__main__':
         version = getLatestVersion(app)
         if  branch == "main":
             for release in releases:
-                if release["name"] == app+"-V"+version:
-                    print("true " + app)
+                if release["name"] == app+"-v"+version:
+                    print("true " + app+"-v"+version)
+
                     
         elif  branch != "main":
            for prerelease in prereleases:
-                if prerelease["name"] == app+"-V"+version+"-preRelease":
-                    print("true " + app)
+                if prerelease["name"] == app+"-v"+version+"-preRelease":
+                    print("true " + app+"-v"+version+"-preRelease")
                     
  
         

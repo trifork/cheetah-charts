@@ -31,7 +31,7 @@ jobs:
       - name: Check that version matches the latest version in releases
         id: python
         run: |
-          output=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' )
+          output=$(python ${{env.DEVOPS_DIR}}/.github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' )
           out2="${output//'%'/'%25'}"
           out3="${output//$'\n'/'%0A'}"
           out4="${output//$'\r'/'%0D'}" 

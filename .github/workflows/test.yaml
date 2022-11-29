@@ -1,0 +1,30 @@
+name: GitHub Actions Demo
+run-name: Kasper is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a Kasper event."
+
+      - name: checkout
+        uses: actions/checkout@v4
+        
+
+      - name: run script
+        id: python
+        run: |
+          output=$(python .github/scripts/test2.py)
+          out2="${output//'%'/'%25'}"
+          out3="${output//$'\n'/'%0A'}"
+          out4="${output//$'\r'/'%0D'}" 
+          echo "::set-output name=changelog2::$out2"
+          echo "::set-output name=changelog3::$out3"
+          echo "::set-output name=changelog4::$out4"
+
+
+      - name: print variable
+        run: |
+          echo "${{ steps.python.outputs.changelog4 }} log4"
+          echo "${{ steps.python.outputs.changelog3 }} log3"
+          echo "${{ steps.python.outputs.changelog3 }} log2"
