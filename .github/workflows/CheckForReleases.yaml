@@ -36,8 +36,6 @@ jobs:
 
       - name: print variable
         run: |
-          echo "${{ steps.python.outputs.changelog2 }}"
-          echo "${{ steps.python.outputs.changelog3 }}"
           echo "${{ steps.python.outputs.changelog4 }}"
 
       - name: Print Branch

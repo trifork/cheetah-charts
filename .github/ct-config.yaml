@@ -1,9 +1,0 @@
-target-branch: main
-remote: origin
-chart-dirs:
-  - charts
-check-version-increment: true
-debug: true
-validate-chart-schema: true
-validate-maintainers: false
-validate-yaml: true
