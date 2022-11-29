@@ -1,6 +1,11 @@
 name: GitHub Actions Demo
 run-name: Kasper is testing out GitHub Actions 🚀
 on: [push]
+
+env:
+  log4: ${{ 'true cheetah-application-v14.621.5-preRelease3' }}
+
+
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -10,7 +15,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
         
-
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: |
+          pip install pyyaml requests
 
       - name: run script
         id: python
@@ -29,3 +38,7 @@ jobs:
           echo "${{ steps.python.outputs.changelog4 }} log4"
           echo "${{ steps.python.outputs.changelog3 }} log3"
           echo "${{ steps.python.outputs.changelog3 }} log2"
+
+      - name: check if
+        if: ${{ steps.python.outputs.changelog4 == env.log4}}
+        run: echo "Yes man"
