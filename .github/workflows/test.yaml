@@ -8,8 +8,9 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a Kasper event."
 
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         
+
 
       - name: run script
         id: python

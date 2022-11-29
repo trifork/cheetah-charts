@@ -21,12 +21,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ env.DEVOPS_DIR }}
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          cache: 'pip' # caching pip dependencies
-      - name: intall requirements
-        run: pip install pyyaml requests
 
       - name: Check that version matches the latest version in releases
         id: python
