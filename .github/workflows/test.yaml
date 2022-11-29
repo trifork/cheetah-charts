@@ -78,15 +78,15 @@ jobs:
 
 
       - name: Check if a new release for cheetah-application should be created
-        if: ${{ steps.python.outputs.out2 == env.myBoolean && github.ref_name == env.branchMain}}
+        if: ${{ steps.python.outputs.out2 == env.myBoolean_false && github.ref_name == env.branchMain}}
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         
         with:
-          tag_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
-          release_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
+          tag_name: ${{ env.applicationName }}-V${{ steps.cheetah-application-version.outputs.data }}
+          release_name: ${{ env.applicationName }}-V${{ steps.cheetah-application-version.outputs.data }}
           body: |
             This is a stable release
           draft: false
