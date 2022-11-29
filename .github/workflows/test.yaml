@@ -55,8 +55,6 @@ jobs:
       - name: read-yaml-output
         run: echo "${{ steps.cheetah-application-version.outputs.data }}"
 
-
-
       - name: Check if a new prerelease for cheetah-application should be created
         if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false &&  github.ref_name == env.branchMain}}
         uses: actions/checkout@v2
