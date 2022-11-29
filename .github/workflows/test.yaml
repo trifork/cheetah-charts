@@ -46,6 +46,7 @@ jobs:
 
 
       - name: Read Chart.yaml and collect version 
+        if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false}}
         id: cheetah-application-version
         uses: jbutcher5/read-yaml@1.6     # You may wish to replace main with a version tag such as '1.6' etc.
         with:
