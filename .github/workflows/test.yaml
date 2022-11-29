@@ -2,13 +2,19 @@ name: Test
 
 on: push
 
+env:
+  DEVOPS_DIR: kasttrifork/cheetah-charts-test
+  myBoolean: ${{ 'false' }}
+  applicationName: cheetah-application
+  branchMain: ${{'main'}}
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.1.0
       - run: |
-          out=$(python .github/scripts/test2.py testmig)
+          out=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' )
           out2="${out//'%'/'%25'}"
           out3="${out//$'\n'/'%0A'}"
           out4="${out//$'\r'/'%0D'}" 
