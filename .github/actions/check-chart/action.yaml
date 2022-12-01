@@ -49,7 +49,7 @@ runs:
           echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{inputs.name}}"
 
     - name: Create a preRelease or release if one does not exist
-      if: ${{ steps.python.outputs.changelog2 == 'true'}}
+      if: ${{ steps.python.outputs.changelog2 == 'false'}}
       uses: ./.github/actions/create-release-or-prerelease
       with:
         name: ${{inputs.name}}
