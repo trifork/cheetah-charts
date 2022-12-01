@@ -50,7 +50,7 @@ runs:
 
     - name: Create a preRelease or release if one does not exist
       if: ${{ steps.python.outputs.changelog2 == 'false'}}
-      uses: .github/actions/create-release-or-prerelease
+      uses: ./.github/actions/create-release-or-prerelease
       with:
         name: ${{inputs.name}}
         version: ${{ steps.version.outputs.data }}
