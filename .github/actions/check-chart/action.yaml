@@ -36,7 +36,7 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/test2.py --token '${{ secrets.TOKEN }}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/test2.py --token '123' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
