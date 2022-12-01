@@ -1,9 +1,8 @@
 name: GitHub Actions Demo
 run-name: Kasper is testing out GitHub Actions 🚀
-on: [push]
+on: [pull_request]
 
 env:
-  log4: ${{ 'true cheetah-application-v14.621.5-preRelease' }}
   myBoolean_false: ${{ 'false' }}
   myBoolean_true: ${{ 'true' }}
   branchMain: ${{'main'}}
@@ -40,20 +39,21 @@ jobs:
 
       - name: print variable
         run: |
-          echo "${{ steps.python.outputs.changelog4 }} log4"
+          echo "${{ steps.python.outputs.changelog2 }} log2"
           echo "${{ steps.python.outputs.changelog3 }} log3"
-          echo "${{ steps.python.outputs.changelog3 }} log2"
+          echo "${{ steps.python.outputs.changelog4 }} log4"
 
 
-      - name: Read Chart.yaml and collect version 
+      - name: Read Chart.yaml and collect version if new
         if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false}}
         id: cheetah-application-version
-        uses: jbutcher5/read-yaml@1.6     # You may wish to replace main with a version tag such as '1.6' etc.
+        uses: jbutcher5/read-yaml@1.6
         with:
           file: 'charts/cheetah-application/Chart.yaml'          # File to read from
           key-path: '["version"]' # Access the runs key then the using key and returns the value.  
 
-      - name: read-yaml-output
+      - name: print cheetah-application-version if new
+        if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false}}
         run: echo "${{ steps.cheetah-application-version.outputs.data }}"
 
       - name: Check if a new prerelease for cheetah-application should be created
@@ -62,7 +62,7 @@ jobs:
 
       - name: Create preRelease
         if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false &&  github.ref_name == env.branchMain}}
-        id: create_Prerelease
+        id: create_Prerelease_cheetah_application
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -75,12 +75,9 @@ jobs:
           draft: false
           prerelease: true
 
-
-
-
       - name: Check if a new release for cheetah-application should be created
         if: ${{ steps.python.outputs.out2 == env.myBoolean_false && github.ref_name == env.branchMain}}
-        id: create_release
+        id: create_release_cheetah_application
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token

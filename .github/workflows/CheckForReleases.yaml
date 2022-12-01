@@ -3,11 +3,7 @@ on:
       
 
 
-env:
-  DEVOPS_DIR: kasttrifork/cheetah-charts-test
-  myBoolean: ${{ 'false' }}
-  applicationName: cheetah-application
-  branchMain: ${{'main'}}
+
 
 jobs:
   Check-if-a-new-release-or-prerelease-is-required:
@@ -15,67 +11,16 @@ jobs:
 
     steps:
       - name: Check-out repository
-        uses: actions/checkout@v2
-        with:
-          repository: ${{ env.DEVOPS_DIR }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: ${{ env.DEVOPS_DIR }}
-
-
-      - name: Check that version matches the latest version in releases
-        id: python
-        run: |
-          output=$(python ${{ env.DEVOPS_DIR }}/.github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' )
-          out2="${output//'%'/'%25'}"
-          out3="${output//$'\n'/'%0A'}"
-          out4="${output//$'\r'/'%0D'}" 
-          echo "::set-output name=changelog::$out"
-          echo "::set-output name=changelog2::$out2"
-          echo "::set-output name=changelog3::$out3"
-          echo "::set-output name=changelog4::$out4"
-
-      - name: print variable
-        run: |
-          echo "${{ steps.python.outputs.changelog4 }} log4"
-          echo "${{ steps.python.outputs.changelog3 }} log3"
-
-
-      - name: Print Branch
-        run: echo '${{github.ref_name}}'
-
-      - name: Check if a new release or prerelease should be created
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean}}
-        uses: actions/checkout@v2
-
-      - name: Create preRelease
-        if: ${{ steps.python.outputs.SCRIPT2 == env.myBoolean &&  github.ref_name != env.branchMain }}
-        id: create_Prerelease
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-
-        with:
-          tag_name: ${{ env.applicationName }}-v${{ steps.yaml-data.outputs.data }}-prerelease-${{ github.ref_name }}
-          release_name: ${{ env.applicationName }}-v${{ steps.yaml-data.outputs.data }}-prerelease-${{ github.ref_name }}
-          body: |
-            Be aware that this a prerelease. This version is not stable
-          draft: false
-          prerelease: true
+        uses: actions/checkout@v3
+      - name: cheetah-application
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-application
 
 
 
 
-      - name: Create Release
-        if: ${{ steps.python.outputs.out2 == env.myBoolean && github.ref_name == env.branchMain}}
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        
-        with:
-          tag_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
-          release_name: ${{ env.applicationName }}-V${{ steps.yaml-data.outputs.data }}
-          body: |
-            This is a stable release
-          draft: false
-          prerelease: false
+
+
+
+ 

@@ -49,7 +49,6 @@ def fetch_releases(token):
         if len(response) == 0:
             # We get empty list as a response if the page we're on is empty (no more results)
             break
-
         for x in response:
             if x['prerelease'] == True:
                 prereleases.append({
@@ -59,7 +58,7 @@ def fetch_releases(token):
                 releases.append({
                     'name': x['name'],
                 })
-            
+#sorted(list(latestReleases.items())):
     return releases, prereleases
 
 
@@ -115,7 +114,10 @@ if __name__ == '__main__':
     token = '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'
 
     releases, prereleases = fetch_releases(token)
+
+   
     none = True
+
     for app in applications["applications"]:
         version = getLatestVersion(app)
         if  branch == "main":

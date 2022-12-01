@@ -1,0 +1,46 @@
+name: "Check if chart release exist"
+description: "Uses check"
+
+inputs:
+  name:
+    description: "Name of the Chart"
+    required: true
+
+runs:
+  using: composite
+  steps:
+
+    - name: Print branch 
+      shell: bash
+      run: echo '${{github.ref_name}}'
+
+    - name: Read Chart.yaml and collect version
+      id: version
+      uses: jbutcher5/read-yaml@1.6
+      with:
+        file: 'charts/${{inputs.name}}/Chart.yaml'          # File to read from
+        key-path: '["version"]' # Access the runs key then the using key and returns the value.  
+
+    - name: print cheetah-application-version if new
+      shell: bash
+      if: ${{ steps.python.outputs.changelog4 == env.myBoolean_false}}
+      run: echo "${{ steps.version.outputs.data }}"    
+  
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+      run: pip install pyyaml requests
+
+    - name: run script
+      shell: bash
+      run: |
+          output=$(python .github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' --name '${{inputs.name}} --version ${{ steps.version.outputs.data }}')
+          out2="${output//'%'/'%25'}"
+          out3="${output//$'\n'/'%0A'}"
+          out4="${output//$'\r'/'%0D'}" 
+          echo "::set-output name=changelog2::$out2"
+          echo "::set-output name=changelog3::$out3"
+          echo "::set-output name=changelog4::$out4"
+
+
