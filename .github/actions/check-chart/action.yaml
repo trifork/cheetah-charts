@@ -24,6 +24,10 @@ runs:
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
       shell: bash
 
+    - name: Print a fake token 
+      shell: bash
+      run: echo ${{ secrets.TOKEN }}
+
     - name: Setup python
       uses: actions/setup-python@v4
       with:

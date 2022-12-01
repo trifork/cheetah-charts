@@ -12,8 +12,9 @@ jobs:
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
-      - name: Print a fake token 
-        run: echo ${{ secrets.TEST }}
+
+
+
       - name: cheetah-application
         uses: ./.github/actions/check-chart
         with: 
