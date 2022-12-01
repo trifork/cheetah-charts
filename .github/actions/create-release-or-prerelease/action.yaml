@@ -15,14 +15,10 @@ inputs:
 runs:
   using: composite
   steps: 
-      - name: echo
-        shell: bash
-        run: echo ' Det her skal være meget meget meget meget langt ${{inputs.name}} laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaangt'
 
-  
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create preRelease
         if: ${{ github.ref_name != 'main'}}
@@ -30,7 +26,6 @@ runs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
-          name: ${{inputs.name}}
         with:
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
@@ -41,7 +36,7 @@ runs:
 
       - name: Check if a new release for chart should be created
         if: ${{ github.ref_name == 'main'}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Create release
         if: ${{ github.ref_name == 'main'}}
@@ -49,10 +44,9 @@ runs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
-          name: ${{ inputs.name }} 
         with:
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
-          release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
+          release_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
           body: |
             This is a stable release
           draft: false
