@@ -1,5 +1,5 @@
-name: "Check if chart release exist"
-description: "Uses check"
+name: "Create release or prerelease"
+description: "This action creates a release if the working branch is main and a prerelease if it´s not main"
 
 inputs:
   name:
@@ -8,6 +8,9 @@ inputs:
   version:
     description: "Version of the Chart"
     required: true
+  token:
+    description: "Token to publish a new release"
+    required: true
 
 runs:
   using: composite
@@ -15,13 +18,13 @@ runs:
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
         uses: actions/checkout@v2
+
       - name: Create preRelease
         if: ${{ github.ref_name != 'main'}}
         id: create_Prerelease_${{ inputs.name }}
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-
+          GITHUB_TOKEN: ${{ inputs.token }}
         with:
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
@@ -32,15 +35,14 @@ runs:
 
       - name: Check if a new release for chart should be created
         if: ${{ github.ref_name == 'main'}}
-
         uses: actions/checkout@v2
+
       - name: Create release
         if: ${{ github.ref_name == 'main'}}
         id: create_release_${{ inputs.name }}
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-
+          GITHUB_TOKEN: ${{ inputs.token }} 
         with:
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}

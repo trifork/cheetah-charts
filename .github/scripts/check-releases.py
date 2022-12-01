@@ -5,7 +5,6 @@ import yaml
 import argparse
 import os
 import requests
-import sys
 from pathlib import Path
 
 
@@ -33,7 +32,8 @@ def fetch_releases(token, name):
         'page': 0,  # page counting starts from 1, but we increment this in the loop
     }
 
-    result = []
+    releases = []
+    prereleases = []
     while True:
         request_params['page'] += 1
         response = requests.get(
@@ -49,13 +49,17 @@ def fetch_releases(token, name):
         if len(response) == 0:
             # We get empty list as a response if the page we're on is empty (no more results)
             break
-
         for x in response:
-            if x["name"].startswith(name):
-                result.append({
+            if x['prerelease'] == True and x['name'].startswith(name):
+                prereleases.append({
                     'name': x['name'],
                 })
-    return result
+            elif x['prerelease'] == False and x['name'].startswith(name):
+                releases.append({
+                    'name': x['name'],
+                })
+
+    return releases, prereleases
 
 
 def read_repos_from_config():
@@ -73,15 +77,11 @@ def parse_args():
     """Parse the command line args"""
     argparser = argparse.ArgumentParser(
         description='Find the latest release of the chart')
+
     argparser.add_argument(
-        '--name',
-        dest='name',
-        help='The name of the chart to search for',
-    )
-    argparser.add_argument(
-        '--version',
-        dest='version',
-        help='The version that the script checks exists ',
+        '--token',
+        dest='token',
+        help='The GitHub token to for the GitHub API ',
     )
 
     argparser.add_argument(
@@ -89,32 +89,43 @@ def parse_args():
         dest='branch',
         help='The working branch ',
     )
-    return argparser.parse_args()
 
+    argparser.add_argument(
+        '--chartName',
+        dest='chartName',
+        help='Name of the chart ',
+    )
+
+    argparser.add_argument(
+        '--version',
+        dest='version',
+        help='Latest version of the chart ',
+    )
+    return argparser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
-    name = args.name
-    version = args.version
+    token = args.token
     branch = args.branch
+    version = args.version
+    chartName = args.chartName
+
     # github token, used to access github's api
-    token = "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"
     applications = read_repos_from_config()
 
-    releases = fetch_releases(token, name)
-    if len(releases) == 0:
-        print("false")
-        quit()
-    else:
-        for x in releases:
-            if branch == "main":
-                if x["name"] == name+version:
-                     print("true")
-                     quit()
-            elif x["name"] == name+version+"-preRelease":
-                print("true")
-                quit()
-        print("false")
-        quit()
-            
-                
+    releases, prereleases = fetch_releases(token,chartName)
+
+    result = "false"
+
+    for app in applications["applications"]:
+        if branch == "main":
+            for release in releases:
+                if release["name"] == app+"-V"+version:
+                    result = "true"
+
+        elif branch != "main":
+            for prerelease in prereleases:
+                if prerelease["name"] == app+"-V"+version+"-preRelease":
+                    result = "true"
+
+    print(result)

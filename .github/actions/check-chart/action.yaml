@@ -1,5 +1,5 @@
 name: "Check if chart release exist"
-description: "Uses check"
+description: "This action checks if a specific release exist, if not it starts an other action that creates a new release"
 
 inputs:
   name:
@@ -41,14 +41,13 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/test2.py --token '${{inputs.token}}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/check-releases.py --token '${{inputs.token}}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
 
 
     - name: print variable from python
-
       run: |
           echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{inputs.name}}"
       shell: bash
@@ -59,5 +58,6 @@ runs:
       with:
         name: ${{inputs.name}}
         version: ${{ steps.version.outputs.data }}
+        token: ${{inputs.token}}
 
 
