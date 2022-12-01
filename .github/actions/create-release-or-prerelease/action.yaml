@@ -26,7 +26,7 @@ runs:
 
       - name: Create preRelease
         if: ${{ github.ref_name != 'main'}}
-        id: create_Prerelease_${{ inputs.name }}
+        id: create_Prerelease-'${{ inputs.name }}'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
@@ -45,7 +45,7 @@ runs:
 
       - name: Create release
         if: ${{ github.ref_name == 'main'}}
-        id: create_release_${{ inputs.name }}
+        id: create_release-'${{ inputs.name }}'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
