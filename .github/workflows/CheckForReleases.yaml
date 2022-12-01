@@ -26,8 +26,6 @@ jobs:
           name: cheetah-flink-native
           token: ${{secrets.TOKEN}}
 
-      - run: echo "I'm done"
-
 
 
 

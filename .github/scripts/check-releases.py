@@ -117,15 +117,14 @@ if __name__ == '__main__':
 
     result = "false"
 
-    for app in applications["applications"]:
-        if branch == "main":
-            for release in releases:
-                if release["name"] == app+"-V"+version:
-                    result = "true"
+    if branch == "main":
+        for release in releases:
+            if release["name"] == chartName+"-V"+version:
+                result = "true"
 
-        elif branch != "main":
-            for prerelease in prereleases:
-                if prerelease["name"] == app+"-V"+version+"-preRelease":
-                    result = "true"
+    elif branch != "main":
+        for prerelease in prereleases:
+            if prerelease["name"] == chartName+"-V"+version+"-preRelease":
+                result = "true"
 
     print(result)

@@ -1,8 +1,0 @@
-# Add the repositories, which you want to see a releases page for to this list
-applications:
-  - cheetah-application
-  - cheetah-flink-native
-  - cheetah-flink
-
-
-

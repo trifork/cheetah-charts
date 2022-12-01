@@ -14,7 +14,7 @@ runs:
   using: composite
   steps:
     - name: Print branch
-      run: echo 'This is the working branch ${{github.ref_name}}'
+      run: echo 'Working branch ${{github.ref_name}}'
       shell: bash
 
     - name: Read Chart.yaml and collect version
