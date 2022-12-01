@@ -10,7 +10,7 @@ from pathlib import Path
 
 # GH API docs https://docs.github.com/en/rest/releases/releases#list-releases
 
-def fetch_releases(token):
+def fetch_releases(token, name):
     """query the GitHub API and fetch the data for all releases
     This function also does some minor data wrangling for the:
     - date: remove timezone and seconds
@@ -50,15 +50,15 @@ def fetch_releases(token):
             # We get empty list as a response if the page we're on is empty (no more results)
             break
         for x in response:
-            if x['prerelease'] == True:
+            if x['prerelease'] == True and x['name'].startswith(name):
                 prereleases.append({
                     'name': x['name'],
                 })
-            elif x['prerelease'] == False:
+            elif x['prerelease'] == False and x['name'].startswith(name):
                 releases.append({
                     'name': x['name'],
                 })
-#sorted(list(latestReleases.items())):
+
     return releases, prereleases
 
 
@@ -89,49 +89,49 @@ def parse_args():
         dest='branch',
         help='The working branch ',
     )
+
+    argparser.add_argument(
+        '--chartName',
+        dest='chartName',
+        help='Name of the chart ',
+    )
+
+    argparser.add_argument(
+        '--version',
+        dest='version',
+        help='Latest version of the chart ',
+    )
     return argparser.parse_args()
 
 
-def getLatestVersion(name):
-    CONFIG_FILE_NAME = f'charts/{name}/Chart.yaml'
 
-    pwd = os.path.dirname(os.path.realpath(__file__))
-    project_root = Path(pwd).parent.parent.absolute()
 
-    with open(project_root.joinpath(CONFIG_FILE_NAME), 'r') as config_file:
-        config = yaml.load(config_file, yaml.SafeLoader)
-        return config["version"]
 
 if __name__ == '__main__':
     args = parse_args()
     token = args.token
     branch = args.branch
-    
+    version = args.version
+    chartName = args.chartName
+
     # github token, used to access github's api
     applications = read_repos_from_config()
 
-
     token = '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'
 
-    releases, prereleases = fetch_releases(token)
+    releases, prereleases = fetch_releases(token,chartName)
 
-   
-    none = True
+    result = "false"
 
     for app in applications["applications"]:
-        version = getLatestVersion(app)
-        if  branch == "main":
+        if branch == "main":
             for release in releases:
                 if release["name"] == app+"-V"+version:
-                    print("true " + app+"-v"+version)
+                    result = "true"
 
-                    
-        elif  branch != "main":
+        elif branch != "main":
             for prerelease in prereleases:
                 if prerelease["name"] == app+"-V"+version+"-preRelease":
-                    print("true " + app+"-v"+version+"-preRelease")
-                    
- 
-        
-        
-    
+                    result = "true"
+
+    print(result)
