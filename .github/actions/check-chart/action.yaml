@@ -7,14 +7,18 @@ inputs:
     required: true
 
   token:
-    description: "Token to acces github API"
+    description: "Token to access github API"
+    required: true
+
+  branch:
+    description: "The working branch"
     required: true
 
 runs:
   using: composite
   steps:
     - name: Print branch
-      run: echo 'Working branch ${{github.ref_name}}'
+      run: echo 'Working branch ${{ inputs.branch }}'
       shell: bash
 
     - name: Read Chart.yaml and collect version
@@ -41,7 +45,7 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/check-releases.py --token '${{inputs.token}}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' )
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
@@ -49,15 +53,15 @@ runs:
 
     - name: print variable from python
       run: |
-          echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{inputs.name}}"
+          echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{ inputs.name }}"
       shell: bash
       
     - name: Create a preRelease or release if one does not exist
       if: ${{ steps.python.outputs.changelog2 == 'false'}}
       uses: ./.github/actions/create-release-or-prerelease
       with:
-        name: ${{inputs.name}}
+        name: ${{ inputs.name }}
         version: ${{ steps.version.outputs.data }}
-        token: ${{inputs.token}}
+        token: ${{ inputs.token }}
 
 
