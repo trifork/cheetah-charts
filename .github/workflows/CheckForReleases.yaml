@@ -19,7 +19,7 @@ jobs:
         uses: ./.github/actions/check-chart
         with: 
           name: cheetah-application
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.TOKEjN}}
 
 
 
