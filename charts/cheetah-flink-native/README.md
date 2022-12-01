@@ -1,6 +1,6 @@
 # cheetah-flink-native
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -92,16 +92,11 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.job.podAnnotations."linkerd.io/inject" | string | `"disabled"` | Explicit disable Linkerd proxy injection, as it makes the job hang |
 | flink.job.additionalConfigs | object | `{}` | Any additional configuration passed to the job |
 | flink.job.topics | list | `[]` | Define the topics this job will consume must be defined as follows - name: <name of variable>   value: <name of topic> ie: - name: input-kafka-topic   value: "sourceTopic" - name: output-kafka-topic   value: "sinkTopic" |
-| flink.flinkProperties."taskmanager.numberOfTaskSlots" | int | `1` |  |
-| flink.flinkProperties."rest.flamegraph.enabled" | bool | `true` |  |
-| flink.flinkProperties."execution.checkpointing.interval" | string | `"10 minutes"` |  |
-| flink.flinkProperties."execution.checkpointing.timeout" | string | `"5 minutes"` |  |
-| flink.flinkProperties."execution.checkpointing.min-pause" | string | `"10 minutes"` |  |
 | image-automation | object | `{"enabled":false}` | Settings passed to the image-automation chart, Image-automation is not possible when using image-sha as a tagging strategy |
 | monitoring.enabled | bool | `true` | Enable monitoring. Define flinkProperties to define the monitoring properties |
 | monitoring.podTargetLabels[0] | string | `"component"` |  |
 | monitoring.podTargetLabels[1] | string | `"cluster"` |  |
-| monitoring.flinkProperties | object | `{"metrics.reporter.prom.class":"org.apache.flink.metrics.prometheus.PrometheusReporter","metrics.reporter.prom.port":9249,"metrics.reporters":"prom"}` | Define which monitoring system to use, See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/ |
+| monitoring.flinkProperties | object | `{"metrics.reporter.prom.class":"org.apache.flink.metrics.prometheus.PrometheusReporter","metrics.reporter.prom.port":"9249","metrics.reporters":"prom"}` | Define which monitoring system to use, See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/ |
 | monitoring.podMonitorSelectorLabels.prometheus | string | `"cluster-metrics"` |  |
 | monitoring.podMonitorSelectorLabels.cheetah-monitoring | string | `"true"` |  |
 | monitoring.podMetricsEndpoints[0].port | string | `"metrics"` |  |
