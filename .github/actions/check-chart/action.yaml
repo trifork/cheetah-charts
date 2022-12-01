@@ -21,30 +21,25 @@ runs:
         key-path: '["version"]' # Access the runs key then the using key and returns the value.
 
     - name: print cheetah-application-version if new
-      shell: bash
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
 
     - name: Setup python
       uses: actions/setup-python@v4
-      shell: bash
       with:
         python-version: "3.10"
 
     - name: Install python dependencies
-      shell: bash
       run: pip install pyyaml requests
 
     - name: run script
-      shell: bash
       id: python
       run: |
-        output=$(python .github/scripts/test2.py --token '${{ secrets.GITHUB_TOKEN }}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/test2.py --token ${{ secrets.GITHUB_TOKEN }} --branch ${{ github.ref_name }} --chartName ${{inputs.name}} --version ${{ steps.version.outputs.data }} )
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
 
 
     - name: print variable from python
-      shell: bash
       run: |
           echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{inputs.name}}"
 
