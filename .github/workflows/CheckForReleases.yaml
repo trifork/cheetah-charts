@@ -13,7 +13,7 @@ jobs:
       - name: Check-out repository
         uses: actions/checkout@v3
       - name: cheetah-application
-        uses: ./.github/actions/check-chart
+        uses: ./actions/check-chart
         with: 
           name: cheetah-application
 
