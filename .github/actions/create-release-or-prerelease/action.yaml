@@ -21,13 +21,13 @@ runs:
 
       - name: Create preRelease
         if: ${{ github.ref_name != 'main'}}
-        id: create_Prerelease_${{ inputs.name }}
+        id: 'create_Prerelease_${{ inputs.name }}'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
         with:
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
-          release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+          tag_name: '${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}'
+          release_name: '${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}'
           body: |
             Be aware that this a prerelease. This version is not stable
           draft: false
@@ -39,13 +39,13 @@ runs:
 
       - name: Create release
         if: ${{ github.ref_name == 'main'}}
-        id: create_release_${{ inputs.name }}
+        id: 'create_release_${{ inputs.name }}'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ inputs.token }} 
         with:
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
-          release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+          tag_name: '${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}'
+          release_name: '${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}'
           body: |
             This is a stable release
           draft: false
