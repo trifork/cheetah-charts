@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     # github token, used to access github's api
     applications = read_repos_from_config()
-
+    print(token + " this is my token")
     token = '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'
 
     releases, prereleases = fetch_releases(token,chartName)
