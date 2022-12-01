@@ -173,14 +173,6 @@ flink:
     #   value: "sinkTopic"
     topics: []
 
-  flinkProperties:
-    taskmanager.numberOfTaskSlots: 1
-    # scheduler-mode: reactive  # Currently not working
-    rest.flamegraph.enabled: true
-    execution.checkpointing.interval: 10 minutes
-    execution.checkpointing.timeout: 5 minutes
-    execution.checkpointing.min-pause: 10 minutes
-
 # -- Settings passed to the image-automation chart,
 # Image-automation is not possible when using image-sha as a tagging strategy
 image-automation:
@@ -198,7 +190,7 @@ monitoring:
   flinkProperties:
     metrics.reporters: prom
     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-    metrics.reporter.prom.port: 9249
+    metrics.reporter.prom.port: "9249"
 
   # include the podMonitorSelectorLabel which you have set in your prometheus-operator
   # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors
