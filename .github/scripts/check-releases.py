@@ -61,18 +61,6 @@ def fetch_releases(token, name):
 
     return releases, prereleases
 
-
-def read_repos_from_config():
-    CONFIG_FILE_NAME = 'config/applications-that-needs-releases.yaml'
-
-    pwd = os.path.dirname(os.path.realpath(__file__))
-    project_root = Path(pwd).parent.parent.absolute()
-
-    with open(project_root.joinpath(CONFIG_FILE_NAME), 'r') as config_file:
-        config = yaml.load(config_file, yaml.SafeLoader)
-        return config
-
-
 def parse_args():
     """Parse the command line args"""
     argparser = argparse.ArgumentParser(
@@ -109,9 +97,6 @@ if __name__ == '__main__':
     branch = args.branch
     version = args.version
     chartName = args.chartName
-
-    # github token, used to access github's api
-    applications = read_repos_from_config()
 
     releases, prereleases = fetch_releases(token,chartName)
 
