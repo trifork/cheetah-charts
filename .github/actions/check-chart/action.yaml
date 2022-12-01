@@ -26,7 +26,7 @@ runs:
 
     - name: Print a fake token 
       shell: bash
-      run: echo ${{ secrets.TOKEN }}
+      run: echo ${{ secrets.TEST }}
 
     - name: Setup python
       uses: actions/setup-python@v4
