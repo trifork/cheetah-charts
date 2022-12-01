@@ -29,7 +29,7 @@ spec:
     {{ end }}
     args:
     {{- range $key,$val := $.Values.flink.job.topics }}
-      - {{ printf "---%s" $val.name | quote }}
+      - {{ printf "--%s" $val.name | quote }}
       - {{ printf "%s" $val.value | quote }}
     {{- end }}
     {{- range .args }}
