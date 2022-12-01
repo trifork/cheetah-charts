@@ -6,6 +6,10 @@ inputs:
     description: "Name of the Chart"
     required: true
 
+  token:
+    description: "Token to acces github API"
+    required: true
+
 runs:
   using: composite
   steps:
@@ -24,9 +28,6 @@ runs:
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
       shell: bash
 
-    - name: Print a fake token 
-      shell: bash
-      run: echo ${{ secrets.TEST }}
 
     - name: Setup python
       uses: actions/setup-python@v4
@@ -40,7 +41,7 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/test2.py --token '123' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/test2.py --token '${{inputs.token}}' --branch '${{ github.ref_name }}' --chartName '${{inputs.name}}' --version '${{ steps.version.outputs.data }}' )
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
