@@ -15,7 +15,7 @@
       labels:
       {{- include "cheetah-flink-native.backstageLabels" .context | nindent 8 }}
       {{- include "cheetah-flink-native.selectorLabels" .context | nindent 8 }}
-      {{- toYaml .Values.monitoring.podMonitorSelectorLabels | nindent 8 }}
+      {{- toYaml .context.Values.monitoring.podMonitorSelectorLabels | nindent 8 }}
       {{- with .value.podLabels }}
         {{ toYaml . | nindent 8 }}
       {{- end }}
