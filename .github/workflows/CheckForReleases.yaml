@@ -15,20 +15,6 @@ jobs:
           token: ${{secrets.TOKEN}}
           branch: ${{ github.ref_name }}
 
-      - name: cheetah-flink
-        uses: ./.github/actions/check-chart
-        with: 
-          name: cheetah-flink
-          token: ${{secrets.TOKEN}}
-          branch: ${{ github.ref_name }}
-
-      - name: cheetah-flink-native
-        uses: ./.github/actions/check-chart
-        with: 
-          name: cheetah-flink-native
-          token: ${{secrets.TOKEN}}
-          branch: ${{ github.ref_name }}
-
 
 
 

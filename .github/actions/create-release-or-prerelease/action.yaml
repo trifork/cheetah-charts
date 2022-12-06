@@ -16,6 +16,10 @@ runs:
   using: composite
   steps: 
 
+      - name: Print out inputs
+        shell: bash
+        run: echo 'Theses are my input. my name is ${{ inputs.name }}, my version is ${{ inputs.version }} and last my secrets ${{ inputs.token }} '
+
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
         uses: actions/checkout@v3
@@ -51,5 +55,7 @@ runs:
             This is a stable release
           draft: false
           prerelease: false
+
+          
 
 
