@@ -1,7 +1,13 @@
 on: 
     push:
+      branches:
+        - changeOfAction
+        - main
+  
       tags-ignore:
         - v*
+    pull_request:
+      
       
 jobs:
   Check-if-a-new-release-or-prerelease-is-required:
