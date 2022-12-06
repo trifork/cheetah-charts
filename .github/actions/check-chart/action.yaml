@@ -21,11 +21,6 @@ runs:
       run: echo 'Working branch ${{ inputs.branch }}'
       shell: bash
 
-
-    - name: Print trigger name
-      shell: bash
-      run: echo 'My trigger is ${{github.event_name}}'
-
     - name: Read Chart.yaml and collect version
       id: version
       uses: jbutcher5/read-yaml@1.6

@@ -10,9 +10,6 @@ jobs:
   Check-if-a-new-release-or-prerelease-is-required:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'My trigger is ${{github.event_name}}'
-      - name: Check-out repository
-        uses: actions/checkout@v3
 
       - name: cheetah-application
         uses: ./.github/actions/check-chart
@@ -20,8 +17,20 @@ jobs:
           name: cheetah-application
           token: ${{secrets.TOKEN}}
           branch: ${{ github.ref_name }}
+          
+      - name: cheetah-flink
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink
+          token: ${{secrets.TOKEN}}
+          branch: ${{ github.ref_name }}
 
-
+      - name: cheetah-flink-native
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink-native
+          token: ${{secrets.TOKEN}}
+          branch: ${{ github.ref_name }}
 
 
 

@@ -16,19 +16,10 @@ runs:
   using: composite
   steps: 
 
-      - name: Print out inputs
-        shell: bash
-        run: echo 'Theses are my input. my name is ${{ inputs.name }}, my version is ${{ inputs.version }} and last my secrets ${{ inputs.token }} '
-
       - name: Get current date
         shell: bash
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-
-      - name: Print trigger name
-        shell: bash
-        run: echo 'My trigger is ${{github.event_name}}'
-        
 
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
@@ -46,7 +37,7 @@ runs:
           body: |
             Be aware that this a prerelease. This version is not stable
           draft: false
-          prerelease: true
+          prerelease: true½
 
       - name: Check if a new release for chart should be created
         if: ${{ github.ref_name == 'main'}}
