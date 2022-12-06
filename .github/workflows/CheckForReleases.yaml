@@ -1,5 +1,7 @@
 on: 
     push:
+      tags-ignore:
+        - v*
       
 jobs:
   Check-if-a-new-release-or-prerelease-is-required:
