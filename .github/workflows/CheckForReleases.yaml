@@ -1,18 +1,16 @@
 on: 
     push:
       branches:
-        - changeOfAction
-        - main
-  
+        - "**"
       tags-ignore:
-        - v*
-    pull_request:
+        - "**"
       
       
 jobs:
   Check-if-a-new-release-or-prerelease-is-required:
     runs-on: ubuntu-latest
     steps:
+      - run: echo 'My trigger is ${{github.event_name}}'
       - name: Check-out repository
         uses: actions/checkout@v3
 

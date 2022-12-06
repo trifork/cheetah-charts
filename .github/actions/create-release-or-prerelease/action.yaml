@@ -25,6 +25,11 @@ runs:
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
+      - name: Print trigger name
+        shell: bash
+        run: echo 'My trigger is ${{github.event_name}}'
+        
+
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
         uses: actions/checkout@v3
