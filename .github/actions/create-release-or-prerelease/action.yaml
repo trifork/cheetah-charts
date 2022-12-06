@@ -20,6 +20,11 @@ runs:
         shell: bash
         run: echo 'Theses are my input. my name is ${{ inputs.name }}, my version is ${{ inputs.version }} and last my secrets ${{ inputs.token }} '
 
+      - name: Get current date
+        shell: bash
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
         uses: actions/checkout@v3
@@ -31,7 +36,7 @@ runs:
         env:
           GITHUB_TOKEN: ${{ inputs.token }}
         with:
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           body: |
             Be aware that this a prerelease. This version is not stable
