@@ -10,6 +10,6 @@ spec:
     matchLabels:
       {{- include "cheetah-application.selectorLabels" . | nindent 6 }}
   endpoints:
-    - targetPort: metrics
+    - port: metrics
       path: {{ .Values.monitoring.path }}
 {{- end }}
