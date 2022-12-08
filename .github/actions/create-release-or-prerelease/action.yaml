@@ -36,7 +36,7 @@ runs:
           
 
       - name: print release note template
-        run: echo "${{ steps.releaseTemplate.outputs.data }}"
+        run: echo "${{ steps.releaseTemplate.outputs.contents }}"
         shell: bash
 
 
@@ -51,7 +51,7 @@ runs:
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           body: |
             Be aware that this a prerelease. This version is not stable
-            ${{ steps.releaseTemplate.outputs.data }}
+            ${{ steps.releaseTemplate.outputs.contents }}
           draft: false
           prerelease: true
 
@@ -70,7 +70,7 @@ runs:
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
           body: |
             This is a stable release
-            ${{ steps.releaseTemplate.outputs.data }}
+            ${{ steps.releaseTemplate.outputs.contents }}
           draft: false
           prerelease: false
 
