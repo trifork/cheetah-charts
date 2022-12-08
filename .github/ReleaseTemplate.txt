@@ -6,10 +6,6 @@
 - 
 # Bugs
 - 
-# Community contributions
-- 
-# OpenCost
-- 
 
 # Type
 Stable or Unstable

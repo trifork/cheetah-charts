@@ -1,9 +1,14 @@
+name: CheckForReleases
+
 on: 
     push:
       branches:
         - "**"
       tags-ignore:
         - "**"
+
+env:
+  githubRepo: cheetah-charts-test
       
       
 jobs:
@@ -18,22 +23,25 @@ jobs:
         uses: ./.github/actions/check-chart
         with: 
           name: cheetah-application
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.TOKEN}} # Should be updated to work with bot
           branch: ${{ github.ref_name }}
+          repo: ${{ env.githubRepo }}
           
       - name: cheetah-flink
         uses: ./.github/actions/check-chart
         with: 
           name: cheetah-flink
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.TOKEN}} # Should be updated to work with bot
           branch: ${{ github.ref_name }}
+          repo: ${{ env.githubRepo }}
 
       - name: cheetah-flink-native
         uses: ./.github/actions/check-chart
         with: 
           name: cheetah-flink-native
-          token: ${{secrets.TOKEN}}
+          token: ${{secrets.TOKEN}} # Should be updated to work with bot
           branch: ${{ github.ref_name }}
+          repo: ${{ env.githubRepo }}
 
 
 

@@ -14,6 +14,10 @@ inputs:
     description: "The working branch"
     required: true
 
+  repo:
+    description: The repository to fetch releases from
+    required: true
+
 runs:
   using: composite
   steps:
@@ -45,7 +49,7 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' )
+        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' ) --repo '${{ inputs.repo }}'
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
