@@ -1,3 +1,5 @@
+name: CheckForReleases
+
 on: 
     push:
       branches:
