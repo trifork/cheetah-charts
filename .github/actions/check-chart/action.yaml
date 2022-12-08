@@ -25,6 +25,10 @@ runs:
       run: echo 'Working branch ${{ inputs.branch }}'
       shell: bash
 
+    - name: print repo
+      run: echo ${{inputs.repo}}
+      shell: bash
+
     - name: Read Chart.yaml and collect version
       id: version
       uses: jbutcher5/read-yaml@1.6
@@ -49,7 +53,8 @@ runs:
     - name: run script
       id: python
       run: |
-        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' ) --repo '${{ inputs.repo }}'
+        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' \
+         --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' --repo '${{ inputs.repo }}')
         out2="${output//'%'/'%25'}"
         echo "::set-output name=changelog2::$out2"
       shell: bash
@@ -60,12 +65,6 @@ runs:
           echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{ inputs.name }}"
       shell: bash
       
-    - name: Create a preRelease or release if one does not exist
-      if: ${{ steps.python.outputs.changelog2 == 'false'}}
-      uses: ./.github/actions/create-release-or-prerelease
-      with:
-        name: ${{ inputs.name }}
-        version: ${{ steps.version.outputs.data }}
-        token: ${{ inputs.token }}
+
 
 

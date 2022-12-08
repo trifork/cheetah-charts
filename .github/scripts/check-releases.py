@@ -105,6 +105,8 @@ if __name__ == '__main__':
     chartName = args.chartName
     repo = args.repo
 
+    print(repo, "that was the repo")
+""" 
     releases, prereleases = fetch_releases(token, chartName, repo)
 
     result = "false"
@@ -119,4 +121,4 @@ if __name__ == '__main__':
             if prerelease["name"] == chartName+"-V"+version+"-preRelease":
                 result = "true"
 
-    print(result)
+    print(result) """
