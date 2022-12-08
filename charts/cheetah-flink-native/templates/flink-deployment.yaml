@@ -1,7 +1,7 @@
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
-  name: {{ include "cheetah-flink-native.fullname" $ | trunc 45 }}
+  name: {{ include "cheetah-flink-native.fullname" . | trunc 45 }}
   labels:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
   annotations:
