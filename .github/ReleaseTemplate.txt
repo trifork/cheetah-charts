@@ -1,0 +1,22 @@
+# Deprecation
+- 
+# Major
+- 
+# Minor
+- 
+# Bugs
+- 
+
+# Type
+Stable or Unstable
+
+# End of Support
+dd-mm-yyyy
+
+# Supported upgrade path
+Example: v1.2.10 -> v1.2.13
+
+# Config. Changes
+No
+
+# Other Changes

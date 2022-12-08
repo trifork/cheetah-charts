@@ -1,0 +1,67 @@
+name: "Check if chart release exist"
+description: "This action checks if a specific release exist, if not it starts an other action that creates a new release"
+
+inputs:
+  name:
+    description: "Name of the Chart"
+    required: true
+
+  token:
+    description: "Token to access github API"
+    required: true
+
+  branch:
+    description: "The working branch"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Print branch
+      run: echo 'Working branch ${{ inputs.branch }}'
+      shell: bash
+
+    - name: Read Chart.yaml and collect version
+      id: version
+      uses: jbutcher5/read-yaml@1.6
+      with:
+        file: "charts/${{inputs.name}}/Chart.yaml" # File to read from
+        key-path: '["version"]' # Access the runs key then the using key and returns the value.
+
+    - name: print cheetah-application-version if new
+      run: echo "This is the latest version ${{ steps.version.outputs.data }}"
+      shell: bash
+
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install python dependencies
+      run: pip install pyyaml requests
+      shell: bash
+
+    - name: run script
+      id: python
+      run: |
+        output=$(python .github/scripts/check-releases.py --token '${{ inputs.token }}' --branch '${{ inputs.branch }}' --chartName '${{ inputs.name }}' --version '${{ steps.version.outputs.data }}' )
+        out2="${output//'%'/'%25'}"
+        echo "::set-output name=changelog2::$out2"
+      shell: bash
+
+
+    - name: print variable from python
+      run: |
+          echo "${{ steps.python.outputs.changelog2 }}, release or prerelease already exist for ${{ inputs.name }}"
+      shell: bash
+      
+    - name: Create a preRelease or release if one does not exist
+      if: ${{ steps.python.outputs.changelog2 == 'false'}}
+      uses: ./.github/actions/create-release-or-prerelease
+      with:
+        name: ${{ inputs.name }}
+        version: ${{ steps.version.outputs.data }}
+        token: ${{ inputs.token }}
+
+

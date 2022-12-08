@@ -1,0 +1,79 @@
+name: "Create release or prerelease"
+description: "This action creates a release if the working branch is main and a prerelease if it´s not main"
+
+inputs:
+  name:
+    description: "Name of the Chart"
+    required: true
+  version:
+    description: "Version of the Chart"
+    required: true
+  token:
+    description: "Token to publish a new release"
+    required: true
+
+runs:
+  using: composite
+  steps: 
+
+      - name: Get current date
+        shell: bash
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Check if a new prerelease for chart should be created
+        if: ${{ github.ref_name != 'main'}}
+        uses: actions/checkout@v3
+
+
+      - name: Collect template for release notes
+        id: releaseTemplate
+        uses: andstor/file-reader-action@v1
+        with:
+          path: ".github/ReleaseTemplate.txt"
+          
+
+      - name: print release note template
+        run: echo "${{ steps.releaseTemplate.outputs.data }}"
+        shell: bash
+
+
+      - name: Create preRelease
+        if: ${{ github.ref_name != 'main'}}
+        id: create_Prerelease
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ inputs.token }}
+        with:
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
+          release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+          body: |
+            # ${{ inputs.name }} v${{ inputs.version }} preRelease Notes
+            Be aware that this a prerelease. This version is not stable
+            ${{ steps.releaseTemplate.outputs.data }}
+          draft: false
+          prerelease: true
+
+      - name: Check if a new release for chart should be created
+        if: ${{ github.ref_name == 'main'}}
+        uses: actions/checkout@v3
+
+      - name: Create release
+        if: ${{ github.ref_name == 'main'}}
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ inputs.token }}
+        with:
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
+          release_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
+          body: |
+            # ${{ inputs.name }} v${{ inputs.version }} release Notes
+            This is a stable release
+            ${{ steps.releaseTemplate.outputs.data }}
+          draft: false
+          prerelease: false
+
+          
+
+
