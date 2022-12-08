@@ -12,6 +12,8 @@ inputs:
     description: "Token to publish a new release"
     required: true
 
+
+
 runs:
   using: composite
   steps: 
@@ -25,6 +27,19 @@ runs:
         if: ${{ github.ref_name != 'main'}}
         uses: actions/checkout@v3
 
+
+      - name: Collect template for release notes
+        id: releaseTemplate
+        uses: andstor/file-reader-action@v1
+        with:
+          path: ".github/ReleaseTemplate.txt"
+          
+
+      - name: print release note template
+        run: echo "${{ steps.releaseTemplate.outputs.contents }}"
+        shell: bash
+
+
       - name: Create preRelease
         if: ${{ github.ref_name != 'main'}}
         id: create_Prerelease
@@ -36,8 +51,9 @@ runs:
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           body: |
             Be aware that this a prerelease. This version is not stable
+            ${{ steps.releaseTemplate.outputs.contents }}
           draft: false
-          prerelease: true½
+          prerelease: true
 
       - name: Check if a new release for chart should be created
         if: ${{ github.ref_name == 'main'}}
@@ -54,6 +70,7 @@ runs:
           release_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
           body: |
             This is a stable release
+            ${{ steps.releaseTemplate.outputs.contents }}
           draft: false
           prerelease: false
 

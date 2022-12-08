@@ -10,13 +10,13 @@ from pathlib import Path
 
 # GH API docs https://docs.github.com/en/rest/releases/releases#list-releases
 
-def fetch_releases(token, name):
+def fetch_releases(token, name, repo):
     """query the GitHub API and fetch the data for all releases
     This function also does some minor data wrangling for the:
     - date: remove timezone and seconds
     """
     # repository url used in the API
-    repo_url = f'https://api.github.com/repos/KastTrifork/cheetah-charts-test/releases'
+    repo_url = f'https://api.github.com/repos/kastTrifork/{repo}/releases'
 
     # headers used to make requests to GitHub's API
     # the important part is the access token, because we're working with private repos
@@ -89,6 +89,12 @@ def parse_args():
         dest='version',
         help='Latest version of the chart ',
     )
+
+    argparser.add_argument(
+        '--repo',
+        dest='repo',
+        help='The repository to fetch releases from',
+    )
     return argparser.parse_args()
 
 if __name__ == '__main__':
@@ -97,8 +103,10 @@ if __name__ == '__main__':
     branch = args.branch
     version = args.version
     chartName = args.chartName
+    repo = args.repo
 
-    releases, prereleases = fetch_releases(token,chartName)
+
+    releases, prereleases = fetch_releases(token, chartName, repo)
 
     result = "false"
 
