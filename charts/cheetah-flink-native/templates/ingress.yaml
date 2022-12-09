@@ -18,7 +18,11 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.domain }}
+      {{- if eq .Values.ingress.domain "flink.cheetah.trifork.dev" }}
+      secretName: process-tls
+      {{- else }}
       secretName: {{ $fullName }}-{{ .Values.ingress.certType }}-tls
+      {{- end }}
   rules:
   - host: {{ .Values.ingress.domain }}
     http:
