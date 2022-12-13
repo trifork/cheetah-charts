@@ -1,4 +1,4 @@
-name: CheckForReleases
+name: Check For Releases
 
 on: 
     push:
@@ -7,20 +7,12 @@ on:
       tags-ignore:
         - "**"
 
-env:
-  githubRepo: cheetah-charts-test
-      
-      
 jobs:
   Check-if-a-new-release-or-prerelease-is-required:
     runs-on: ubuntu-latest
     steps:
-
       - name: Check-out repository
         uses: actions/checkout@v3
-
-      - name: print env
-        run: echo '${{ env.githubRepo }}'
 
       - name: cheetah-application
         uses: ./.github/actions/check-chart
@@ -28,15 +20,20 @@ jobs:
           name: cheetah-application
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref_name }}
-          repo: ${{ env.githubRepo }}
+          repo: ${{ github.repository }}
           
+      - name: cheetah-flink
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
+          repo: ${{ github.repository }}
 
-
-
-
-
-
-
-
-
- 
+      - name: cheetah-flink-native
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink-native
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}
+          repo: ${{ github.repository }}

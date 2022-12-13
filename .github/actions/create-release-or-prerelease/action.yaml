@@ -21,12 +21,10 @@ runs:
       - name: Get current date
         shell: bash
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "::set-output name=date::$(date +%s)"
 
-      - name: Check if a new prerelease for chart should be created
-        if: ${{ github.ref_name != 'main'}}
+      - name: Checkout
         uses: actions/checkout@v3
-
 
       - name: Collect template for release notes
         id: releaseTemplate
@@ -34,46 +32,26 @@ runs:
         with:
           path: ".github/ReleaseTemplate.txt"
           
-
       - name: print release note template
         run: echo "${{ steps.releaseTemplate.outputs.contents }}"
         shell: bash
 
-
-      - name: Create preRelease
-        if: ${{ github.ref_name != 'main'}}
-        id: create_Prerelease
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ inputs.token }}
-        with:
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
-          release_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
-          body: |
-            Be aware that this a prerelease. This version is not stable
-            ${{ steps.releaseTemplate.outputs.contents }}
-          draft: false
-          prerelease: true
-
-      - name: Check if a new release for chart should be created
+      - name: Release
         if: ${{ github.ref_name == 'main'}}
-        uses: actions/checkout@v3
-
-      - name: Create release
-        if: ${{ github.ref_name == 'main'}}
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ inputs.token }}
+        uses: softprops/action-gh-release@v1
         with:
+          body: ${{ steps.releaseTemplate.outputs.contents }}
+          token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
-          release_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
-          body: |
-            This is a stable release
-            ${{ steps.releaseTemplate.outputs.contents }}
-          draft: false
-          prerelease: false
+          preRelease: false
+          name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
 
-          
-
-
+      - name: Pre-release
+        if: ${{ github.ref_name != 'main'}}
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.releaseTemplate.outputs.contents }}
+          token: ${{ inputs.token }}
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
+          preRelease: true
+          name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
