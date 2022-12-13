@@ -50,11 +50,14 @@ def fetch_releases(token, name, repo):
             # We get empty list as a response if the page we're on is empty (no more results)
             break
         for x in response:
-            if x['prerelease'] == True and x['name'].startswith(name):
+            if not x['name'].startswith(name):
+                continue
+
+            if x['prerelease']:
                 prereleases.append({
                     'name': x['name'],
                 })
-            elif x['prerelease'] == False and x['name'].startswith(name):
+            else:
                 releases.append({
                     'name': x['name'],
                 })
