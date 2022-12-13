@@ -21,7 +21,7 @@ runs:
       - name: Get current date
         shell: bash
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "::set-output name=date::$(date +%s)"
 
       - name: Check if a new prerelease for chart should be created
         if: ${{ github.ref_name != 'main'}}
