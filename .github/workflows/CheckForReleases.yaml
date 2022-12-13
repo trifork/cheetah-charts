@@ -11,6 +11,8 @@ jobs:
   Check-if-a-new-release-or-prerelease-is-required:
     runs-on: ubuntu-latest
     steps:
+
+      - run: echo ${{ github.workspace }}
       - name: Check-out repository
         uses: actions/checkout@v3
 
