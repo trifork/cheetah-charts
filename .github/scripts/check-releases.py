@@ -100,7 +100,7 @@ def parse_args():
     )
     return argparser.parse_args()
 
-if __name__ == '__main__':
+def main():
     args = parse_args()
     token = args.token
     branch = args.branch
@@ -114,12 +114,14 @@ if __name__ == '__main__':
 
     if branch == "main":
         for release in releases:
-            if release["name"] == chartName+"-V"+version:
+            if release["name"] == chartName+"-v"+version:
                 result = "true"
-
-    elif branch != "main":
+    else:
         for prerelease in prereleases:
-            if prerelease["name"] == chartName+"-V"+version+"-preRelease":
+            if prerelease["name"] == chartName+"-v"+version+"-preRelease":
                 result = "true"
 
     print(result)
+
+if __name__ == '__main__':
+    main()
