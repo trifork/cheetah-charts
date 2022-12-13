@@ -26,15 +26,22 @@ runs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Generate Changelog
-        run: echo "# Good things have arrived" > .github/ReleaseTemplate.txt
+      - name: Collect template for release notes
+        id: releaseTemplate
+        uses: andstor/file-reader-action@v1
+        with:
+          path: ".github/ReleaseTemplate.txt"
+          
+
+      - name: print release note template
+        run: echo "${{ steps.releaseTemplate.outputs.contents }}"
         shell: bash
 
       - name: Release
         if: ${{ github.ref_name == 'main'}}
         uses: softprops/action-gh-release@v1
         with:
-          body_path: .github/ReleaseTemplate.txt
+          body_path: ${{ steps.releaseTemplate.outputs.contents }}
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
           preRelease: false
@@ -44,7 +51,7 @@ runs:
         if: ${{ github.ref_name != 'main'}}
         uses: softprops/action-gh-release@v1
         with:
-          body_path: .github/ReleaseTemplate.txt
+          body_path: ${{ steps.releaseTemplate.outputs.contents }}
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
           preRelease: true
