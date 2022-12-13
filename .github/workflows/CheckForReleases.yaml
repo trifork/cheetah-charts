@@ -1,4 +1,4 @@
-name: CheckForReleases
+name: Check For Releases
 
 on: 
     push:

@@ -16,7 +16,7 @@ def fetch_releases(token, name, repo):
     - date: remove timezone and seconds
     """
     # repository url used in the API
-    repo_url = f'https://api.github.com/repos/trifork/{repo}/releases'
+    repo_url = f'https://api.github.com/repos/{repo}/releases'
 
     # headers used to make requests to GitHub's API
     # the important part is the access token, because we're working with private repos
