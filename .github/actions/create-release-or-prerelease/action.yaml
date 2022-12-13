@@ -36,17 +36,11 @@ runs:
         run: echo "${{ steps.releaseTemplate.outputs.contents }}"
         shell: bash
 
-
-      - name: Generate Changelog
-        shell: bash
-        run: echo ${{ github.workspace }}
-
       - name: Release
         if: ${{ github.ref_name == 'main'}}
         uses: softprops/action-gh-release@v1
         with:
-          body: ${{ steps.releaseTemplate.outputs.contents }}
-          body_path: ${{ github.workspace }}-CHANGELOG.txt
+          body_path: .github/ReleaseTemplate.txt
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-${{ github.ref_name }}
           preRelease: false
@@ -56,7 +50,7 @@ runs:
         if: ${{ github.ref_name != 'main'}}
         uses: softprops/action-gh-release@v1
         with:
-          body: ${{ steps.releaseTemplate.outputs.contents }}
+          body_path: .github/ReleaseTemplate.txt
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
           preRelease: true
