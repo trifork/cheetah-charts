@@ -18,7 +18,6 @@ jobs:
           fetch-depth: 2
       - name: Login to container registry
         run: |
-          REPO_OWNER=`echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Pushing Helm Chart
