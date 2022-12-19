@@ -7,7 +7,7 @@ Repository containing the source code for different Helm charts.
 
 ## Usage
 
-These helm charts are released to both <ghcr.io> as OCI packages, and to a Google disk using the `helm-gcs` Helm plugin.
+These helm charts are released to both GHCR (GitHub Container Registry) as OCI packages, and to a Google disk using the `helm-gcs` Helm plugin.
 
 ### Using Google Drive
 
@@ -29,7 +29,7 @@ helm search repo cheetah-charts
 
 ### Using OCI Packages
 
-For using the OCI packages, you need to log into the <ghcr.io> registry with a PAT (Personal Access Token) that at least has the "read packages" permission:
+For using the OCI packages, you need to log into the GHCR registry with a PAT (Personal Access Token) that at least has the "read packages" permission:
 
 ```bash
 helm registry login ghcr.io/trifork/cheetah-charts
