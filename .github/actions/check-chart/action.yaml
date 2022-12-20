@@ -43,7 +43,7 @@ runs:
 
 
     - name: test
-      if: ${{ gh release view --json isPrerelease --jq '.isprerelease' == false}}
+      if: gh release view --json isPrerelease --jq '.isprerelease'
       run: echo false
       shell: bash
       env:
