@@ -40,23 +40,40 @@ runs:
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
       shell: bash
 
-    - name: run script
-      id: python
+    - name: Check if a release exist
+      if: ${{ github.ref_name }} == 'main'
+      id: release
       env:
         GH_TOKEN: ${{ inputs.token }} 
       run: |
-        output=$(gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease')
-        echo "::set-output name=changelog::$output"
+        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease')
       shell: bash
       continue-on-error: true
 
+    - name: Check if a preRelease exist
+      if: ${{ github.ref_name }} != 'main'
+      id: preRelease
+      env:
+        GH_TOKEN: ${{ inputs.token }} 
+      run: |
+        gh release view ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease')
+      shell: bash
+      continue-on-error: true
 
-    - name: print variable from python
-      if: steps.python.outcome == 'success'
-      run: echo ${{ steps.python.outputs.changelog }}
+    - name: Delete old preRelease
+      if: steps.preRelease.outcome == 'success'
+      run: gh release delete ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
       shell: bash
 
-    - name: print erro message
-      if: steps.python.outcome != 'success'
+    - name: Create prerelease or release  
+      if: steps.release.outcome == 'success' || steps.preRelease.outcome == 'success'
+      uses: ./.github/actions/create-release-or-prerelease
+      with:
+        name: ${{ inputs.name }}
+        version: ${{ steps.version.outputs.data }}
+        token: ${{ inputs.token }}
+
+    - name: print error message 
+      if: steps.release.outcome != 'success' || steps.preRelease.outcome != 'success'
       run: echo "No release to fetch"
       shell: bash
