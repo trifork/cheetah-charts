@@ -41,20 +41,21 @@ runs:
       shell: bash
 
     - name: Check if a release exist
-
+      
       id: release
       env:
         GH_TOKEN: ${{ inputs.token }} 
+      if: ${{ github.ref_name == 'main' }}
       run: |
         gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease')
       shell: bash
       continue-on-error: true
 
     - name: Check if a preRelease exist
-      if: ${{ github.ref_name != 'main' }}
       id: preRelease
       env:
         GH_TOKEN: ${{ inputs.token }} 
+      if: ${{ github.ref_name }} != 'main'
       run: |
         gh release view ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease')
       shell: bash
