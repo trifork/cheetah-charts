@@ -41,7 +41,7 @@ runs:
       shell: bash
 
     - name: Check if a release exist
-      if: ${{ github.ref_name }} == main
+
       id: release
       env:
         GH_TOKEN: ${{ inputs.token }} 
@@ -51,7 +51,7 @@ runs:
       continue-on-error: true
 
     - name: Check if a preRelease exist
-      if: ${{ github.ref_name }} != 'main'
+      if: ${{ github.ref_name != 'main' }}
       id: preRelease
       env:
         GH_TOKEN: ${{ inputs.token }} 
