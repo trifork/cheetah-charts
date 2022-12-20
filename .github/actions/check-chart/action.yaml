@@ -43,6 +43,6 @@ runs:
 
 
     - name: test 
-      run: gh release view <${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }}> --json isPrerelease --jq '.isrelease'
+      run: gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }} --json isPrerelease --jq '.isrelease'
       shell: bash  
 
