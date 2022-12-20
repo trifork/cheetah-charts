@@ -42,8 +42,9 @@ runs:
 
 
 
-    - name: test 
-      run: echo $(gh release view --json isPrerelease --jq '.isprerelease')
+    - name: test
+      if: ${{ gh release view --json isPrerelease --jq '.isprerelease' == false}}
+      run: echo false
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }} 
