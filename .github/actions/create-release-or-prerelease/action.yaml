@@ -17,15 +17,6 @@ inputs:
 runs:
   using: composite
   steps: 
-
-      - name: Get current date
-        shell: bash
-        id: date
-        run: echo "::set-output name=date::$(date +%s)"
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Collect template for release notes
         id: releaseTemplate
         uses: andstor/file-reader-action@v1
