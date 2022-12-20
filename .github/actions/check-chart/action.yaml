@@ -10,25 +10,9 @@ inputs:
     description: "Token to access github API"
     required: true
 
-  branch:
-    description: "The working branch"
-    required: true
-
-  repo:
-    description: The repository to fetch releases from
-    required: true
-
 runs:
   using: composite
   steps:
-    - name: Print branch
-      run: echo 'Working branch ${{ inputs.branch }}'
-      shell: bash
-
-    - name: print repo
-      run: echo ${{inputs.repo}}
-      shell: bash
-
     - name: Read Chart.yaml and collect version
       id: version
       uses: jbutcher5/read-yaml@1.6
@@ -36,7 +20,7 @@ runs:
         file: "charts/${{inputs.name}}/Chart.yaml" # File to read from
         key-path: '["version"]' # Access the runs key then the using key and returns the value.
 
-    - name: print cheetah-application-version if new
+    - name: print cheetah-application-version 
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
       shell: bash
 
@@ -46,7 +30,7 @@ runs:
         GH_TOKEN: ${{ inputs.token }} 
       if: ${{ github.ref_name == 'main' }}
       run: |
-        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease'
+        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }}'
       shell: bash
       continue-on-error: true
 
@@ -56,7 +40,7 @@ runs:
         GH_TOKEN: ${{ inputs.token }} 
       if: ${{ github.ref_name != 'main' }}
       run: |
-        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }} --json isPrerelease --jq '.isPrerelease'
+        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}'
       shell: bash
       continue-on-error: true
 
