@@ -48,6 +48,7 @@ runs:
         output=$(gh release view cheetah-flink-v184.223.7-main --json isPrerelease --jq '.isPrerelease')
         echo "::set-output name=changelog::$output"
       shell: bash
+      continue-on-error: true
 
 
     - name: print variable from python
