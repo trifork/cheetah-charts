@@ -45,7 +45,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }} 
       run: |
-        output=$(gh release view --json isPrerelease)
+        output=$(gh release view blabla --json isPrerelease)
         echo "::set-output name=changelog::$output"
       shell: bash
 
