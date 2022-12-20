@@ -43,7 +43,7 @@ runs:
 
 
     - name: test 
-      run: gh release view --json isPrerelease --jq '.isprerelease'
+      run: echo $(gh release view --json isPrerelease --jq '.isprerelease')
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }} 
