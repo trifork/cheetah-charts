@@ -67,14 +67,10 @@ runs:
       shell: bash
 
     - name: Create prerelease or release  
-      if: steps.release.outcome != 'success' || steps.preRelease.outcome != 'success'
+      if: steps.release.outcome != 'success' || steps.preRelease.outcome == 'success' || steps.preRelease.outcome != 'success'
       uses: ./.github/actions/create-release-or-prerelease
       with:
         name: ${{ inputs.name }}
         version: ${{ steps.version.outputs.data }}
         token: ${{ inputs.token }}
 
-    - name: print error message 
-      if: steps.release.outcome != 'success' || steps.preRelease.outcome != 'success'
-      run: echo "No release to fetch"
-      shell: bash
