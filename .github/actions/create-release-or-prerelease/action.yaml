@@ -52,6 +52,6 @@ runs:
         with:
           body: ${{ steps.releaseTemplate.outputs.contents }}
           token: ${{ inputs.token }}
-          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
+          tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           preRelease: true
           name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
