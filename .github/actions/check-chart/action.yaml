@@ -42,10 +42,20 @@ runs:
 
 
 
-    - name: test
-      if: gh release view --json isPrerelease --jq '.isprerelease'
-      run: echo false
-      shell: bash
-      env:
-        GH_TOKEN: ${{ github.token }} 
+ 
 
+
+    - name: run script
+      id: python
+      env:
+        GH_TOKEN: ${{ inputs.token }} 
+      run: |
+        output=$(gh release view)
+        echo "::set-output name=changelog::$output"
+      shell: bash
+
+
+    - name: print variable from python
+      run: |
+          echo "${{ steps.python.outputs.changelog }}
+      shell: bash
