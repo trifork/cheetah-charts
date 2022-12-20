@@ -52,5 +52,11 @@ runs:
 
 
     - name: print variable from python
+      if: steps.python.outcome != 'release not found'
       run: echo ${{ steps.python.outputs.changelog }}
+      shell: bash
+
+    - name: print erro message
+      if: steps.python.outcome != 'release not found'
+      run: echo "No release to fetch"
       shell: bash
