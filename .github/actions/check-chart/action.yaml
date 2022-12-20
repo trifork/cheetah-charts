@@ -64,7 +64,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }} 
       if: steps.preRelease.outcome == 'success'
-      run: gh release delete ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
+      run: gh release delete ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}
       shell: bash
 
     - name: Create prerelease or release  
