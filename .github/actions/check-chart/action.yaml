@@ -52,7 +52,7 @@ runs:
       shell: bash
 
     - name: Create prerelease or release  
-      if: steps.release.outcome != 'success' || steps.preRelease.outcome == 'success' || steps.preRelease.outcome != 'success'
+      if: ${{steps.release.outcome != 'success' || steps.preRelease.outcome == 'success' || steps.preRelease.outcome != 'success'}}
       uses: ./.github/actions/create-release-or-prerelease
       with:
         name: ${{ inputs.name }}
