@@ -43,7 +43,7 @@ runs:
 
 
     - name: test 
-      run: gh release view <cheetah-flink-v18.223.7-main> --json isPrerelease --jq '.isrelease'
+      run: gh release view --json isPrerelease --jq '.isprerelease'
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }} 
