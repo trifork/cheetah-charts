@@ -30,7 +30,7 @@ runs:
         GH_TOKEN: ${{ inputs.token }} 
       if: ${{ github.ref_name == 'main' }}
       run: |
-        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }}'
+        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }}
       shell: bash
       continue-on-error: true
 
@@ -40,7 +40,7 @@ runs:
         GH_TOKEN: ${{ inputs.token }} 
       if: ${{ github.ref_name != 'main' }}
       run: |
-        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}'
+        gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}
       shell: bash
       continue-on-error: true
 
