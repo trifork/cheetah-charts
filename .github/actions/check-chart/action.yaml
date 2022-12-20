@@ -40,17 +40,12 @@ runs:
       run: echo "This is the latest version ${{ steps.version.outputs.data }}"
       shell: bash
 
-
-
- 
-
-
     - name: run script
       id: python
       env:
         GH_TOKEN: ${{ inputs.token }} 
       run: |
-        output=$(gh release view)
+        output=$(gh release view --json isPrerelease)
         echo "::set-output name=changelog::$output"
       shell: bash
 
