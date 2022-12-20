@@ -51,7 +51,6 @@ runs:
         if: ${{ github.ref_name != 'main'}}
         uses: softprops/action-gh-release@v1
         with:
-          body: ${{ steps.releaseTemplate.outputs.contents }}
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}-${{ steps.date.outputs.date }}
           preRelease: true
