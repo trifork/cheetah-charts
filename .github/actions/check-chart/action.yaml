@@ -61,6 +61,8 @@ runs:
       continue-on-error: true
 
     - name: Delete old preRelease
+      env:
+        GH_TOKEN: ${{ inputs.token }} 
       if: steps.preRelease.outcome == 'success'
       run: gh release delete ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
       shell: bash
