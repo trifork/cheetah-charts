@@ -45,11 +45,11 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }} 
       run: |
-        output=$(gh release view cheetah-flink-v18.223.7-main --json isPrerelease --jq '.isPrerelease')
+        output=$(gh release view cheetah-flink-v184.223.7-main --json isPrerelease --jq '.isPrerelease')
         echo "::set-output name=changelog::$output"
       shell: bash
 
 
     - name: print variable from python
-      run: echo "${{ steps.python.outputs.changelog }}
+      run: echo ${{ steps.python.outputs.changelog }}
       shell: bash
