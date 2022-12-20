@@ -49,7 +49,7 @@ runs:
       - name: Pre-release
         if: ${{ github.ref_name != 'main'}}
         uses: softprops/action-gh-release@v1
-        with:
+        with: 
           token: ${{ inputs.token }}
           tag_name: ${{ inputs.name }}-v${{ inputs.version }}-prerelease-${{ github.ref_name }}
           preRelease: true
