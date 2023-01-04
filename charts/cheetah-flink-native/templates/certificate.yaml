@@ -6,8 +6,8 @@ metadata:
 spec:
   secretName: {{ $fullName }}-tls-cli
   issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
+    name: {{ certificate.issuer.name }}
+    kind: {{ certificate.issuer.kind }}
   commonName: {{ $fullName }}.cli.cheetah.trifork.dev
   dnsNames:
     - {{ $fullName }}.cli.cheetah.trifork.dev
