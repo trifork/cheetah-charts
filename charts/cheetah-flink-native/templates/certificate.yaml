@@ -1,0 +1,13 @@
+{{- $fullName := include "cheetah-flink-native.fullname" . -}}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ $fullName }}-tls-cli
+spec:
+  secretName: {{ $fullName }}-tls-cli
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: {{ $fullName }}.cli.cheetah.trifork.dev
+  dnsNames:
+    - {{ $fullName }}.cli.cheetah.trifork.dev
