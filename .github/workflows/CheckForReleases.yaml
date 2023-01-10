@@ -1,0 +1,39 @@
+name: Check For Releases
+
+on: 
+    push:
+      branches:
+        - "**"
+      tags-ignore:
+        - "**"
+
+jobs:
+  Check-if-a-new-release-or-prerelease-is-required:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check-out repository
+        uses: actions/checkout@v3
+
+      - name: cheetah-application
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-application
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: cheetah-flink
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: cheetah-flink-native
+        uses: ./.github/actions/check-chart
+        with: 
+          name: cheetah-flink-native
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: image-automation
+        uses: ./.github/actions/check-chart
+        with: 
+          name: image-automation
+          token: ${{ secrets.GITHUB_TOKEN }}
