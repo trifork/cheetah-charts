@@ -31,7 +31,7 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: {{ include "cheetah-flink-native.fullname" . }}-rest
+            name: {{ include "cheetah-flink-native.fullname" . | trunc 45 }}-rest
             port:
               number: {{ .Values.ingress.uiPort }}
 {{- end }}
