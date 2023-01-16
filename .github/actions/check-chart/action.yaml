@@ -10,11 +10,9 @@ inputs:
     description: "Token to access github API"
     required: true
 
-
 runs:
   using: composite
   steps:
-
     - name: Read Chart.yaml and collect version
       id: version
       uses: jbutcher5/read-yaml@1.6
@@ -29,7 +27,7 @@ runs:
     - name: Check if a release exist
       id: release
       env:
-        GH_TOKEN: ${{ inputs.token }} 
+        GH_TOKEN: ${{ inputs.token }}
       if: ${{ github.ref_name == 'main' }}
       run: |
         gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-${{ github.ref_name }}
@@ -39,7 +37,7 @@ runs:
     - name: Check if a preRelease exist
       id: preRelease
       env:
-        GH_TOKEN: ${{ inputs.token }} 
+        GH_TOKEN: ${{ inputs.token }}
       if: ${{ github.ref_name != 'main' }}
       run: |
         gh release view ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}
@@ -48,17 +46,15 @@ runs:
 
     - name: Delete old preRelease
       env:
-        GH_TOKEN: ${{ inputs.token }} 
+        GH_TOKEN: ${{ inputs.token }}
       if: ${{steps.preRelease.outcome == 'success'}}
       run: gh release delete ${{ inputs.name }}-v${{ steps.version.outputs.data }}-prerelease-${{ github.ref_name }}
       shell: bash
 
-    - name: Create prerelease or release  
+    - name: Create prerelease or release
       if: ${{steps.release.outcome != 'success' || steps.preRelease.outcome == 'success' || steps.preRelease.outcome != 'success'}}
       uses: ./.github/actions/create-release-or-prerelease
       with:
         name: ${{ inputs.name }}
         version: ${{ steps.version.outputs.data }}
         token: ${{ inputs.token }}
-
-
