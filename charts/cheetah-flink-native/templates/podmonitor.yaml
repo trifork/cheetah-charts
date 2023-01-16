@@ -12,6 +12,7 @@ spec:
     {{- toYaml .Values.monitoring.podTargetLabels | nindent 4 }}
   selector:
     matchLabels:
+      {{- include "cheetah-flink-native.selectorLabels" . | nindent 6 }}
       {{- toYaml .Values.monitoring.podMonitorSelectorLabels | nindent 6 }}
   podMetricsEndpoints:
     {{- toYaml .Values.monitoring.podMetricsEndpoints | nindent 4 }}

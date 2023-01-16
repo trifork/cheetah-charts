@@ -192,8 +192,8 @@ monitoring:
     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
     metrics.reporter.prom.port: "9249"
 
-  # include the podMonitorSelectorLabel which you have set in your prometheus-operator
-  # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors
+  # -- Additional pod selector labels, which are also added to the PodMonitor labels.
+  # Include labels which are selected for in the Prometheus operator
   podMonitorSelectorLabels:
     prometheus: cluster-metrics
     cheetah-monitoring: "true"
