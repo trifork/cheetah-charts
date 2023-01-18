@@ -53,8 +53,8 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.jobManager.metrics.portName | string | `"metrics"` |  |
 | flink.jobManager.metrics.port | int | `9249` |  |
 | flink.jobManager.extraPorts | list | `[]` |  |
-| flink.jobManager.resource.memory | string | `"1Gb"` |  |
-| flink.jobManager.resource.cpu | float | `0.5` |  |
+| flink.jobManager.resource.memory | string | `"1Gb"` | Memory to reserve for the Job Manager. The default value should be ok for most jobs. |
+| flink.jobManager.resource.cpu | float | `0.1` | CPU to reserve/limit for the Job Manager. Currently requests and limits are set to this value so the default value is a compromise between slowing the Job Manager down too much during startup and not reserving too much CPU unnecessarily. |
 | flink.jobManager.volumes | list | `[]` |  |
 | flink.jobManager.volumeMounts | list | `[]` |  |
 | flink.jobManager.podLabels | object | `{}` |  |
@@ -69,8 +69,8 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.taskManager.metrics.portName | string | `"metrics"` |  |
 | flink.taskManager.metrics.port | int | `9249` |  |
 | flink.taskManager.extraPorts | list | `[]` |  |
-| flink.taskManager.resource.memory | string | `"1Gb"` |  |
-| flink.taskManager.resource.cpu | float | `0.5` |  |
+| flink.taskManager.resource.memory | string | `"1Gb"` | Memory to reserve for each Task Manager. The amount needed depends on the amount of data to be processed by each Task Manager, and how much state it should store in memory. |
+| flink.taskManager.resource.cpu | float | `0.1` | CPU to reserve/limit for each Task Manager. Currently requests and limits are set to this value to the default value is a compromise between slowing the Task Manager down too much and not reserving too much CPU unneccesarily. This will impact the rate at which each Task Manager can process data directly. Setting it too low can also cause timeouts during checkpointing. |
 | flink.taskManager.podLabels | object | `{}` |  |
 | flink.taskManager.podAnnotations."cluster-autoscaler.kubernetes.io/safe-to-evict" | string | `"true"` |  |
 | flink.taskManager.additionalConfigs | object | `{}` | Any additional configuration passed to the taskmanager |
