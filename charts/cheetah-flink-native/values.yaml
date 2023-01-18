@@ -78,8 +78,10 @@ flink:
     extraPorts: []
 
     resource:
+      # -- Memory to reserve for the Job Manager. The default value should be ok for most jobs.
       memory: 1Gb
-      cpu: 0.5
+      # -- CPU to reserve/limit for the Job Manager. Currently requests and limits are set to this value so the default value is a compromise between slowing the Job Manager down too much during startup and not reserving too much CPU unnecessarily.
+      cpu: 0.1
 
     volumes: []
 
@@ -108,8 +110,10 @@ flink:
     extraPorts: []
 
     resource:
+      # -- Memory to reserve for each Task Manager. The amount needed depends on the amount of data to be processed by each Task Manager, and how much state it should store in memory.
       memory: 1Gb
-      cpu: 0.5
+      # -- CPU to reserve/limit for each Task Manager. Currently requests and limits are set to this value to the default value is a compromise between slowing the Task Manager down too much and not reserving too much CPU unneccesarily. This will impact the rate at which each Task Manager can process data directly. Setting it too low can also cause timeouts during checkpointing.
+      cpu: 0.1
 
     podLabels: {}
     podAnnotations:
