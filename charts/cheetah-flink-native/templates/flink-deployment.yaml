@@ -54,6 +54,8 @@ spec:
     state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "savepoints") }}
     state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "checkpoints") }}
     high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "ha") }}
+    kubernetes.jobmanager.cpu.limit-factor: "10.0"
+    kubernetes.taskmanager.cpu.limit-factor: "10.0"
     {{- toYaml . | nindent 4 }}
     {{ if $.Values.monitoring.enabled }}
       {{ with $.Values.monitoring.flinkProperties -}}
