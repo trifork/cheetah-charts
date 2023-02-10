@@ -1,6 +1,6 @@
 # cheetah-application
 
-![Version: 0.3.3](https://img.shields.io/badge/Version-0.3.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 A Helm chart for Cheetah Data Platform applications
 
@@ -30,6 +30,8 @@ A Helm chart for Cheetah Data Platform applications
 | podSecurityContext | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | containerPort | int | `80` |  |
+| volumes | list | `[]` |  |
+| volumeMounts | list | `[]` |  |
 | service.type | string | `"ClusterIP"` |  |
 | service.port | int | `80` |  |
 | ingress.enabled | bool | `false` | Whether to expose the service or not |

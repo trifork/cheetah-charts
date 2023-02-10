@@ -51,3 +51,12 @@ monitoring:
   enabled: true
   port: 1854
   path: /metrics
+
+volumes:
+  - name: webapi-volume
+    persistentVolumeClaim:
+      claimName: webapi-files
+
+volumeMounts:
+  - name: webapi-volume
+    mountPath: /files/
