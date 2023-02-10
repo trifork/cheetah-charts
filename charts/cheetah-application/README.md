@@ -30,6 +30,8 @@ A Helm chart for Cheetah Data Platform applications
 | podSecurityContext | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | containerPort | int | `80` |  |
+| volumes | list | `[]` |  |
+| volumeMounts | list | `[]` |  |
 | service.type | string | `"ClusterIP"` |  |
 | service.port | int | `80` |  |
 | ingress.enabled | bool | `false` | Whether to expose the service or not |

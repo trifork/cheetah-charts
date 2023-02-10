@@ -48,6 +48,10 @@ securityContext:
 
 containerPort: 80
 
+volumes: []
+
+volumeMounts: []
+
 service:
   type: ClusterIP
   port: 80
