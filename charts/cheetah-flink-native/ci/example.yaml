@@ -19,7 +19,6 @@ flink:
   checkpoints:
     enabled: true
 
-  version: 1.14.4
   job:
     jarFile: /opt/flink/usrlib/artifacts/processing-1.0-SNAPSHOT.jar
     className: com.trifork.cheetah.processing.ExampleJob

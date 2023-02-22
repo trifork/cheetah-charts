@@ -51,7 +51,7 @@ vault:
 
 flink:
   # -- Which Flink version to use
-  version: v1_14
+  version: v1_15
 
   configuration:
     s3.path-style-access: "true"
@@ -193,7 +193,6 @@ monitoring:
   # See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/
   flinkProperties:
     metrics.reporters: prom
-    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
     metrics.reporter.prom.port: "9249"
 
   # -- Additional pod selector labels, which are also added to the PodMonitor labels.
