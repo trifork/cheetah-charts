@@ -156,7 +156,7 @@ monitoring:
 
   flinkProperties:
     metrics.reporters: prom
-    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+    metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
 
   # include the podMonitorSelectorLabel which you have set in your prometheus-operator
   # set podMonitorSelectorLabels {} if your prometheus-operator is set to collect all podMonitors
