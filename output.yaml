@@ -1,0 +1,253 @@
+---
+# Source: cheetah-flink-native/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    
+    helm.sh/chart: cheetah-flink-native-0.2.0
+    app.kubernetes.io/name: cheetah-flink-native
+    app.kubernetes.io/instance: my-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+  name: my-test-cheetah-flink-native
+---
+# Source: cheetah-flink-native/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-test-cheetah-flink-native-process-tls
+  annotations:
+    replicator.v1.mittwald.de/replicate-from: flink-operator/flink-jobs-tls
+type: kubernetes.io/tls
+data:
+  tls.key: ""
+  tls.crt: ""
+---
+# Source: cheetah-flink-native/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    
+    helm.sh/chart: cheetah-flink-native-0.2.0
+    app.kubernetes.io/name: cheetah-flink-native
+    app.kubernetes.io/instance: my-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+  name: my-test-cheetah-flink-native-role
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - configmaps
+    verbs:
+    - '*'
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    verbs:
+    - '*'
+---
+# Source: cheetah-flink-native/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    
+    helm.sh/chart: cheetah-flink-native-0.2.0
+    app.kubernetes.io/name: cheetah-flink-native
+    app.kubernetes.io/instance: my-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+  name: my-test-cheetah-flink-native-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: my-test-cheetah-flink-native-role
+subjects:
+- kind: ServiceAccount
+  name: my-test-cheetah-flink-native
+---
+# Source: cheetah-flink-native/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-test-cheetah-flink-native
+  labels:
+    
+    helm.sh/chart: cheetah-flink-native-0.2.0
+    app.kubernetes.io/name: cheetah-flink-native
+    app.kubernetes.io/instance: my-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^([^.?]*[^/])$ $1/ redirect;
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: "nginx"
+  tls:
+    - hosts:
+        - flink.cheetah.trifork.dev
+      secretName: my-test-cheetah-flink-native-process-tls
+  rules:
+  - host: flink.cheetah.trifork.dev
+    http:
+      paths:
+      - path: /all/my-test(/|$)?(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: my-test-cheetah-flink-native-rest
+            port:
+              number: 8081
+---
+# Source: cheetah-flink-native/templates/flink-deployment.yaml
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: my-test-cheetah-flink-native
+  labels:
+    
+    helm.sh/chart: cheetah-flink-native-0.2.0
+    app.kubernetes.io/name: cheetah-flink-native
+    app.kubernetes.io/instance: my-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    
+    
+    vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+    vault.security.banzaicloud.io/vault-serviceaccount: default
+    
+    
+spec:
+  image: "ghcr.io/trifork/cheetah-processing-example@sha256:4a3db816d7e61d2f2ee709429abad01266450befb8aa230d4a2b1b1106e6f9bf"
+  imagePullPolicy: Always
+  serviceAccount: my-test-cheetah-flink-native
+  flinkVersion: "v1_15_3"
+  job:
+    jarURI: 
+    parallelism: 2
+    
+    entryClass: com.trifork.cheetah.processing.ExampleJob
+    
+    args:
+      - "---input-kafka-topic"
+      - "processed"
+      - "---input-kafka-bootstrap-servers"
+      - "kafka-brokers.kafka:9092"
+      - "---input-kafka-group.id"
+      - "storage-1"
+      - "---es-hosts"
+      - "elasticsearch-coordinating-only.elasticsearch:9200"
+      - "---es-user"
+      - "elastic"
+      - "---es-password"
+      - "d6MR9LN8kwpqlZClVuP3WYxfZiuOEOEN"
+      - "---es-index-prefix"
+      - "test-2"
+    state: running
+    upgradeMode: "savepoint"
+
+  flinkConfiguration:
+    state.savepoints.dir: s3p://flink/my-test-cheetah-flink-native/savepoints
+    state.checkpoints.dir: s3p://flink/my-test-cheetah-flink-native/checkpoints
+    high-availability.storageDir: s3p://flink/my-test-cheetah-flink-native/ha
+    kubernetes.jobmanager.cpu.limit-factor: "10.0"
+    kubernetes.taskmanager.cpu.limit-factor: "10.0"
+    execution.checkpointing.interval: 10 minutes
+    execution.checkpointing.min-pause: 10 minutes
+    execution.checkpointing.timeout: 5 minutes
+    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    rest.flamegraph.enabled: "true"
+    s3.access-key: vault:secret/data/global/flink/s3/cheetah-flink#accessKey
+    s3.endpoint: vault:secret/data/global/flink/s3/cheetah-flink#endpoint
+    s3.path-style-access: "true"
+    s3.secret-key: vault:secret/data/global/flink/s3/cheetah-flink#secretKey
+    state.backend: hashmap
+    taskmanager.numberOfTaskSlots: "2"
+  
+    metrics.reporter.prom.port: "9249"
+    metrics.reporters: prom
+  
+  jobManager:
+    replicas: 1
+    resource:
+      cpu: 0.1
+      memory: 1Gb
+  
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: jobManager-pod-template
+        labels:
+          backstage.io/kubernetes-id: my-test
+          app.kubernetes.io/name: cheetah-flink-native
+          app.kubernetes.io/instance: my-test
+          cheetah-monitoring: "true"
+          prometheus: cluster-metrics
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+            - name: ui
+              containerPort: 8081
+            - name: metrics
+              containerPort: 9249
+        
+        
+  
+  taskManager:
+    
+    resource:
+      cpu: 0.1
+      memory: 1Gb
+  
+    podTemplate:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: taskManager-pod-template
+        labels:
+          backstage.io/kubernetes-id: my-test
+          app.kubernetes.io/name: cheetah-flink-native
+          app.kubernetes.io/instance: my-test
+          cheetah-monitoring: "true"
+          prometheus: cluster-metrics
+        annotations:
+          
+          cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      spec:
+        containers:
+          - name: flink-main-container
+            ports:
+            - name: metrics
+              containerPort: 9249
+---
+# Source: cheetah-flink-native/templates/podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: my-test-cheetah-flink-native
+  labels:
+    cheetah-monitoring: "true"
+    prometheus: cluster-metrics
+spec:
+  podTargetLabels:
+    - component
+    - cluster
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cheetah-flink-native
+      app.kubernetes.io/instance: my-test
+      cheetah-monitoring: "true"
+      prometheus: cluster-metrics
+  podMetricsEndpoints:
+    - port: metrics

@@ -49,19 +49,22 @@ spec:
     upgradeMode: {{ .upgradeMode | quote }}
   {{- end }}
 
-  {{- with .Values.flink.configuration }}
   flinkConfiguration:
-    state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "savepoints") }}
-    state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "checkpoints") }}
-    high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" $ "dir" "ha") }}
+    state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "savepoints") }}
+    state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "checkpoints") }}
+    high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "ha") }}
     kubernetes.jobmanager.cpu.limit-factor: "10.0"
     kubernetes.taskmanager.cpu.limit-factor: "10.0"
-    {{- toYaml . | nindent 4 }}
-    {{ if $.Values.monitoring.enabled }}
-      {{ with $.Values.monitoring.flinkProperties -}}
-        {{ toYaml . | nindent 4 }}
-      {{- end }}
+  {{- toYaml .Values.flink.configuration | nindent 4 }}
+  {{ if .Values.monitoring.enabled }}
+    {{- if eq "v1_15" .Values.flink.version }}
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+    {{- else if eq "v1_16" .Values.flink.version }}
+    metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
     {{- end }}
-  {{- end -}}
-  {{ include "cheetah-flink-native.manager" (dict "manager" "jobManager" "value" .Values.flink.jobManager "context" $) | nindent 2 }}
-  {{ include "cheetah-flink-native.manager" (dict "manager" "taskManager" "value" .Values.flink.taskManager "context" $) | nindent 2 }}
+    {{- with .Values.monitoring.flinkProperties }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "jobManager" "value" .Values.flink.jobManager "context" .) | nindent 2 }}
+  {{ include "cheetah-flink-native.manager" (dict "manager" "taskManager" "value" .Values.flink.taskManager "context" .) | nindent 2 }}
