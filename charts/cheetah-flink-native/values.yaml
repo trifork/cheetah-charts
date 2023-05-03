@@ -54,7 +54,6 @@ flink:
   version: v1_15
 
   configuration:
-    s3.path-style-access: "true"
     state.backend: "hashmap"
     high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
     execution.checkpointing.interval: "10 minutes"
@@ -62,9 +61,14 @@ flink:
     execution.checkpointing.timeout: "5 minutes"
     rest.flamegraph.enabled: "true"
     taskmanager.numberOfTaskSlots: "2"
-    s3.access-key: "vault:secret/data/global/flink/s3/cheetah-flink#accessKey"
-    s3.secret-key: "vault:secret/data/global/flink/s3/cheetah-flink#secretKey"
-    s3.endpoint: "vault:secret/data/global/flink/s3/cheetah-flink#endpoint"
+    kubernetes.taskmanager.cpu.limit-factor: "10.0"
+    kubernetes.jobmanager.cpu.limit-factor: "10.0"
+
+  s3:
+    pathStyleAccess: "true"
+    endpoint: "vault:secret/data/global/flink/s3/cheetah-flink#endpoint"
+    accessKey: "vault:secret/data/global/flink/s3/cheetah-flink#accessKey"
+    secretKey: "vault:secret/data/global/flink/s3/cheetah-flink#secretKey"
 
   jobManager:
     replicas: 1

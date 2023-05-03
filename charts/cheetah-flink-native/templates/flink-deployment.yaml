@@ -49,12 +49,26 @@ spec:
     upgradeMode: {{ .upgradeMode | quote }}
   {{- end }}
 
+  podTemplate:
+    spec:
+        containers:
+          - name: flink-main-container
+            env:
+              {{- with .Values.flink.s3 }}
+              - name: AWS_ACCESS_KEY
+                value: {{ .accessKey }}
+              - name: AWS_SECRET_KEY
+                value: {{ .secretKey }}
+              {{- end }}
+
   flinkConfiguration:
     state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "savepoints") }}
     state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "checkpoints") }}
     high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "ha") }}
-    kubernetes.jobmanager.cpu.limit-factor: "10.0"
-    kubernetes.taskmanager.cpu.limit-factor: "10.0"
+    {{- with .Values.flink.s3 }}
+    s3.path-style-access: {{ .pathStyleAccess | quote }}
+    s3.endpoint: {{ .endpoint | quote }}
+    {{- end }}
   {{- toYaml .Values.flink.configuration | nindent 4 }}
   {{ if .Values.monitoring.enabled }}
     {{- if eq "v1_15" .Values.flink.version }}
