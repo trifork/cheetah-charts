@@ -1,6 +1,6 @@
 # cheetah-flink-native
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -37,7 +37,6 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | vault.tlsSecret | string | `"vault-tls"` |  |
 | vault.serviceaccount | string | `"default"` |  |
 | flink.version | string | `"v1_15"` | Which Flink version to use |
-| flink.configuration."s3.path-style-access" | string | `"true"` |  |
 | flink.configuration."state.backend" | string | `"hashmap"` |  |
 | flink.configuration.high-availability | string | `"org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory"` |  |
 | flink.configuration."execution.checkpointing.interval" | string | `"10 minutes"` |  |
@@ -45,9 +44,12 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.configuration."execution.checkpointing.timeout" | string | `"5 minutes"` |  |
 | flink.configuration."rest.flamegraph.enabled" | string | `"true"` |  |
 | flink.configuration."taskmanager.numberOfTaskSlots" | string | `"2"` |  |
-| flink.configuration."s3.access-key" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#accessKey"` |  |
-| flink.configuration."s3.secret-key" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#secretKey"` |  |
-| flink.configuration."s3.endpoint" | string | `"vault:secret/data/global/flink/s3/cheetah-flink#endpoint"` |  |
+| flink.configuration."kubernetes.taskmanager.cpu.limit-factor" | string | `"10.0"` |  |
+| flink.configuration."kubernetes.jobmanager.cpu.limit-factor" | string | `"10.0"` |  |
+| flink.s3.pathStyleAccess | string | `"true"` |  |
+| flink.s3.endpoint | string | `"vault:secret/data/global/flink/s3/cheetah-flink#endpoint"` |  |
+| flink.s3.accessKey | string | `"vault:secret/data/global/flink/s3/cheetah-flink#accessKey"` |  |
+| flink.s3.secretKey | string | `"vault:secret/data/global/flink/s3/cheetah-flink#secretKey"` |  |
 | flink.jobManager.replicas | int | `1` |  |
 | flink.jobManager.metrics.enabled | bool | `true` | enable metrics ports for jobManager |
 | flink.jobManager.metrics.portName | string | `"metrics"` |  |
