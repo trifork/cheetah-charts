@@ -1,6 +1,6 @@
 # cheetah-flink-native
 
-![Version: 0.3.2](https://img.shields.io/badge/Version-0.3.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
+![Version: 0.3.3](https://img.shields.io/badge/Version-0.3.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -49,7 +49,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.s3.secretKey | string | `"vault:secret/data/global/flink/s3/cheetah-flink#secretKey"` |  |
 | flink.jobManager.vault.enabled | bool | `true` |  |
 | flink.jobManager.vault.tlsSecret | string | `"vault-tls"` |  |
-| flink.jobManager.vault.serviceaccount | string | `"default"` |  |
+| flink.jobManager.vault.role | string | `"default"` |  |
 | flink.jobManager.replicas | int | `1` |  |
 | flink.jobManager.metrics.enabled | bool | `true` | enable metrics ports for jobManager |
 | flink.jobManager.metrics.portName | string | `"metrics"` |  |
@@ -66,7 +66,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.jobManager.env | list | `[]` |  |
 | flink.taskManager.vault.enabled | bool | `true` |  |
 | flink.taskManager.vault.tlsSecret | string | `"vault-tls"` |  |
-| flink.taskManager.vault.serviceaccount | string | `"default"` |  |
+| flink.taskManager.vault.role | string | `"default"` |  |
 | flink.taskManager.replicas | int | `1` |  |
 | flink.taskManager.volumes | list | `[]` |  |
 | flink.taskManager.volumeMounts | list | `[]` |  |

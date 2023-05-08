@@ -27,7 +27,7 @@
         {{- if .value.vault.enabled }}
           {{- with .value.vault }}
         vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
-        vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
+        vault.security.banzaicloud.io/vault-role: {{ .role }}
           {{- end }}
         {{- end }}
       {{- end }}
@@ -50,7 +50,7 @@
           {{ if eq .manager "jobManager" -}}
           {{ $topicsAndEnv = concat $topicsAndEnv (.context.Values.flink.job.topics | default list) }}
           {{- end -}}
-          {{ if or $topicsAndEnv (and .context.Values.flink.s3 (eq .manager "jobManager") ) }}
+          {{ if or $topicsAndEnv .context.Values.flink.s3 }}
           env:
           {{- with $topicsAndEnv }}
           {{- toYaml . | nindent 10 }}
