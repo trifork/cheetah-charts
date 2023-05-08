@@ -50,9 +50,17 @@
           {{ if eq .manager "jobManager" -}}
           {{ $topicsAndEnv = concat $topicsAndEnv (.context.Values.flink.job.topics | default list) }}
           {{- end -}}
-          {{- with $topicsAndEnv }}
+          {{ if or $topicsAndEnv (and .context.Values.flink.s3 (eq .manager "jobManager") ) }}
           env:
+          {{- with $topicsAndEnv }}
           {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .context.Values.flink.s3 }}
+            - name: AWS_ACCESS_KEY
+              value: {{ .accessKey }}
+            - name: AWS_SECRET_KEY
+              value: {{ .secretKey }}
+          {{- end }}
           {{- end }}
 
           {{- with .value.volumeMounts }}
