@@ -4,13 +4,6 @@ metadata:
   name: {{ include "cheetah-flink-native.fullname" . | trunc 45 }}
   labels:
     {{- include "cheetah-flink-native.labels" . | nindent 4 }}
-  annotations:
-    {{ if .Values.vault.enabled }}
-    {{ with .Values.vault }}
-    vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
-    vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
-    {{ end }}
-    {{ end }}
 spec:
   image: {{ include "cheetah-flink-native.image" . | quote }}
   imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -48,18 +41,6 @@ spec:
     {{- end }}
     upgradeMode: {{ .upgradeMode | quote }}
   {{- end }}
-
-  podTemplate:
-    spec:
-        containers:
-          - name: flink-main-container
-            env:
-              {{- with .Values.flink.s3 }}
-              - name: AWS_ACCESS_KEY
-                value: {{ .accessKey }}
-              - name: AWS_SECRET_KEY
-                value: {{ .secretKey }}
-              {{- end }}
 
   flinkConfiguration:
     state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "savepoints") }}
