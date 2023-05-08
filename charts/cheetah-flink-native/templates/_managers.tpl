@@ -19,9 +19,17 @@
       {{- with .value.podLabels }}
         {{ toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .value.podAnnotations }}
+      {{- if or .value.podAnnotations .value.vault.enabled }}
       annotations:
+        {{- with .value.podAnnotations }}
         {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .value.vault.enabled }}
+          {{- with .value.vault }}
+        vault.security.banzaicloud.io/vault-tls-secret: {{ .tlsSecret }}
+        vault.security.banzaicloud.io/vault-serviceaccount: {{ .serviceaccount }}
+          {{- end }}
+        {{- end }}
       {{- end }}
     spec:
       containers:

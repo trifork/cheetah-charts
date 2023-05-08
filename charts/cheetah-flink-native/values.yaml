@@ -44,11 +44,6 @@ ingress:
   # -- the ui port. Ingress will hit the service on this port
   uiPort: 8081
 
-vault:
-  enabled: true
-  tlsSecret: vault-tls
-  serviceaccount: default
-
 flink:
   # -- Which Flink version to use
   version: v1_15
@@ -71,6 +66,10 @@ flink:
     secretKey: "vault:secret/data/global/flink/s3/cheetah-flink#secretKey"
 
   jobManager:
+    vault:
+      enabled: true
+      tlsSecret: vault-tls
+      serviceaccount: default
     replicas: 1
 
     metrics:
@@ -102,6 +101,10 @@ flink:
     env: []
 
   taskManager:
+    vault:
+      enabled: true
+      tlsSecret: vault-tls
+      serviceaccount: default
     replicas: 1
     volumes: []
     volumeMounts: []
