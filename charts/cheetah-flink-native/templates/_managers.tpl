@@ -56,10 +56,10 @@
           {{- toYaml . | nindent 10 }}
           {{- end }}
           {{- with .context.Values.flink.s3 }}
-            - name: AWS_ACCESS_KEY
-              value: {{ .accessKey }}
-            - name: AWS_SECRET_KEY
-              value: {{ .secretKey }}
+          - name: AWS_ACCESS_KEY
+            value: {{ .accessKey }}
+          - name: AWS_SECRET_KEY
+            value: {{ .secretKey }}
           {{- end }}
           {{- end }}
 
