@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.ref }}
@@ -71,5 +71,6 @@ jobs:
 
           git update-index -q --ignore-submodules --refresh
           if ! git diff-files --quiet --ignore-submodules -- ; then
+            git diff --raw
             echo '::error:: Generating documentation caused a change. run "docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/"' && exit 1
           fi
