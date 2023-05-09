@@ -1,0 +1,30 @@
+checks:
+  # reliability
+  multipleReplicasForDeployment: ignore
+  priorityClassNotSet: ignore
+  tagNotSpecified: ignore # shouldn't be specified in a generic chart
+  pullPolicyNotAlways: warning
+  readinessProbeMissing: warning
+  livenessProbeMissing: warning
+  metadataAndNameMismatched: ignore
+  pdbDisruptionsIsZero: warning
+  missingPodDisruptionBudget: ignore
+
+  # efficiency
+  cpuRequestsMissing: warning
+  cpuLimitsMissing: warning
+  memoryRequestsMissing: warning
+  memoryLimitsMissing: warning
+
+  # security
+  hostIPCSet: danger
+  hostPIDSet: danger
+  notReadOnlyRootFilesystem: warning
+  privilegeEscalationAllowed: danger
+  runAsRootAllowed: warning
+  runAsPrivileged: danger
+  dangerousCapabilities: danger
+  insecureCapabilities: warning
+  hostNetworkSet: warning
+  hostPortSet: warning
+  tlsSettingsMissing: warning
