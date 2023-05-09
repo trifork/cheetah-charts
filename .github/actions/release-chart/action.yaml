@@ -28,8 +28,12 @@ runs:
       shell: bash
       id: versions
       run: |-
-        echo "new_version=$(yq '.version' charts/${{inputs.name}}/Chart.yaml)" >> "$GITHUB_OUTPUT"
-        echo "old_version=$(git show HEAD:charts/${{inputs.name}}/Chart.yaml | yq '.version')" >> "$GITHUB_OUTPUT"
+        new_version="$(yq '.version' charts/${{inputs.name}}/Chart.yaml)"
+        old_version=$(git show HEAD:charts/${{inputs.name}}/Chart.yaml | yq '.version')
+        echo "new version: $new_version"
+        echo "old version: $old_version"
+        echo "new_version=${new_version}" >> "$GITHUB_OUTPUT"
+        echo "old_version=${old_version}" >> "$GITHUB_OUTPUT"
 
     # not main branch - create a Github pre-release, unless the chart version hasn't changed
     - name: Delete old pre-release
