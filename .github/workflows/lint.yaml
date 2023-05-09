@@ -1,4 +1,4 @@
-name: Chart linting and testing
+name: Chart linting
 
 on:
   pull_request:
@@ -7,9 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  chart-lint:
+  lint:
     name: Helm chart linting
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
@@ -32,6 +33,32 @@ jobs:
 
       - name: Chart linting
         run: ct lint --config .github/ct-config.yaml
+
+      - name: Setup polaris
+        uses: fairwindsops/polaris/.github/actions/setup-polaris@master
+        with:
+          version: 7.4.1
+
+      - name: Polaris audit
+        run: |
+          for dir in charts/*/; do
+            if [ ! -d "$dir/ci" ]; then
+              polaris audit \
+                --set-exit-code-below-score 90 \
+                --format pretty \
+                --config .github/polaris.yaml \
+                --helm-chart "$dir"
+              continue
+            fi
+            for file in "$dir"/ci/*.yaml; do
+              polaris audit \
+                --set-exit-code-below-score 90 \
+                --format pretty \
+                --config .github/polaris.yaml \
+                --helm-chart "$dir" \
+                --helm-values "$file"
+            done
+          done
 
       - name: Render documentation
         run: |

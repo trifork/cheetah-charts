@@ -1,0 +1,85 @@
+name: Create release/pre-release if it doesn't exist
+description: This action checks if a specific release/pre-release exist. If it doesn't, it creates it
+
+inputs:
+  name:
+    description: Name of the Chart
+    required: true
+
+  token:
+    description: Token to access github API
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install yq
+      shell: bash
+      env:
+        YQ_VERSION: v4.33.3
+      run: |-
+        TMPDIR="$(mktemp -d)"
+        echo "$TMPDIR" >> "$GITHUB_PATH"
+
+        curl -sL https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o "$TMPDIR/yq"
+        chmod +x "$TMPDIR/yq"
+
+    - name: Get chart versions
+      shell: bash
+      id: versions
+      run: |-
+        echo "new_version=$(yq '.version' charts/${{inputs.name}}/Chart.yaml)" >> "$GITHUB_OUTPUT"
+        echo "old_version=$(git show HEAD:charts/${{inputs.name}}/Chart.yaml | yq '.version')" >> "$GITHUB_OUTPUT"
+
+    # not main branch - create a Github pre-release, unless the chart version hasn't changed
+    - name: Delete old pre-release
+      shell: bash
+      if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: gh release delete ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
+      continue-on-error: true
+
+    - name: Pre-release
+      if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
+      uses: softprops/action-gh-release@v1
+      with:
+        token: ${{ inputs.token }}
+        tag_name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
+        preRelease: true
+        name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
+
+    # main branch - create a Github release
+    - name: Check if a release exist
+      id: release
+      shell: bash
+      if: ${{ github.ref_name == 'main' }}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |-
+        if gh release view ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}; then
+          echo '::error:: Github release ${{ inputs.name }}-${{ steps.versions.outputs.new_version }} already exists' >&2
+          exit 1
+        fi
+
+    - name: Delete old pre-release from release
+      id: release-preRelease
+      shell: bash
+      if: ${{ github.ref_name == 'main' }}
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        gh release list | grep "${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-.*" | while read -r line; do 
+          prerelease=$(echo "$line" | awk '{print $1}')
+          gh release delete "$prerelease"
+        done
+
+    - name: Release
+      if: ${{ github.ref_name == 'main' }}
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: ${{ github.workspace }}/.github/release-template.md
+        token: ${{ inputs.token }}
+        tag_name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}
+        preRelease: false
+        name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}

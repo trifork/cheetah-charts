@@ -1,33 +1,36 @@
-name: Check For Releases
+name: Release to Github releases
 
 on:
   push:
     branches:
-      - "**"
-    tags-ignore:
-      - "**"
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: {}
 
 jobs:
-  Check-if-a-new-release-or-prerelease-is-required:
+  release-and-prerelease:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check-out repository
         uses: actions/checkout@v3
 
       - name: cheetah-application
-        uses: ./.github/actions/check-chart
+        uses: ./.github/actions/release-chart
         with:
           name: cheetah-application
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: cheetah-flink-native
-        uses: ./.github/actions/check-chart
+        uses: ./.github/actions/release-chart
         with:
           name: cheetah-flink-native
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: image-automation
-        uses: ./.github/actions/check-chart
+        uses: ./.github/actions/release-chart
         with:
           name: image-automation
           token: ${{ secrets.GITHUB_TOKEN }}
