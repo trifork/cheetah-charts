@@ -42,7 +42,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |-
-        gh release delete ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }} || echo "No release with this name"
+        gh release delete ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }} || true
 
     - name: Pre-release
       if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
@@ -67,7 +67,6 @@ runs:
         fi
 
     - name: Delete old pre-release from release
-      id: release-preRelease
       shell: bash
       if: ${{ github.ref_name == 'main' }}
       env:
@@ -75,6 +74,7 @@ runs:
       run: |
         gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*" | while read -r line; do 
           prerelease=$(echo "$line" | awk '{print $1}')
+          echo "Deleting pre-release $prerelease"
           gh release delete "$prerelease"
         done
 
