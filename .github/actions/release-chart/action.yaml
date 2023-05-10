@@ -29,7 +29,7 @@ runs:
       id: versions
       run: |-
         new_version="$(yq '.version' charts/${{inputs.name}}/Chart.yaml)"
-        old_version=$(git show HEAD:charts/${{inputs.name}}/Chart.yaml | yq '.version')
+        old_version=$(git show origin:charts/${{inputs.name}}/Chart.yaml | yq '.version')
         echo "new version: $new_version"
         echo "old version: $old_version"
         echo "new_version=${new_version}" >> "$GITHUB_OUTPUT"
