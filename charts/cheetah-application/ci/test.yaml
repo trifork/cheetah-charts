@@ -1,12 +1,16 @@
 image:
   repository: ghcr.io/trifork/cheetah-webapi
-  tag: main-2058545582 # {"$imagepolicy": "query-trifork-team:webapi-automation:tag"}
+  tag: main
 imagePullSecrets:
   - name: accesstoken-ghcr-io
+
+replicaCount: 2
+
 podAnnotations:
   linkerd.io/inject: disabled
 podLabels:
   mynameis: georgio
+
 resources:
   requests:
     memory: "64Mi"
@@ -14,6 +18,7 @@ resources:
   limits:
     memory: "128Mi"
     cpu: "500m"
+
 ingress:
   enabled: true
   hosts:
@@ -23,6 +28,7 @@ ingress:
           pathType: ImplementationSpecific
   tls:
     secretName: tls-secret
+
 env:
   - name: DOTNET_ENVIRONMENT
     value: "Development"
@@ -32,20 +38,21 @@ env:
     value: "test_watermeterreading"
   - name: ElasticSearch__Url
     value: "http://elasticsearch-coordinating-only.elasticsearch:9200"
-    #tmp untill secret works
-#- name: ElasticSearch__UserName
-#  value: "elastic"
-#- name: ElasticSearch__Password
-#  value: "d6MR9LN8kwpqlZClVuP3WYxfZiuOEOEN"
+
 envFrom:
   - secretRef:
       name: cheetah-webapi-secrets
-startupProbe:
-  enabled: false
-livenessProbe:
-  enabled: false
-readinessProbe:
-  enabled: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
 
 monitoring:
   enabled: true

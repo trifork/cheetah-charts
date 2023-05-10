@@ -1,0 +1,41 @@
+name: Release to Github releases
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-and-prerelease:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: cheetah-application
+        uses: ./.github/actions/release-chart
+        with:
+          name: cheetah-application
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: cheetah-flink-native
+        uses: ./.github/actions/release-chart
+        with:
+          name: cheetah-flink-native
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: image-automation
+        uses: ./.github/actions/release-chart
+        with:
+          name: image-automation
+          token: ${{ secrets.GITHUB_TOKEN }}
