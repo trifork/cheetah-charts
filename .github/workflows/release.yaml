@@ -22,10 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - run: |-
-          git branch -r
-          exit 1
-
       - name: cheetah-application
         uses: ./.github/actions/release-chart
         with:
