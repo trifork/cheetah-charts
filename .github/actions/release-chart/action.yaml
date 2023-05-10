@@ -24,6 +24,10 @@ runs:
         curl -sL https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o "$TMPDIR/yq"
         chmod +x "$TMPDIR/yq"
 
+    - run: |-
+        git branch -r
+      shell: bash
+
     - name: Get chart versions
       shell: bash
       id: versions
