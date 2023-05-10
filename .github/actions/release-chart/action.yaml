@@ -24,16 +24,12 @@ runs:
         curl -sL https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64 -o "$TMPDIR/yq"
         chmod +x "$TMPDIR/yq"
 
-    - run: |-
-        git branch -r
-      shell: bash
-
     - name: Get chart versions
       shell: bash
       id: versions
       run: |-
         new_version="$(yq '.version' charts/${{inputs.name}}/Chart.yaml)"
-        old_version=$(git show --raw main:charts/${{inputs.name}}/Chart.yaml | yq '.version')
+        old_version=$(git show --raw origin/main:charts/${{inputs.name}}/Chart.yaml | yq '.version')
         echo "new version: $new_version"
         echo "old version: $old_version"
         echo "new_version=${new_version}" >> "$GITHUB_OUTPUT"
