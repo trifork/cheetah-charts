@@ -41,17 +41,17 @@ runs:
       if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
       env:
         GH_TOKEN: ${{ inputs.token }}
-      run: gh release delete ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
-      continue-on-error: true
+      run: |-
+        gh release delete ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }} || echo "No release with this name"
 
     - name: Pre-release
       if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
       uses: softprops/action-gh-release@v1
       with:
         token: ${{ inputs.token }}
-        tag_name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
+        tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
         preRelease: true
-        name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-${{ github.ref_name }}
+        name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
 
     # main branch - create a Github release
     - name: Check if a release exist
@@ -73,7 +73,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |
-        gh release list | grep "${{ inputs.name }}-${{ steps.version.outputs.new_version }}-rc-.*" | while read -r line; do 
+        gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*" | while read -r line; do 
           prerelease=$(echo "$line" | awk '{print $1}')
           gh release delete "$prerelease"
         done
@@ -84,6 +84,6 @@ runs:
       with:
         body_path: ${{ github.workspace }}/.github/release-template.md
         token: ${{ inputs.token }}
-        tag_name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}
+        tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
         preRelease: false
-        name: ${{ inputs.name }}-${{ steps.version.outputs.new_version }}
+        name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
