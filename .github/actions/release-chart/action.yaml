@@ -28,58 +28,55 @@ runs:
       shell: bash
       id: versions
       run: |-
-        new_version="$(yq '.version' charts/${{inputs.name}}/Chart.yaml)"
-        old_version=$(git show --raw origin/main:charts/${{inputs.name}}/Chart.yaml | yq '.version')
+        new_version="$(yq '.version' charts/${{ inputs.name }}/Chart.yaml)"
+        old_version=$(git show --raw origin/main:charts/${{ inputs.name }}/Chart.yaml | yq '.version')
         echo "new version: $new_version"
         echo "old version: $old_version"
         echo "new_version=${new_version}" >> "$GITHUB_OUTPUT"
         echo "old_version=${old_version}" >> "$GITHUB_OUTPUT"
 
+    - name: Create packages
+      shell: bash
+      run: |-
+        echo "Updating dependencies for '$chart'..."
+        helm dependency update charts/${{ inputs.name }}
+        helm package charts/${{ inputs.name }}
+
     # not main branch - create a Github pre-release, unless the chart version hasn't changed
     - name: Delete old pre-release
       shell: bash
-      if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
+      if: github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |-
         gh release delete ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }} || echo "No release with this name"
 
     - name: Pre-release
-      if: ${{ github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version }}
+      if: github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version
       uses: softprops/action-gh-release@v1
       with:
         token: ${{ inputs.token }}
         tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
         preRelease: true
         name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
+        files: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}.tgz
 
     # main branch - create a Github release
     - name: Check if a release exist
       id: release
       shell: bash
-      if: ${{ github.ref_name == 'main' }}
+      if: github.ref_name == 'main'
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |-
+        echo 'exists=false' >> "$GITHUB_OUTPUT"
         if gh release view ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}; then
-          echo '::error:: Github release ${{ inputs.name }}-${{ steps.versions.outputs.new_version }} already exists' >&2
-          exit 1
+          echo 'Github release ${{ inputs.name }}-${{ steps.versions.outputs.new_version }} already exists'
+          echo 'exists=true' >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Delete old pre-release from release
-      shell: bash
-      if: ${{ github.ref_name == 'main' }}
-      env:
-        GH_TOKEN: ${{ inputs.token }}
-      run: |
-        gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*" | while read -r line; do 
-          prerelease=$(echo "$line" | awk '{print $1}')
-          echo "Deleting pre-release $prerelease"
-          gh release delete "$prerelease" --yes
-        done
-
     - name: Release
-      if: ${{ github.ref_name == 'main' }}
+      if: github.ref_name == 'main' && steps.release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v1
       with:
         body_path: ${{ github.workspace }}/.github/release-template.md
@@ -87,3 +84,16 @@ runs:
         tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
         preRelease: false
         name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
+        files: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}.tgz
+
+    - name: Delete old pre-release from release
+      shell: bash
+      if: github.ref_name == 'main'
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        gh release list | awk "/${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*/" | while read -r line; do 
+          prerelease=$(echo "$line" | awk '{print $1}')
+          echo "Deleting pre-release $prerelease"
+          gh release delete "$prerelease" --yes
+        done
