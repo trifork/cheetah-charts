@@ -54,6 +54,15 @@ runs:
         name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
 
     # main branch - create a Github release
+    - name: debug
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |-
+        gh release list
+        gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*"
+        exit 1
+
     - name: Check if a release exist
       id: release
       shell: bash

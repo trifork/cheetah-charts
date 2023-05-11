@@ -28,14 +28,14 @@ jobs:
           name: cheetah-application
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: cheetah-flink-native
-        uses: ./.github/actions/release-chart
-        with:
-          name: cheetah-flink-native
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: cheetah-flink-native
+      #   uses: ./.github/actions/release-chart
+      #   with:
+      #     name: cheetah-flink-native
+      #     token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: image-automation
-        uses: ./.github/actions/release-chart
-        with:
-          name: image-automation
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: image-automation
+      #   uses: ./.github/actions/release-chart
+      #   with:
+      #     name: image-automation
+      #     token: ${{ secrets.GITHUB_TOKEN }}
