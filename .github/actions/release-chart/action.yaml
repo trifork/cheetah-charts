@@ -59,9 +59,21 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |-
-        gh release list
-        gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*"
-        exit 1
+        gh release list | while read -r line; do
+          echo "$line"
+        done
+
+    - name: debug2
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |-
+        gh release list | grep "${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-.*" | while read -r line; do
+          echo "$line"
+        done
+
+    - shell: bash
+      run: exit 1
 
     - name: Check if a release exist
       id: release
