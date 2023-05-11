@@ -4,10 +4,9 @@
 
 ### Helm ###
 # Chart dependencies
-charts/*/charts/*.tgz
 charts/*/Chart.lock
+*.tgz
 
 # End of https://www.toptal.com/developers/gitignore/api/helm
-
 
 .swp
