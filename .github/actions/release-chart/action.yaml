@@ -54,18 +54,6 @@ runs:
         name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
 
     # main branch - create a Github release
-    - name: Check if a release exist
-      id: release
-      shell: bash
-      if: ${{ github.ref_name == 'main' }}
-      env:
-        GH_TOKEN: ${{ inputs.token }}
-      run: |-
-        if gh release view ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}; then
-          echo '::error:: Github release ${{ inputs.name }}-${{ steps.versions.outputs.new_version }} already exists' >&2
-          exit 1
-        fi
-
     - name: Release
       if: ${{ github.ref_name == 'main' }}
       uses: softprops/action-gh-release@v1
