@@ -99,3 +99,46 @@ Get the s3 main directory
 {{- define "cheetah-flink-native.s3Dir" -}}
 {{- printf "s3p://flink/%s/%s" (include "cheetah-flink-native.fullname" .context) .dir -}}
 {{- end }}
+
+{{/*
+PodTemplate helper function
+As we have to change configuration in a list of dictionaries,
+we can't make use of the `mergeOverwrite` or similar.
+
+The flow is as following:
+If `podTemplate` is defined, the pod template is started with this.
+Otherwise, an empty dictionary is used as a starting point.
+If `podSecurityContext` is defined, `podTemplate.spec.securityContext` is overridden
+
+If `securityContext` is defined, we look for the "flink-main-container" container.
+If it isn't found, we create it with the correct `securityContext`
+*/}}
+{{- define "cheetah-flink-native.podTemplate" -}}
+{{- $podTemplate := (.Values.podTemplate | default dict ) -}}
+{{/*update the pod security context*/}}
+{{- with .Values.podSecurityContext -}}
+{{- $_ := set $podTemplate.spec "securityContext" . -}}
+{{- end -}}
+{{/* update the container security context */}}
+{{- if .Values.securityContext -}}
+{{- $mainContainerIndex := -1 -}}
+{{- range $i, $val := $podTemplate.spec.containers -}}
+  {{- if eq $val.name "flink-main-container" -}}
+  {{- $mainContainerIndex = $i -}}
+  {{- end -}}
+{{- end -}}
+{{/* Add the flink-main-container if it does not exist */}}
+{{- $containers := default list $podTemplate.spec.containers -}}
+{{- if eq $mainContainerIndex -1 -}}
+  {{- $containers = prepend $containers (dict "name" "flink-main-container") -}}
+  {{- $mainContainerIndex = 0 -}}
+{{- end -}}
+{{- $mainContainer := index $containers $mainContainerIndex -}}
+{{- $containers = without $containers $mainContainer -}}
+{{- $_ := set $mainContainer "securityContext" .Values.securityContext -}}
+{{/* Update the list of containers */}}
+{{- $containers = prepend $containers $mainContainer -}}
+{{- $_ := set $podTemplate.spec "containers" $containers -}}
+{{- end -}}
+{{- toYaml $podTemplate -}}
+{{- end -}}

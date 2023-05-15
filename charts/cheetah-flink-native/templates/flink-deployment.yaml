@@ -13,15 +13,18 @@ spec:
   restartNonce: {{ . }}
   {{- end }}
 
+  podTemplate:
+    {{- include "cheetah-flink-native.podTemplate" . | nindent 4 -}}
+
   {{- with .Values.flink.job }}
   job:
     jarURI: {{ .jarURI }}
     parallelism: {{ int .parallelism }}
-    {{ with .className}}
+    {{ with .className -}}
     entryClass: {{ . }}
-    {{ end }}
+    {{ end -}}
     args:
-    {{- range $key,$val := $.Values.flink.job.topics }}
+    {{- range $val := .topics }}
       - {{ printf "--%s" $val.name | quote }}
       - {{ printf "%s" $val.value | quote }}
     {{- end }}
@@ -50,7 +53,7 @@ spec:
     s3.path-style-access: {{ .pathStyleAccess | quote }}
     s3.endpoint: {{ .endpoint | quote }}
     {{- end }}
-  {{- toYaml .Values.flink.configuration | nindent 4 }}
+    {{- toYaml .Values.flink.configuration | nindent 4 }}
   {{ if .Values.monitoring.enabled }}
     {{- if eq "v1_15" .Values.flink.version }}
     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter

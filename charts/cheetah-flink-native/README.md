@@ -1,6 +1,6 @@
 # cheetah-flink-native
 
-![Version: 0.3.3](https://img.shields.io/badge/Version-0.3.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.3.0](https://img.shields.io/badge/AppVersion-1.3.0-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -33,6 +33,9 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | ingress.annotations."nginx.ingress.kubernetes.io/force-ssl-redirect" | string | `"true"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/ssl-redirect" | string | `"true"` |  |
 | ingress.uiPort | int | `8081` | the ui port. Ingress will hit the service on this port |
+| podTemplate | object | `{}` | Pod template. The main flink-container must be called "flink-main-container" |
+| securityContext | object | `{}` | Container security-context. Overrides the main container settings if defined in the podTemplate |
+| podSecurityContext | object | `{}` | Pod security-context. Overrides the settings if defined in the podTemplate |
 | flink.version | string | `"v1_15"` | Which Flink version to use |
 | flink.configuration."state.backend" | string | `"hashmap"` |  |
 | flink.configuration.high-availability | string | `"org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory"` |  |
