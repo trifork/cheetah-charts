@@ -50,7 +50,7 @@ podTemplate: {}
 # -- Container security-context. Overrides the main container settings if defined in the podTemplate
 securityContext: {}
 
-# -- Pod security-context. Overrides the settings if defined in the podTemplate
+# -- Pod security-context. Overrides any security-context settings defined in the podTemplate
 podSecurityContext: {}
 
 flink:
