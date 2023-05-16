@@ -35,7 +35,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | ingress.uiPort | int | `8081` | the ui port. Ingress will hit the service on this port |
 | podTemplate | object | `{}` | Pod template. The main flink-container must be called "flink-main-container" |
 | securityContext | object | `{}` | Container security-context. Overrides the main container settings if defined in the podTemplate |
-| podSecurityContext | object | `{}` | Pod security-context. Overrides the settings if defined in the podTemplate |
+| podSecurityContext | object | `{}` | Pod security-context. Overrides any security-context settings defined in the podTemplate |
 | flink.version | string | `"v1_15"` | Which Flink version to use |
 | flink.configuration."state.backend" | string | `"hashmap"` |  |
 | flink.configuration.high-availability | string | `"org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory"` |  |
