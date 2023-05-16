@@ -63,10 +63,12 @@ This includes tools such as `helm`, `ct`, and `kubectl`.
 For example, to render out the full manifest from the `cheetah-flink-native` Helm chart, run something like:
 
 ```bash
-helm template my-test charts/cheetah-flink-native -f charts/cheetah-flink-native/ci/example.yaml > output.yaml
+helm template my-test charts/cheetah-flink-native -f charts/cheetah-flink-native/ci/example.yaml --dependency-update > output.yaml
 ```
 
 This will render the templates in `charts/cheetah-flink-native` using values in `charts/cheetah-flink-native/ci/example.yaml` and outputting them to `output.yaml` as a release called `my-test`.
+The `--dependency-update` flag makes sure that local chart dependencies are up to date.
+It is not required after having run it once.
 
 If you get errors using `helm template`, often times it is because the generated manifests does not create valid YAML (most likely from indentation errors).
 To make helm generate the template anyway, add `--debug` to the `helm template` command.
