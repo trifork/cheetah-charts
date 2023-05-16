@@ -16,14 +16,21 @@ podTemplate:
   spec:
     containers:
       - name: flink-main-container
-        env:
-          - name: FOO
-            value: BAR
         securityContext:
           allowPrivilegeEscalation: true
-      - name: test-container
+      - name: sleepybox
         securityContext:
-          runAsGroup: 5050
+          allowPrivilegeEscalation: false
+          runAsGroup: 1001
+          runAsUser: 1001
+          capabilities:
+            drop:
+              - ALL
+        image: bitnami/bitnami-shell:latest
+        command:
+          - /bin/sh
+          - -c
+          - while sleep 2; do echo "zzz"; done
 
 securityContext:
   allowPrivilegeEscalation: false
@@ -47,8 +54,7 @@ flink:
     enabled: true
 
   job:
-    jarURI: local:///opt/flink/downloads/flink-examples-streaming.jar
-    className: org.apache.flink.streaming.examples.statemachine.StateMachineExample
+    jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
     args: []
   flinkProperties:
     taskmanager.numberOfTaskSlots: 2
