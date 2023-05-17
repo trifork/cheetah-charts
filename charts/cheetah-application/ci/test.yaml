@@ -67,3 +67,6 @@ volumes:
 volumeMounts:
   - name: webapi-volume
     mountPath: /files/
+
+pdb:
+  create: true

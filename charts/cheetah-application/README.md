@@ -1,6 +1,6 @@
 # cheetah-application
 
-![Version: 0.4.2](https://img.shields.io/badge/Version-0.4.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.4.3](https://img.shields.io/badge/Version-0.4.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Cheetah Data Platform applications
 
@@ -45,6 +45,13 @@ A Helm chart for Cheetah Data Platform applications
 | ingress.tls.secretName | string | `""` |  |
 | env | list | `[]` |  |
 | envFrom | list | `[]` |  |
+| startupProbe.enabled | bool | `false` |  |
+| startupProbe.httpGet.path | string | `"/"` |  |
+| startupProbe.httpGet.port | string | `"http"` |  |
+| startupProbe.initialDelaySeconds | int | `30` |  |
+| startupProbe.failureThreshold | int | `3` |  |
+| startupProbe.periodSeconds | int | `10` |  |
+| startupProbe.timeoutSeconds | int | `1` |  |
 | livenessProbe.enabled | bool | `true` |  |
 | livenessProbe.httpGet.path | string | `"/"` | Which path to look for liveness |
 | livenessProbe.httpGet.port | string | `"http"` |  |
@@ -59,14 +66,12 @@ A Helm chart for Cheetah Data Platform applications
 | readinessProbe.failureThreshold | int | `3` |  |
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.timeoutSeconds | int | `1` |  |
-| startupProbe.enabled | bool | `false` |  |
-| startupProbe.httpGet.path | string | `"/"` |  |
-| startupProbe.httpGet.port | string | `"http"` |  |
-| startupProbe.initialDelaySeconds | int | `30` |  |
-| startupProbe.failureThreshold | int | `3` |  |
-| startupProbe.periodSeconds | int | `10` |  |
-| startupProbe.timeoutSeconds | int | `1` |  |
-| resources | object | `{}` |  |
+| resources | object | `{}` | Resource limits. See `values.yaml` for an example |
+| pdb.create | bool | `false` | Whether to create a PodDisruptionBudget for ensuring that an application is always available |
+| pdb.labels | object | `{}` | Extra labels for the PodDisruptionBudget |
+| pdb.annotations | object | `{}` | Extra annotations for the PodDisruptionBudget |
+| pdb.minAvailable | int | `1` | How many pod replicas must always be available after eviction. Ignored if 0 |
+| pdb.maxUnavailable | int | `0` | How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0 |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.maxReplicas | int | `100` |  |
