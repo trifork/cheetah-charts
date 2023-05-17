@@ -1,41 +1,23 @@
-# cheetah-charts
+# Cheetah Charts
 
 [![Chart linting and testing](https://github.com/trifork/cheetah-charts/actions/workflows/helm-lint.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/helm-lint.yaml)
 [![Release Helm charts to GCS](https://github.com/trifork/cheetah-charts/actions/workflows/helm-release.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/helm-release.yaml)
 
-Repository containing the source code for different Helm charts.
+Repository containing the source code for Helm charts used in the Trifork Data-platform.
 
 ## Usage
 
-These helm charts are released to both GHCR (GitHub Container Registry) as OCI packages, and to a Google disk using the `helm-gcs` Helm plugin.
+These helm charts are released to both GHCR (GitHub Container Registry) as OCI packages, and to GitHub releases as tar-ball assets.
 
-### Using Google Drive
+### Install OCI Packages
 
-For using the Google disk the Helm GCS plugin must be installed:
-
-```bash
-helm plugin install https://github.com/hayorov/helm-gcs --version 0.3.19
-```
-
-To access the charts, you must have a Google Cloud Service Account configuration in json-format.
-Add the repository and list the charts:
-
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS="<service-account-config>.json"
-helm repo add cheetah-charts gs://cheetah-helm
-helm repo update
-helm search repo cheetah-charts
-```
-
-### Using OCI Packages
-
-For using the OCI packages, you need to log into the GHCR registry with a PAT (Personal Access Token) that at least has the "read packages" permission:
+For using the OCI packages, you need to log into the GHCR registry:
 
 ```bash
 helm registry login ghcr.io/trifork/cheetah-charts
 ```
 
-Log in using a GitHub account and PAT.
+Log in using a GitHub account username and a PAT (Personal Access Token) that at least has the "read packages" permission.
 Once you are logged in, you can start using the charts:
 
 ```bash
@@ -45,26 +27,65 @@ helm template releaseName oci://ghcr.io/trifork/cheetah-charts/<chartName> [--ve
 You can find the available versions under [packages](https://github.com/orgs/trifork/packages?repo_name=cheetah-charts).
 Helm does not currently support searching for versions in OCI repositories.
 
+<!-- TODO 
+### Install from GitHub releases 
+Requires a hosted index.yaml which points to the releases
+-->
+
+## Contributing
+
+Linting will run on pull-requests to the main branch, which also tests that documentation is up to date.
+Additionally, pull-requests will also create a pre-release to GitHub releases, which can be tested on a live cluster.
+
+After pull-requests has been merged to the main branch, charts that have changed version will be packaged and released.
+
 ## Development
 
-Linting will run on pull-requests to the main branch.
-After pushing/merging to the main branch, charts that have changed version, will be packaged and released.
+To run linting on your local machine, use `make lint` at the root of this repository.
+This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.
+
+To update documentation from your local machine, use `make docs` at the root of this repository.
+This will make use of [`helm-docs`](https://github.com/norwoodj/helm-docs) to generate documentation based in the `values.yaml` file in each chart.
 
 ### Local testing
 
-Open a shell with some pre-installed useful tools:
+It is possible to open an interactive shell with some pre-installed useful tools, by running:
 
 ```bash
 docker run -it --network host --workdir=/data --rm --volume $(pwd):/data quay.io/helmpack/chart-testing:v3.5.0
 ```
 
-In the terminal it is possible to render the template output for manual validation/testing:
+Unfortunately, this Docker container does not include `make`, so it is not possible to run the `make` commands mentioned above.
+
+However, the other tools which are included in this shell, is very useful.
+This includes tools such as `helm`, `ct`, and `kubectl`.
+
+For example, to render out the full manifest from the `cheetah-flink-native` Helm chart, run something like:
 
 ```bash
-helm template my-test <CHART_DIR> -f <CHART_DIR>/ci/example.yaml > output.yaml
+helm template my-test charts/cheetah-flink-native -f charts/cheetah-flink-native/ci/example.yaml --dependency-update > output.yaml
 ```
 
-Linting can be run with:
+This will render the templates in `charts/cheetah-flink-native` using values in `charts/cheetah-flink-native/ci/example.yaml` and outputting them to `output.yaml` as a release called `my-test`.
+The `--dependency-update` flag makes sure that local chart dependencies are up to date.
+It is not required after having run it once.
+
+If you get errors using `helm template`, often times it is because the generated manifests does not create valid YAML (most likely from indentation errors).
+To make helm generate the template anyway, add `--debug` to the `helm template` command.
+
+Sometimes Helm is not able to generate the template even with `--debug`.
+When this happens, it is most likely due to a nil pointer exception.
+One of these errors might look like the following:
+
+> `Error: template: cheetah-flink-native/templates/podmonitor.yaml:1:14: executing "cheetah-flink-native/templates/podmonitor.yaml" at <.Values.monitoringg.enabled>: nil pointer evaluating interface {}.enabled`
+
+In this case it is caused by a spelling mistake in line `1` in `podmonitor.yaml`.
+I am trying to access `.Values.monitoringg.enabled` instead of `.Values.monitoring.enabled`.
+As I haven't defined the `monitoringg` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
+
+Changing the reference from `.Values.monitoringg.enabled` to `.Values.monitoring.enabled`, the `helm template` is successful again.
+
+To run the linting command (the same included in `Makefile`), run:
 
 ```bash
 ct lint --config .github/ct-config.yaml

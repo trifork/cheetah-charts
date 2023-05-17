@@ -44,6 +44,15 @@ ingress:
   # -- the ui port. Ingress will hit the service on this port
   uiPort: 8081
 
+# -- Pod template. The main flink-container must be called "flink-main-container"
+podTemplate: {}
+
+# -- Container security-context. Overrides the main container settings if defined in the podTemplate
+securityContext: {}
+
+# -- Pod security-context. Overrides any security-context settings defined in the podTemplate
+podSecurityContext: {}
+
 flink:
   # -- Which Flink version to use
   version: v1_15
