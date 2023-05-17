@@ -114,7 +114,7 @@ If `securityContext` is defined, we look for the "flink-main-container" containe
 If it isn't found, we create it with the correct `securityContext`
 */}}
 {{- define "cheetah-flink-native.podTemplate" -}}
-{{- $podTemplate := (.Values.podTemplate | default dict ) -}}
+{{- $podTemplate := (.Values.podTemplate | default (dict "spec" dict) ) -}}
 {{/*update the pod security context*/}}
 {{- with .Values.podSecurityContext -}}
 {{- $_ := set $podTemplate.spec "securityContext" . -}}
