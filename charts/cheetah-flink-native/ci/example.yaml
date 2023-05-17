@@ -15,9 +15,6 @@ monitoring:
 podTemplate:
   spec:
     containers:
-      - name: flink-main-container
-        securityContext:
-          allowPrivilegeEscalation: true
       - name: sleepybox
         securityContext:
           allowPrivilegeEscalation: false
@@ -31,20 +28,6 @@ podTemplate:
           - /bin/sh
           - -c
           - while sleep 2; do echo "zzz"; done
-
-securityContext:
-  allowPrivilegeEscalation: false
-  runAsUser: 9999
-  runAsGroup: 9999
-  capabilities:
-    drop:
-      - ALL
-
-podSecurityContext:
-  runAsNonRoot: true
-  fsGroup: 9999
-  seccompProfile:
-    type: RuntimeDefault
 
 flink:
   savepoints:

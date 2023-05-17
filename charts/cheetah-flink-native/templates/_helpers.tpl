@@ -54,9 +54,7 @@ Common labels
 {{- define "cheetah-flink-native.labels" }}
 helm.sh/chart: {{ include "cheetah-flink-native.chart" . }}
 {{ include "cheetah-flink-native.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Chart.Version | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
