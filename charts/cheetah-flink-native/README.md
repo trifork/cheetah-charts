@@ -21,12 +21,12 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | image.pullPolicy | string | `"Always"` |  |
 | image.tag | string | `"main"` |  |
 | image.sha | string | `""` |  |
-| restartNonce | int | `0` | change this to force a restart of the job, see https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/ for more info |
+| restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
 | rbac.create | bool | `true` |  |
 | rbac.additionalRules | list | `[]` | Additional rules to add to the role |
-| ingress.enabled | bool | `false` | Whether to expose the Flink UI, The UI will be exposed under https://<.ingress.domain>/<release-namespace>/<release-name> by default |
+| ingress.enabled | bool | `false` | Whether to expose the Flink UI, The UI will be exposed under `https://<.ingress.domain>/<release-namespace>/<release-name>` by default |
 | ingress.certType | string | `"staging"` |  |
 | ingress.domain | string | `"flink.cheetah.trifork.dev"` |  |
 | ingress.ingressClassName | string | `"nginx"` |  |
@@ -35,7 +35,7 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | ingress.uiPort | int | `8081` | the ui port. Ingress will hit the service on this port |
 | podTemplate | object | `{}` | Pod template. The main flink-container must be called "flink-main-container" |
 | podSecurityContext.runAsNonRoot | bool | `true` | Whether to run the pod without root capabilities |
-| podSecurityContext.fsGroup | int | `9999` | Add a supplimentary group ID to akk processes in the container. Set the owner of all volumes to this group |
+| podSecurityContext.fsGroup | int | `9999` | Add a supplimentary group ID to all processes in the container. Set the owner of all volumes to this group |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` | Which secure computing mode (seccomp) profile to use |
 | securityContext.allowPrivilegeEscalation | bool | `false` | Allow privilege escalation |
 | securityContext.runAsGroup | int | `9999` | User to run the container as |
@@ -95,22 +95,22 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | flink.job.args | list | `[]` |  |
 | flink.job.state | string | `"running"` | Must be either: running or suspended |
 | flink.job.upgradeMode | string | `"savepoint"` | Must be either: savepoint, last_state, stateless |
-| flink.job.savepointTriggerNonce | int | `0` | change this to trigger a savepoint manually, see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/ |
-| flink.job.initialSavepointPath | string | `""` | change this to force a manual recovery checkpoint, see more here: https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/ |
+| flink.job.savepointTriggerNonce | int | `0` | change this to trigger a savepoint manually, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
+| flink.job.initialSavepointPath | string | `""` | change this to force a manual recovery checkpoint, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
 | flink.job.allowNonRestoredState | bool | `false` | If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed. |
-| flink.job.parallelism | int | `2` | How many jobs to run in parallel, see more here: https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/ |
+| flink.job.parallelism | int | `2` | How many jobs to run in parallel, see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/> |
 | flink.job.restartPolicy | string | `"Never"` |  |
 | flink.job.volumes | list | `[]` |  |
 | flink.job.volumeMounts | list | `[]` |  |
 | flink.job.podLabels | object | `{}` |  |
 | flink.job.podAnnotations."linkerd.io/inject" | string | `"disabled"` | Explicit disable Linkerd proxy injection, as it makes the job hang |
 | flink.job.additionalConfigs | object | `{}` | Any additional configuration passed to the job |
-| flink.job.topics | list | `[]` | Define the topics this job will consume must be defined as follows - name: <name of variable>   value: <name of topic> ie: - name: input-kafka-topic   value: "sourceTopic" - name: output-kafka-topic   value: "sinkTopic" |
+| flink.job.topics | list | `[]` | Define the topics this job will consume. See `values.yaml` how to format this |
 | image-automation | object | `{"enabled":false}` | Settings passed to the image-automation chart, Image-automation is not possible when using image-sha as a tagging strategy |
 | monitoring.enabled | bool | `true` | Enable monitoring. Define flinkProperties to define the monitoring properties |
 | monitoring.podTargetLabels[0] | string | `"component"` |  |
 | monitoring.podTargetLabels[1] | string | `"cluster"` |  |
-| monitoring.flinkProperties | object | `{"metrics.reporter.prom.port":"9249","metrics.reporters":"prom"}` | Define which monitoring system to use, See more here: https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/ |
+| monitoring.flinkProperties | object | `{"metrics.reporter.prom.port":"9249","metrics.reporters":"prom"}` | Define which monitoring system to use, See more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | monitoring.podMonitorSelectorLabels | object | `{"cheetah-monitoring":"true","prometheus":"cluster-metrics"}` | Additional pod selector labels, which are also added to the PodMonitor labels. Include labels which are selected for in the Prometheus operator |
 | monitoring.podMetricsEndpoints[0].port | string | `"metrics"` |  |
 
