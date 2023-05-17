@@ -17,7 +17,7 @@ A Helm chart for Cheetah Data Platform applications
 | replicaCount | int | `1` |  |
 | image.repository | string | `"nginx"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Image tag |
 | global | object | `{"image":{"repository":""},"imagePullSecrets":[]}` | Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart. Overrides the local values if given |
 | imagePullSecrets | list | `[]` |  |
 | nameOverride | string | `""` |  |

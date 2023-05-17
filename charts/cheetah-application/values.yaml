@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: nginx
   pullPolicy: IfNotPresent
-  # -- Overrides the image tag whose default is the chart appVersion.
+  # -- Image tag
   tag: ""
 
 # -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.

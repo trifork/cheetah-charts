@@ -36,9 +36,7 @@ Common labels
 {{- define "cheetah-application.labels" -}}
 helm.sh/chart: {{ include "cheetah-application.chart" . }}
 {{ include "cheetah-application.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Chart.Version | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 

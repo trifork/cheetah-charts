@@ -39,7 +39,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext: 
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ required "either global.image.repository or image.repository is required" (((.Values.global).image).repository | default .Values.image.repository) }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ required "either global.image.repository or image.repository is required" (((.Values.global).image).repository | default .Values.image.repository) }}:{{ required "image.tag is required but was not provided" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.args }}
           args:
