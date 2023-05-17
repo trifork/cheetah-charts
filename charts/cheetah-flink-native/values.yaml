@@ -47,11 +47,30 @@ ingress:
 # -- Pod template. The main flink-container must be called "flink-main-container"
 podTemplate: {}
 
-# -- Container security-context. Overrides the main container settings if defined in the podTemplate
-securityContext: {}
+# Default pod security context
+podSecurityContext:
+  # -- Whether to run the pod without root capabilities
+  runAsNonRoot: true
+  # -- Add a supplimentary group ID to akk processes in the container. Set the owner of all volumes to this group
+  fsGroup: 9999
+  seccompProfile:
+    # -- Which secure computing mode (seccomp) profile to use
+    type: RuntimeDefault
 
-# -- Pod security-context. Overrides any security-context settings defined in the podTemplate
-podSecurityContext: {}
+# Default container security context
+securityContext:
+  # -- Allow privilege escalation
+  allowPrivilegeEscalation: false
+  # -- User to run the container as
+  runAsGroup: 9999
+  # -- Group to add the user to
+  runAsUser: 9999
+  capabilities:
+    # -- Linux capabilities to drop
+    drop:
+      - ALL
+    # -- Linux capabilities to add
+    add: []
 
 flink:
   # -- Which Flink version to use
