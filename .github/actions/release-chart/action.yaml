@@ -55,6 +55,8 @@ runs:
       if: github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version
       uses: softprops/action-gh-release@v1
       with:
+        generate_release_notes: true
+        append_body: true
         token: ${{ inputs.token }}
         tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}-rc-${{ github.ref_name }}
         preRelease: true
@@ -79,6 +81,8 @@ runs:
       if: github.ref_name == 'main' && steps.release.outputs.exists == 'false'
       uses: softprops/action-gh-release@v1
       with:
+        generate_release_notes: true
+        append_body: true
         body_path: ${{ github.workspace }}/.github/release-template.md
         token: ${{ inputs.token }}
         tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
