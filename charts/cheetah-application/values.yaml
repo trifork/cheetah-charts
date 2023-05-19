@@ -40,19 +40,21 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext:
-  {}
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
   # fsGroup: 2000
 
 securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
   # runAsUser: 1000
+  # runAsGroup: 1000
 
-containerPort: 80
+containerPort: 8000
 
 volumes: []
 
@@ -60,7 +62,7 @@ volumeMounts: []
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8000
 
 ingress:
   # -- Whether to expose the service or not

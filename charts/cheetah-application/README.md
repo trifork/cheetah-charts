@@ -1,8 +1,23 @@
 # cheetah-application
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Cheetah Data Platform applications
+
+## Usage
+
+As pods are not allowed to run as root by default with this chart, installing/upgrading this chart might give an error similar to:
+
+```log
+Error: container has runAsNonRoot and image will run as root ...
+```
+
+This happens when a user has not been defined in your `Dockerfile`.
+
+To get around the issue, you can set the user to a non-zero (integer) in your `Dockerfile`.
+Alternatively, if you know that the container should be able to run with user `1000`, set `securityContext.runAsUser=1000`.
+You might also need to set `securityContext.runAsGroup` and `securityContext.fsGroup`.
+If the container must run as root, you can set `podSecurityContext.runAsNonRoot=false` (if [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) are not enforced)
 
 ## Requirements
 
@@ -29,13 +44,16 @@ A Helm chart for Cheetah Data Platform applications
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
 | podAnnotations | object | `{}` |  |
 | podLabels | object | `{}` |  |
-| podSecurityContext | object | `{}` |  |
-| securityContext | object | `{}` |  |
-| containerPort | int | `80` |  |
+| podSecurityContext.runAsNonRoot | bool | `true` |  |
+| podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| containerPort | int | `8000` |  |
 | volumes | list | `[]` |  |
 | volumeMounts | list | `[]` |  |
 | service.type | string | `"ClusterIP"` |  |
-| service.port | int | `80` |  |
+| service.port | int | `8000` |  |
 | ingress.enabled | bool | `false` | Whether to expose the service or not |
 | ingress.className | string | `"nginx"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/ssl-redirect" | string | `"true"` |  |

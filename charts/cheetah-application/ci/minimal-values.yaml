@@ -7,16 +7,6 @@ replicaCount: 2
 serviceAccount:
   create: false
 
-podSecurityContext:
-  runAsNonRoot: true
-
-securityContext:
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop:
-      - ALL
-
 resources:
   requests:
     memory: 1Mi
