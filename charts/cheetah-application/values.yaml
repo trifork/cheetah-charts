@@ -5,10 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  # -- Image repository. Such as ghcr.io/trifork/cheetah-webapi
+  repository: ""
   # -- Image tag
   tag: ""
+  pullPolicy: IfNotPresent
 
 # -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.
 # Overrides the local values if given
