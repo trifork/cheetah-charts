@@ -135,6 +135,12 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
+# -- Observability settings
+monitoring:
+  enabled: false
+  port: 1854
+  path: "/metrics"
+
 pdb:
   # -- Whether to create a PodDisruptionBudget for ensuring that an application is always available
   create: false
@@ -163,9 +169,3 @@ affinity: {}
 # -- Settings passed to the image-automation chart
 image-automation:
   enabled: false
-
-# -- Observability settings
-monitoring:
-  enabled: false
-  port: 1854
-  path: "/metrics"
