@@ -5,10 +5,11 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  # -- Image repository. Such as ghcr.io/trifork/cheetah-webapi
+  repository: ""
   # -- Image tag
   tag: ""
+  pullPolicy: IfNotPresent
 
 # -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.
 # Overrides the local values if given
@@ -21,6 +22,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# -- Override the default command
+command: []
+# -- Override the arguments to the command
 args: []
 
 serviceAccount:
@@ -131,6 +135,12 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
+# -- Observability settings
+monitoring:
+  enabled: false
+  port: 1854
+  path: "/metrics"
+
 pdb:
   # -- Whether to create a PodDisruptionBudget for ensuring that an application is always available
   create: false
@@ -144,11 +154,16 @@ pdb:
   maxUnavailable: 0
 
 autoscaling:
+  # -- Whether to enable horizontal pod autoscaling
   enabled: false
+  # -- Minimum number of replicas
   minReplicas: 1
-  maxReplicas: 100
+  # -- Maximum number of replicas
+  maxReplicas: 5
+  # -- Target CPU requests percentage utilization. Ignored if 0
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  # -- Target RAM requests percentage utilization. Ignored if 0
+  targetMemoryUtilizationPercentage: 0
 
 nodeSelector: {}
 
@@ -159,9 +174,3 @@ affinity: {}
 # -- Settings passed to the image-automation chart
 image-automation:
   enabled: false
-
-# -- Observability settings
-monitoring:
-  enabled: false
-  port: 1854
-  path: "/metrics"

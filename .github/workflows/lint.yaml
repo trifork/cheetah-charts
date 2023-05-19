@@ -38,6 +38,44 @@ jobs:
       - name: Chart linting
         run: ct lint --config .github/ct-config.yaml
 
+  docs:
+    name: Validate documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Render documentation
+        run: |
+          docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) \
+            jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/
+
+      - name: Check git diff
+        run: |
+          git update-index -q --ignore-submodules --refresh
+          if ! git diff-files --quiet --ignore-submodules -- ; then
+            git diff --raw
+            echo '::error:: Generating documentation caused a change. run "docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/"' && exit 1
+          fi
+
+  audit:
+    name: Polaris auditing
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install Helm
+        uses: Azure/setup-helm@v1
+        with:
+          version: v3.5.2
+
       - name: Setup polaris
         uses: fairwindsops/polaris/.github/actions/setup-polaris@master
         with:
@@ -45,8 +83,10 @@ jobs:
 
       - name: Polaris audit
         run: |
-          for dir in charts/*/; do
+          for dir in charts/*; do
+            echo "::group::Running polaris audit for chart $(basename $dir)"
             if [ ! -d "$dir/ci" ]; then
+              echo "Auditing default values"
               polaris audit \
                 --set-exit-code-below-score 90 \
                 --format pretty \
@@ -55,6 +95,7 @@ jobs:
               continue
             fi
             for file in "$dir"/ci/*.yaml; do
+              echo "Auditing custom values: $file"
               polaris audit \
                 --set-exit-code-below-score 90 \
                 --format pretty \
@@ -62,15 +103,5 @@ jobs:
                 --helm-chart "$dir" \
                 --helm-values "$file"
             done
+            echo "::endgroup::"
           done
-
-      - name: Render documentation
-        run: |
-          docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) \
-            jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/
-
-          git update-index -q --ignore-submodules --refresh
-          if ! git diff-files --quiet --ignore-submodules -- ; then
-            git diff --raw
-            echo '::error:: Generating documentation caused a change. run "docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/"' && exit 1
-          fi

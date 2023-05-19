@@ -13,13 +13,34 @@ spec:
       type: RuntimeDefault
   containers:
     - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "cheetah-application.fullname" . }}:{{ .Values.service.port }}']
+      image: bitnami/bitnami-shell:latest
+      args:
+        - curl
+        - "{{ include "cheetah-application.fullname" . }}:{{ .Values.service.port }}"
       securityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
           drop:
             - ALL
+      resources:
+        requests:
+          memory: 1Mi
+          cpu: 10m
+        limits:
+          memory: 12Mi
+          cpu: 100m
+      readinessProbe:
+        exec:
+          command:
+            - id
+        initialDelaySeconds: 5
+        periodSeconds: 5
+      livenessProbe:
+        exec:
+          command:
+            - which
+            - curl
+        initialDelaySeconds: 5
+        periodSeconds: 5
   restartPolicy: Never

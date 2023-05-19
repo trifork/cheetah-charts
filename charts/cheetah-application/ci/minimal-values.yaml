@@ -1,0 +1,26 @@
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+
+replicaCount: 2
+
+serviceAccount:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  requests:
+    memory: 1Mi
+    cpu: 10m
+  limits:
+    memory: 12Mi
+    cpu: 100m

@@ -1,0 +1,124 @@
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+
+replicaCount: 2
+
+imagePullSecrets:
+  - name: very-secret-pullsecrets
+
+command:
+  - /http-echo
+args:
+  - -listen=:8080
+  - -text=$DEMO_GREETING
+
+serviceAccount:
+  name: robot-account
+
+podAnnotations:
+  linkerd.io/inject: disabled
+podLabels:
+  mynameis: georgio
+
+podSecurityContext:
+  runAsNonRoot: true
+  fsGroup: 2000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  runAsUser: 1000
+  runasGroup: 1000
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+    add: []
+
+containerPort: 8080
+
+volumes:
+  - name: echo-volume
+    emptyDir: {}
+
+volumeMounts:
+  - name: echo-volume
+    mountPath: /files/
+
+service:
+  type: NodePort
+  port: 8080
+
+ingress:
+  enabled: true
+  hosts:
+    - host: echo.cheetah.trifork.dev
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    secretName: tls-secret
+
+env:
+  - name: DEMO_GREETING
+    value: "Hello from the environment"
+
+envFrom:
+  - configMapRef:
+      name: kube-root-ca.crt
+
+startupProbe:
+  enabled: true
+
+livenessProbe:
+  enabled: true
+
+readinessProbe:
+  enabled: true
+
+resources:
+  requests:
+    memory: 1Mi
+    cpu: 10m
+  limits:
+    memory: 12Mi
+    cpu: 100m
+
+monitoring:
+  enabled: true
+  port: 8081
+  path: /_metrics
+
+pdb:
+  create: true
+  annotations:
+    something-smart: "true"
+  labels:
+    mynameis: georgio
+  minAvailable: 1
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 100
+  targetMemoryUtilizationPercentage: 100
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+tolerations:
+  - key: kubernetes.io/node-pool
+    operator: Equal
+    value: worker
+
+affinity:
+  podAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            mynameis: "georgio"
+        topologyKey: "kubernetes.io/hostname"
