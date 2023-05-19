@@ -1,0 +1,12 @@
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+
+serviceAccount:
+  create: false
+
+livenessProbe:
+  enabled: false
+
+readinessProbe:
+  enabled: false
