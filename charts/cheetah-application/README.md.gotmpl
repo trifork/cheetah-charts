@@ -1,0 +1,33 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+## Usage
+
+As pods are not allowed to run as root by default with this chart, installing/upgrading this chart might give an error similar to:
+
+```log
+Error: container has runAsNonRoot and image will run as root ...
+```
+
+This happens when a user has not been defined in your `Dockerfile`.
+
+To get around the issue, you can set the user to a non-zero (integer) in your `Dockerfile`.
+Alternatively, if you know that the container should be able to run with user `1000`, set `securityContext.runAsUser=1000`.
+You might also need to set `securityContext.runAsGroup` and `securityContext.fsGroup`.
+If the container must run as root, you can set `podSecurityContext.runAsNonRoot=false` (if [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) are not enforced)
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
