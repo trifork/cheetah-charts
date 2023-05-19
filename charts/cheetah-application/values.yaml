@@ -21,6 +21,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# -- Override the default command
+command: []
+# -- Override the arguments to the command
 args: []
 
 serviceAccount:

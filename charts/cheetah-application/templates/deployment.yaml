@@ -41,6 +41,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ required "either global.image.repository or image.repository is required" (((.Values.global).image).repository | default .Values.image.repository) }}:{{ required "image.tag is required but was not provided" .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.command }}
+          command: {{ include "cheetah-application.command" . | nindent 12 }}
+          {{- end }}
           {{- with .Values.args }}
           args:
             {{- range . }}

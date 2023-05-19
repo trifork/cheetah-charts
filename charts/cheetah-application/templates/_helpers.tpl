@@ -66,3 +66,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create a command from a string or array
+*/}}
+{{- define "cheetah-application.command" -}}
+  {{- if typeIs "string" .Values.command -}}
+    {{- .Values.command -}}
+  {{- else -}}
+    {{- toYaml .Values.command -}}
+  {{- end -}}
+{{- end -}}
