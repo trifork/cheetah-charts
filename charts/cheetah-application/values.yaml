@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: nginx
   pullPolicy: IfNotPresent
-  # -- Overrides the image tag whose default is the chart appVersion.
+  # -- Image tag
   tag: ""
 
 # -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.
@@ -89,26 +89,6 @@ envFrom: []
 # - secretRef:
 #     name: very-secret-secret
 
-livenessProbe:
-  enabled: true
-  httpGet:
-    # -- Which path to look for liveness
-    path: /
-    port: http
-  initialDelaySeconds: 30
-  failureThreshold: 3
-  periodSeconds: 10
-  timeoutSeconds: 1
-readinessProbe:
-  enabled: true
-  httpGet:
-    # -- Which path to look for readiness
-    path: /
-    port: http
-  initialDelaySeconds: 30
-  failureThreshold: 3
-  periodSeconds: 10
-  timeoutSeconds: 1
 startupProbe:
   enabled: false
   httpGet:
@@ -119,18 +99,49 @@ startupProbe:
   periodSeconds: 10
   timeoutSeconds: 1
 
+livenessProbe:
+  enabled: true
+  httpGet:
+    # -- Which path to look for liveness
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+readinessProbe:
+  enabled: true
+  httpGet:
+    # -- Which path to look for readiness
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+
+# -- Resource limits. See `values.yaml` for an example
 resources:
   {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+pdb:
+  # -- Whether to create a PodDisruptionBudget for ensuring that an application is always available
+  create: false
+  # -- Extra labels for the PodDisruptionBudget
+  labels: {}
+  # -- Extra annotations for the PodDisruptionBudget
+  annotations: {}
+  # -- How many pod replicas must always be available after eviction. Ignored if 0
+  minAvailable: 1
+  # -- How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0
+  maxUnavailable: 0
 
 autoscaling:
   enabled: false
