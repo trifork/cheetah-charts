@@ -13,8 +13,9 @@ Error: container has runAsNonRoot and image will run as root ...
 ```
 
 This happens when a user has not been defined in your `Dockerfile`.
+
 To get around the issue, you can set the user to a non-zero (integer) in your `Dockerfile`.
-Alternatively, if you know that the container should be able to run with user 1000, set `securityContext.runAsUser=1000`.
+Alternatively, if you know that the container should be able to run with user `1000`, set `securityContext.runAsUser=1000`.
 You might also need to set `securityContext.runAsGroup` and `securityContext.fsGroup`.
 If the container must run as root, you can set `podSecurityContext.runAsNonRoot=false` (if [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) are not enforced)
 
