@@ -74,10 +74,11 @@ A Helm chart for Cheetah Data Platform applications
 | pdb.annotations | object | `{}` | Extra annotations for the PodDisruptionBudget |
 | pdb.minAvailable | int | `1` | How many pod replicas must always be available after eviction. Ignored if 0 |
 | pdb.maxUnavailable | int | `0` | How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0 |
-| autoscaling.enabled | bool | `false` |  |
-| autoscaling.minReplicas | int | `1` |  |
-| autoscaling.maxReplicas | int | `100` |  |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| autoscaling.enabled | bool | `false` | Whether to enable horizontal pod autoscaling |
+| autoscaling.minReplicas | int | `1` | Minimum number of replicas |
+| autoscaling.maxReplicas | int | `5` | Maximum number of replicas |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU requests percentage utilization. Ignored if 0 |
+| autoscaling.targetMemoryUtilizationPercentage | int | `0` | Target RAM requests percentage utilization. Ignored if 0 |
 | nodeSelector | object | `{}` |  |
 | tolerations | list | `[]` |  |
 | affinity | object | `{}` |  |

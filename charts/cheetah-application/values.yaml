@@ -154,10 +154,15 @@ pdb:
   maxUnavailable: 0
 
 autoscaling:
+  # -- Whether to enable horizontal pod autoscaling
   enabled: false
+  # -- Minimum number of replicas
   minReplicas: 1
-  maxReplicas: 100
+  # -- Maximum number of replicas
+  maxReplicas: 5
+  # -- Target CPU requests percentage utilization. Ignored if 0
   targetCPUUtilizationPercentage: 80
+  # -- Target RAM requests percentage utilization. Ignored if 0
   targetMemoryUtilizationPercentage: 0
 
 nodeSelector: {}
