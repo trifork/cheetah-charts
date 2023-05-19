@@ -8,11 +8,10 @@ imagePullSecrets:
   - name: very-secret-pullsecrets
 
 command:
-  - /bin/sh
-  - -c
+  - /http-echo
 args:
-  - listen=:8080
-  - title=$DEMO_GREETING
+  - -listen=:8080
+  - -text=$DEMO_GREETING
 
 serviceAccount:
   name: robot-account
@@ -43,8 +42,7 @@ containerPort: 8080
 
 volumes:
   - name: echo-volume
-    persistentVolumeClaim:
-      claimName: echo-files
+    emptyDir: {}
 
 volumeMounts:
   - name: echo-volume
@@ -67,15 +65,10 @@ ingress:
 env:
   - name: DEMO_GREETING
     value: "Hello from the environment"
-  - name: SECRET_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: mysecret
-        key: username
 
 envFrom:
-  - secretRef:
-      name: cheetah-echo-secrets
+  - configMapRef:
+      name: kube-root-ca.crt
 
 startupProbe:
   enabled: true
@@ -115,10 +108,10 @@ autoscaling:
   targetMemoryUtilizationPercentage: 100
 
 nodeSelector:
-  tcs.trifork.dev/node-pool: worker
+  kubernetes.io/os: linux
 
 tolerations:
-  - key: tcs.trifork.dev/node-pool
+  - key: kubernetes.io/node-pool
     operator: Equal
     value: worker
 
