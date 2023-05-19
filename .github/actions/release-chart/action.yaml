@@ -83,7 +83,7 @@ runs:
       with:
         generate_release_notes: true
         append_body: true
-        body_path: ${{ github.workspace }}/.github/release-template.md
+        # body_path: ${{ github.workspace }}/.github/release-template.md
         token: ${{ inputs.token }}
         tag_name: ${{ inputs.name }}-${{ steps.versions.outputs.new_version }}
         preRelease: false
