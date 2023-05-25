@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - run: git fetch --all
+      - run: git fetch origin
 
       - name: debug
         run: |-
