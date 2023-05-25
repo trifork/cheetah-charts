@@ -26,8 +26,10 @@ jobs:
           ls -alh
           git status
 
+          git branch --list
+          git branch --list --remote origin/HEAD
+
           git rev-parse --is-inside-work-tree
-          git merge-base origin/main HEAD
           git diff --find-renames --name-only -- charts
 
       - name: Chart linting
