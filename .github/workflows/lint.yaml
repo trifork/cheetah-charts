@@ -21,6 +21,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: debug
+        run: |-
+          ls -alh
+          git status
+
       - name: Chart linting
         run: make lint
 
