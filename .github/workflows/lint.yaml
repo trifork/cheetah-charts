@@ -32,6 +32,19 @@ jobs:
           git rev-parse --is-inside-work-tree
           git diff --find-renames --name-only -- charts
 
+          - run: git remote set-head orgin --auto
+
+      - name: debug
+        run: |-
+          ls -alh
+          git status
+
+          git branch --list
+          git branch --list --remote origin/HEAD
+
+          git rev-parse --is-inside-work-tree
+          git diff --find-renames --name-only -- charts
+
       - name: Chart linting
         run: |-
           make lint
