@@ -32,7 +32,7 @@ jobs:
           git rev-parse --is-inside-work-tree
           git diff --find-renames --name-only -- charts
 
-          - run: git remote set-head orgin --auto
+      - run: git remote set-head orgin --auto
 
       - name: debug
         run: |-
