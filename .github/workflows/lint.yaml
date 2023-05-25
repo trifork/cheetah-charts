@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
           fetch-depth: 1
 
@@ -30,6 +30,9 @@ jobs:
           git merge-base origin/main HEAD
           git diff --find-renames --name-only -- charts
 
+      - name: Install chart-testing
+        uses: helm/chart-testing-action@e8788873172cb653a90ca2e819d79d65a66d4e76 # v2.4.0
+
       - name: Chart linting
         run: |-
           make lint
@@ -40,7 +43,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
           fetch-depth: 1
 
@@ -61,12 +64,12 @@ jobs:
     timeout-minutes: 2
     steps:
       - name: checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
           fetch-depth: 1
 
       - name: Install Helm
-        uses: Azure/setup-helm@v1
+        uses: Azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3
         with:
           version: v3.9.0
 
