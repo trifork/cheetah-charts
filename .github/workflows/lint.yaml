@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3
         with:
           fetch-depth: 1
-          ref: origin/${{ github.event.pull_request.base.ref }}
+          ref: ${{ github.event.pull_request.base.ref }}
 
       - name: debug
         run: |-
