@@ -24,13 +24,13 @@ jobs:
       - name: Install Helm
         uses: Azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3
         with:
-          version: v3.5.2
+          version: v3.9.0
 
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
       - uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4
         with:
-          python-version: 3.7
+          python-version: 3.11
 
       - name: Install chart-testing
         uses: helm/chart-testing-action@e8788873172cb653a90ca2e819d79d65a66d4e76 # v2.4.0
@@ -49,16 +49,14 @@ jobs:
           fetch-depth: 1
 
       - name: Render documentation
-        run: |
-          docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) \
-            jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/
+        run: make docs
 
       - name: Check git diff
         run: |
           git update-index -q --ignore-submodules --refresh
           if ! git diff-files --quiet --ignore-submodules -- ; then
             git diff --raw
-            echo '::error:: Generating documentation caused a change. run "docker run --rm --volume "$(pwd):/helm-docs" -u $(id -u) jnorwood/helm-docs:v1.11.0 --sort-values-order file --chart-search-root charts/"' && exit 1
+            echo '::error:: Generating documentation caused a change. Run "make docs"' && exit 1
           fi
 
   audit:
@@ -74,7 +72,7 @@ jobs:
       - name: Install Helm
         uses: Azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3
         with:
-          version: v3.5.2
+          version: v3.9.0
 
       - name: Setup polaris
         uses: fairwindsops/polaris/.github/actions/setup-polaris@master
