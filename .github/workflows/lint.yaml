@@ -30,9 +30,6 @@ jobs:
           git merge-base origin/main HEAD
           git diff --find-renames --name-only -- charts
 
-      - name: Install chart-testing
-        uses: helm/chart-testing-action@e8788873172cb653a90ca2e819d79d65a66d4e76 # v2.4.0
-
       - name: Chart linting
         run: |-
           make lint
