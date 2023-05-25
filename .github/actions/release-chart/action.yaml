@@ -53,7 +53,7 @@ runs:
 
     - name: Pre-release
       if: github.ref_name != 'main' && steps.versions.outputs.new_version != steps.versions.outputs.old_version
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
       with:
         generate_release_notes: true
         append_body: true
@@ -79,7 +79,7 @@ runs:
 
     - name: Release
       if: github.ref_name == 'main' && steps.release.outputs.exists == 'false'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
       with:
         generate_release_notes: true
         append_body: true
