@@ -1,4 +1,4 @@
-target-branch: HEAD
+target-branch: main
 remote: origin
 chart-dirs:
   - charts
