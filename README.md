@@ -28,10 +28,9 @@ helm template releaseName oci://ghcr.io/trifork/cheetah-charts/<chartName> [--ve
 You can find the available versions under [packages](https://github.com/orgs/trifork/packages?repo_name=cheetah-charts).
 Helm does not currently support searching for versions in OCI repositories.
 
-<!-- TODO 
-### Install from GitHub releases 
-Requires a hosted index.yaml which points to the releases
--->
+### Install from GitHub releases
+
+Currently, this is not possible as it requires a publicly hosted `index.yaml`.
 
 ## Contributing
 
@@ -61,13 +60,13 @@ Unfortunately, this Docker container does not include `make`, so it is not possi
 However, the other tools which are included in this shell, is very useful.
 This includes tools such as `helm`, `ct`, and `kubectl`.
 
-For example, to render out the full manifest from the `cheetah-flink-native` Helm chart, run something like:
+For example, to render out the full manifest from the `flink-job` Helm chart, run something like:
 
 ```bash
-helm template my-test charts/cheetah-flink-native -f charts/cheetah-flink-native/ci/example.yaml --dependency-update > output.yaml
+helm template my-test charts/flink-job -f charts/flink-job/ci/example.yaml --dependency-update > output.yaml
 ```
 
-This will render the templates in `charts/cheetah-flink-native` using values in `charts/cheetah-flink-native/ci/example.yaml` and outputting them to `output.yaml` as a release called `my-test`.
+This will render the templates in `charts/flink-job` using values in `charts/flink-job/ci/example.yaml` and outputting them to `output.yaml` as a release called `my-test`.
 The `--dependency-update` flag makes sure that local chart dependencies are up to date.
 It is not required after having run it once.
 
@@ -78,7 +77,7 @@ Sometimes Helm is not able to generate the template even with `--debug`.
 When this happens, it is most likely due to a nil pointer exception.
 One of these errors might look like the following:
 
-> `Error: template: cheetah-flink-native/templates/podmonitor.yaml:1:14: executing "cheetah-flink-native/templates/podmonitor.yaml" at <.Values.monitoringg.enabled>: nil pointer evaluating interface {}.enabled`
+> `Error: template: flink-job/templates/podmonitor.yaml:1:14: executing "flink-job/templates/podmonitor.yaml" at <.Values.monitoringg.enabled>: nil pointer evaluating interface {}.enabled`
 
 In this case it is caused by a spelling mistake in line `1` in `podmonitor.yaml`.
 I am trying to access `.Values.monitoringg.enabled` instead of `.Values.monitoring.enabled`.

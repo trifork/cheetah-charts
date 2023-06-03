@@ -1,0 +1,33 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.ingressClassName }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.hostname | quote }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path | quote }}
+            pathType: {{ .Values.ingress.pathType | quote }}
+            backend:
+              service:
+                name: {{ include "flink-job.flinkDeploymentName" . }}-rest
+                port:
+                  number: {{ int .Values.ingress.uiPort }}
+  {{- if or .Values.ingress.tlsSecret .Values.ingress.selfSigned }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.hostname | quote }}
+      secretName: {{ .Values.ingress.tlsSecret | default (printf "%s-tls" .Values.ingress.hostname) | quote }}
+  {{- end }}
+{{- end -}}

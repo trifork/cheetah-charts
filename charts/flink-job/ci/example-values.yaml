@@ -1,0 +1,25 @@
+# example values from docs.cheetah.trifork.dev/
+image:
+  repository: flink
+  tag: 1.16
+ingress:
+  enabled: true
+  hostname: flink.cheetah.trifork.dev
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+
+version: v1_16
+job:
+  jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+  entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
+  parallelism: 2
+taskManager:
+  replicas: 2
+  resource:
+    memory: 2Gb
+    cpu: 0.5
+jobManager:
+  replicas: 2
+
+metrics:
+  enabled: true

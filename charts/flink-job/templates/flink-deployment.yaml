@@ -1,0 +1,91 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: {{ include "flink-job.flinkDeploymentName" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+spec:
+  image: {{ include "flink-job.image" . | quote }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  serviceAccount: {{ include "flink-job.serviceAccountName" . }}
+  flinkVersion: {{ .Values.version | quote }}
+  {{- with .Values.restartNonce }}
+  restartNonce: {{ . }}
+  {{- end }}
+  {{- with .Values.logConfiguration }}
+  logConfiguration:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.mode }}
+  mode: {{ . }}
+  {{- end }}
+
+  flinkConfiguration:
+    {{- toYaml .Values.flinkConfiguration | nindent 4 -}}
+    {{/* TODO
+    {{- include "flink-job.storage-configuration" . | nindent 4 -}}
+    {{- include "flink-job.metrics-configuration" . | nindent 4 -}}
+      state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "savepoints") }}
+      state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "checkpoints") }}
+      high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "ha") }}
+      {{- with .Values.flink.s3 }}
+      s3.path-style-access: {{ .pathStyleAccess | quote }}
+      s3.endpoint: {{ .endpoint | quote }}
+      {{- end }}
+      {{- toYaml .Values.flink.configuration | nindent 4 }}
+    {{ if .Values.monitoring.enabled }}
+      {{- if eq "v1_15" .Values.flink.version }}
+      metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
+      {{- else if eq "v1_16" .Values.flink.version }}
+      metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      {{- end }}
+      {{- with .Values.monitoring.flinkProperties }}
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
+    */}}
+  {{- with .Values.podTemplate }}
+  podTemplate:
+    {{- tpl . $ | nindent 4 -}}
+  {{- end }}
+  job:
+    jarURI: {{ .Values.job.jarURI | quote }}
+    {{- with .Values.job.entryClass }}
+    entryClass: {{ . | quote }}
+    {{- end }}
+    {{- with .Values.job.args }}
+    args:
+      {{- range . }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    parallelism: {{ int .Values.job.parallelism }}
+    state: {{ .Values.job.state }}
+    {{- with .Values.job.savepointTriggerNonce }}
+    savepointTriggerNonce: {{ . }}
+    {{- end }}
+    {{- with .Values.job.initialSavepointPath }}
+    initialSavepointPath: {{ . }}
+    {{- end }}
+    {{- with .Values.job.allowNonRestoredState }}
+    allowNonRestoredState: {{ . }}
+    {{- end }}
+    upgradeMode: {{ .Values.job.upgradeMode | quote }}
+
+  jobManager:
+    replicas: {{ int .Values.jobManager.replicas }}
+    resource:
+      {{- toYaml .Values.jobManager.resource | nindent 6 }}
+    {{- with .Values.jobManager.podTemplate }}
+    podTemplate:
+      {{- tpl . $ | nindent 6 -}}
+    {{- end }}
+
+  taskManager:
+    replicas: {{ int .Values.taskManager.replicas }}
+    resource:
+      {{- toYaml .Values.taskManager.resource | nindent 6 }}
+    {{- with .Values.taskManager.podTemplate }}
+    podTemplate:
+      {{- tpl . $ | nindent 6 -}}
+    {{- end }}

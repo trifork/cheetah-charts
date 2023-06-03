@@ -1,0 +1,320 @@
+nameOverride: ""
+fullnameOverride: flink-override
+
+global:
+  image:
+    repository: ""
+  imagePullSecrets: []
+
+image:
+  repository: flink
+  tag: ""
+  sha: f86e49fe98ed41ecae004470a0e35c83849cc8e2c0ad558e3ff702650ccdae46 # 1.16
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: ghcr
+
+version: v1_16
+
+flinkConfiguration:
+  metrics.reporters: prom
+  metrics.reporter.prom.port: "9249"
+
+restartNonce: test
+mode: standalone
+logConfiguration:
+  "log4j.conf": |-
+    turn: off
+
+ports:
+  - name: foo
+    containerPort: 9999
+env:
+  - name: FOO
+    value: BAR
+envFrom:
+  - configMapRef:
+      name: some-config
+volumes:
+  - name: data
+    emptyDir: {}
+volumeMounts:
+  - name: data
+    mountPath: /flink
+podLabels:
+  cheetah-test: "true"
+podAnnotations:
+  vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+  vault.security.banzaicloud.io/vault-role: super-user
+
+job:
+  jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+  entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
+  args: []
+
+  parallelism: 2
+  state: running
+  upgradeMode: "stateless"
+  savepointTriggerNonce: trigger!
+  initialSavepointPath: ""
+  allowNonRestoredState: false
+
+podTemplate: |-
+  metadata:
+    labels:
+      app.kubernetes.io/component: metrics
+      {{- include "flink-job.backstageLabels" . | nindent 4 }}
+      {{- include "flink-job.selectorLabels" . | nindent 4 }}
+      {{- toYaml .Values.metrics.podMonitor.selectors | nindent 4 }}
+      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- with .Values.podAnnotations }}
+    annotations:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  spec:
+    securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 4 }}
+    containers:
+      - name: flink-main-container
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 8 }}
+        {{- with .Values.env }}
+        env:
+          {{- toYaml . | nindent 8 -}}
+        {{- end }}
+        {{- with .Values.envFrom }}
+        envFrom:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        ports:
+          {{- with .Values.ports }}
+          {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- if .Values.metrics.enabled }}
+          - name: metrics
+            containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+        {{- with .Values.volumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 8 -}}
+        {{- end }}
+    {{- with .Values.volumes }}
+    volumes:
+      {{- toYaml . | nindent 4 -}}
+    {{- end }}
+    {{ $imagepullsecrets := coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets }}
+    {{- with $imagepullsecrets -}}
+    imagePullSecrets:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+
+taskManager:
+  replicas: 2
+  resource:
+    memory: 2Gb
+    cpu: 0.5
+
+  ports:
+    - name: custom-port
+      containerPort: 9998
+  env:
+    - name: FOO
+      value: BAZ
+  envFrom:
+    - secretRef:
+        name: s3-secrets
+  volumes:
+    - name: state
+      emptyDir: {}
+  volumeMounts:
+    - name: state
+      mountPath: /state
+  podLabels:
+    task-manager: "true"
+  podAnnotations:
+    task-manager: "true"
+
+  podTemplate: |-
+    metadata:
+      {{- with .Values.taskManager.podLabels }}
+      labels:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+      {{- with .Values.taskManager.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: flink-main-container
+          {{- with .Values.taskManager.ports }}
+          ports:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with .Values.taskManager.env }}
+          env:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with .Values.taskManager.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with .Values.taskManager.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+      {{- with .Values.taskManager.volumes }}
+      volumes:
+        {{- toYaml . | nindent 4 -}}
+      {{- end }}
+
+jobManager:
+  replicas: 1
+  resource:
+    memory: 1Gb
+    cpu: 0.1
+
+  ports:
+    - name: custom-port2
+      containerPort: 9997
+  env:
+    - name: FOO
+      value: DANCE
+  envFrom:
+    - secretRef:
+        name: s3-secrets
+  volumes:
+    - name: state
+      emptyDir: {}
+  volumeMounts:
+    - name: state
+      mountPath: /state
+  podLabels:
+    job-manager: "true"
+  podAnnotations:
+    job-manager: "true"
+
+  podTemplate: |-
+    metadata:
+      {{- with .Values.jobManager.podLabels }}
+      labels:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+      {{- with .Values.jobManager.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: flink-main-container
+          ports:
+            - name: ui
+              containerPort: {{ .Values.ingress.uiPort }}
+              {{- with .Values.jobManager.ports }}
+              {{- toYaml . | nindent 8 -}}
+              {{- end }}
+          {{- with .Values.jobManager.env }}
+          env:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with .Values.jobManager.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with .Values.jobManager.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+      {{- with .Values.jobManager.volumes }}
+      volumes:
+        {{- toYaml . | nindent 4 -}}
+      {{- end }}
+
+metrics:
+  enabled: true
+
+  port: 9249
+
+  podMonitor:
+    enabled: true
+    path: /metrics
+    interval: 30m
+    scrapeTimeout: 5s
+    metricRelabelings:
+      - separator: ;
+        regex: (.*)
+        targetLabel: LABLE_NAME
+        replacement: VALUE
+        action: replace
+    relabelings:
+      - action: replace
+        sourceLabels:
+          - __meta_kubernetes_pod_node_name
+        targetLabel: instance
+    selectors:
+      k8s-app: mycollector
+    labels:
+      prometheus-operator: collect
+    extraMetricsEndpoints:
+      - port: exporter
+        interval: 10s
+        relabelings:
+          - action: replace
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: instance
+    targetLabels:
+      - component
+      - cluster
+      - foo
+
+serviceAccount:
+  create: true
+  annotations:
+    secure: account
+  name: test
+  automountServiceAccountToken: true
+
+rbac:
+  create: true
+  additionalRules:
+    - apiGroups:
+        - ""
+      resources:
+        - secrets
+      verbs:
+        - get
+        - list
+
+podSecurityContext:
+  runAsNonRoot: true
+  fsGroup: 9999
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  runAsGroup: 9999
+  runAsUser: 9999
+  capabilities:
+    drop:
+      - ALL
+    add: []
+
+ingress:
+  enabled: true
+  uiPort: 8080
+  ingressClassName: nginx
+  hostname: flink.localhost
+  path: /
+  pathType: ImplementationSpecific
+  annotations:
+    foo: bar
+  tlsSecret: foo-secret # FIXME: is not used for the selfsigned secret
+  selfSigned: true
+
+image-automation:
+  enabled: false
