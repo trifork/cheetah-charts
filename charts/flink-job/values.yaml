@@ -30,7 +30,6 @@ version: v1_15
 # For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
 flinkConfiguration:
   state.backend: "hashmap"
-  high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
   execution.checkpointing.interval: "10 minutes"
   execution.checkpointing.min-pause: "10 minutes"
   execution.checkpointing.timeout: "5 minutes"
@@ -38,8 +37,6 @@ flinkConfiguration:
   taskmanager.numberOfTaskSlots: "2"
   kubernetes.taskmanager.cpu.limit-factor: "10.0"
   kubernetes.jobmanager.cpu.limit-factor: "10.0"
-  # metrics.reporters: prom
-  # metrics.reporter.prom.port: "9249"
 
 # -- change this to force a restart of the job,
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
@@ -49,6 +46,16 @@ logConfiguration: {}
 # -- Cluster deployment mode. Support values are `native` and `standalone`
 # `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes
 mode: native
+
+storage:
+  # -- File storage scheme.
+  # Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/)
+  # To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc.
+  # (Note the exclusion of `://`)
+  scheme: ""
+  # -- Set the base directory for the HA, savepoints, and checkpoints storage.
+  # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type
+  baseDir: ""
 
 # -- Extra ports to open on both job- and task-manager
 ports: []
@@ -127,32 +134,7 @@ podTemplate: |-
       - name: flink-main-container
         securityContext:
           {{- toYaml .Values.securityContext | nindent 8 }}
-        {{- with .Values.env }}
-        env:
-          {{- toYaml . | nindent 8 -}}
-        {{- end }}
-        {{- with .Values.envFrom }}
-        envFrom:
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        ports:
-          {{- with .Values.ports }}
-          {{- toYaml . | nindent 8 -}}
-          {{- end }}
-          {{- if .Values.metrics.enabled }}
-          - name: metrics
-            containerPort: {{ .Values.metrics.port }}
-          {{- end }}
-        {{- with .Values.volumeMounts }}
-        volumeMounts:
-          {{- toYaml . | nindent 8 -}}
-        {{- end }}
-    {{- with .Values.volumes }}
-    volumes:
-      {{- toYaml . | nindent 4 -}}
-    {{- end }}
-    {{ $imagepullsecrets := coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets }}
-    {{- with $imagepullsecrets -}}
+    {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
     imagePullSecrets:
       {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -181,8 +163,6 @@ taskManager:
   # -- Additional annotations attached to the pods
   podAnnotations: {}
 
-  # TODO: figure out if specifying an extra port overrides `.podTemplate`
-
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
   # @default -- (see values.yaml)
@@ -199,23 +179,27 @@ taskManager:
     spec:
       containers:
         - name: flink-main-container
-          {{- with .Values.taskManager.ports }}
           ports:
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.taskManager.ports) }}
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.taskManager.env }}
+          {{- with (concat .Values.env .Values.taskManager.env) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.taskManager.envFrom }}
+          {{- with (concat .Values.envFrom .Values.taskManager.envFrom) }}
           envFrom:
-            {{- toYaml . | nindent 8 -}}
+            {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with .Values.taskManager.volumeMounts }}
+          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with .Values.taskManager.volumes }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -244,8 +228,6 @@ jobManager:
   # -- Additional annotations attached to the pods
   podAnnotations: {}
 
-  # TODO: figure out if specifying an extra port overrides `.podTemplate`
-
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
   # @default -- (see values.yaml)
@@ -263,24 +245,26 @@ jobManager:
       containers:
         - name: flink-main-container
           ports:
-            - name: ui
-              containerPort: {{ .Values.ingress.uiPort }}
-              {{- with .Values.jobManager.ports }}
-              {{- toYaml . | nindent 8 -}}
-              {{- end }}
-          {{- with .Values.jobManager.env }}
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.jobManager.ports) }}
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (concat .Values.env .Values.jobManager.env) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.jobManager.envFrom }}
+          {{- with (concat .Values.envFrom .Values.jobManager.envFrom) }}
           envFrom:
-            {{- toYaml . | nindent 8 -}}
+            {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with .Values.jobManager.volumeMounts }}
+          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with .Values.jobManager.volumes }}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
