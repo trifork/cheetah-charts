@@ -1,0 +1,45 @@
+image:
+  repository: flink
+  tag: 1.16
+
+version: v1_16
+
+volumeMounts:
+  - mountPath: /flink-data
+    name: flink-volume
+volumes:
+  - name: flink-volume
+    persistentVolumeClaim:
+      claimName: flink-volume
+  - name: flink-volume
+    hostPath:
+      path: /tmp/flink
+      type: Directory
+
+storage:
+  scheme: file
+  baseDir: /flink-data
+
+job:
+  jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+  parallelism: 2
+  upgradeMode: last-state
+
+jobManager:
+  replicas: 2
+
+taskManager:
+  replicas: 2
+
+metrics:
+  enabled: true
+  podMonitor:
+    enabled: false
+
+ingress:
+  enabled: true
+  hostname: flink.localhost
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  tlsSecret: letsencrypt
+  selfSigned: true

@@ -63,10 +63,10 @@ This includes tools such as `helm`, `ct`, and `kubectl`.
 For example, to render out the full manifest from the `flink-job` Helm chart, run something like:
 
 ```bash
-helm template my-test charts/flink-job -f charts/flink-job/ci/example.yaml --dependency-update > output.yaml
+helm template my-test charts/flink-job -f charts/flink-job/ci/example-values.yaml --dependency-update > output.yaml
 ```
 
-This will render the templates in `charts/flink-job` using values in `charts/flink-job/ci/example.yaml` and outputting them to `output.yaml` as a release called `my-test`.
+This will render the templates in `charts/flink-job` using values in `charts/flink-job/ci/example-values.yaml` and outputting them to `output.yaml` as a release called `my-test`.
 The `--dependency-update` flag makes sure that local chart dependencies are up to date.
 It is not required after having run it once.
 
@@ -77,13 +77,13 @@ Sometimes Helm is not able to generate the template even with `--debug`.
 When this happens, it is most likely due to a nil pointer exception.
 One of these errors might look like the following:
 
-> `Error: template: flink-job/templates/podmonitor.yaml:1:14: executing "flink-job/templates/podmonitor.yaml" at <.Values.monitoringg.enabled>: nil pointer evaluating interface {}.enabled`
+> `Error: template: flink-job/templates/podmonitor.yaml:1:14: executing "flink-job/templates/podmonitor.yaml" at <.Values.metrics.podmonitor.enabled>: nil pointer evaluating interface {}.enabled`
 
 In this case it is caused by a spelling mistake in line `1` in `podmonitor.yaml`.
-I am trying to access `.Values.monitoringg.enabled` instead of `.Values.monitoring.enabled`.
-As I haven't defined the `monitoringg` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
+I am trying to access `.Values.metrics.podmonitor.enabled` instead of `.Values.metrics.podMonitor.enabled`.
+As I haven't defined the `podmonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
 
-Changing the reference from `.Values.monitoringg.enabled` to `.Values.monitoring.enabled`, the `helm template` is successful again.
+Changing the reference from `.Values.metrics.podmonitor.enabled` to `.Values.metrics.podMonitor.enabled`, the `helm template` is successful again.
 
 To run the linting command (the same included in `Makefile`), run:
 

@@ -87,27 +87,86 @@ backstage.io/kubernetes-id: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
-Get the savepoint directories
+Calculate the flinkConfiguration
 */}}
-{{- define "flink-job.storage-configuration" -}}
-{{ $prefix := (include "flink-job.storage-prefix" . ) }}
-{{ $fullname := (include "flink-job.fullname" . ) }}
-{{- if not (hasKey .Values.flink.configuration "state.savepoints.dir" ) }}
-state.savepoints.dir: {{ printf "%s://flink/%s/savepoints" $prefix $fullname }}
-{{- end }}
-{{- if not (hasKey .Values.flink.configuration "state.checkpoints.dir" ) }}
-state.savepoints.dir: {{ printf "%s://flink/%s/checkpoints" $prefix $fullname }}
-{{- end }}
-{{- if not (hasKey .Values.flink.configuration "high-availability.storageDir" ) }}
-state.savepoints.dir: {{ printf "%s://flink/%s/ha" $prefix $fullname }}
-{{- end }}
+{{- define "flink-job.calculateConfigurations" -}}
+  {{- $configs := .Values.flinkConfiguration -}}
+  {{- $fullname := include "flink-job.fullname" . -}}
+  {{- $configs = fromJson (include "flink-job.metricsConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- $configs = fromJson (include "flink-job.haConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- $configs = fromJson (include "flink-job.storageConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- toYaml $configs -}}
 {{- end -}}
 
-{{- define "flink-job.storage-prefix" -}}
-{{- if .Values.flink.s3.enabled }}
-s3p
-{{- else }}
-file
-{{- end }}
+{{/*
+Add necessary metrics configuration
+*/}}
+{{- define "flink-job.metricsConfiguration" -}}
+  {{- $configs := .configs -}}
+  {{- if .global.metrics.enabled -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporters" "prom")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.port" (toString .global.metrics.port))) -}}
+    {{- if eq "v1_15" .global.version -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.class" "org.apache.flink.metrics.prometheus.PrometheusReporter")) -}}
+    {{- else if eq "v1_16" .global.version -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.factory.class" "org.apache.flink.metrics.prometheus.PrometheusReporterFactory")) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $configs | toJson -}}
 {{- end -}}
 
+{{/*
+Add necessary configuration for running in HA mode
+*/}}
+{{- define "flink-job.haConfiguration" -}}
+  {{- $configs := .configs -}}
+  {{- if gt (int .global.jobManager.replicas) 1 -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability" "org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory")) -}}
+    {{- if and .global.storage.scheme .global.storage.baseDir -}}
+      {{- $haDir := printf "%s://%s/%s/ha" .global.storage.scheme .global.storage.baseDir .fullname -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability.storageDir" $haDir)) -}}
+    {{- end -}}
+    {{- if not (hasKey $configs "high-availability.storageDir") -}}
+      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'high-availability.storageDir' is required when using jobManager.replicas > 1" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $configs | toJson -}}
+{{- end -}}
+
+{{/*
+Validate the configuration
+*/}}
+{{- define "flink-job.storageConfiguration" -}}
+  {{- $configs := .configs -}}
+  {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
+    {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
+  {{- end -}}
+  {{- if has .global.job.upgradeMode (list "savepoint" "last-state") -}}
+    {{- if and .global.storage.scheme .global.storage.baseDir -}}
+      {{- $savepointsDir := printf "%s://%s/%s/savepoints" .global.storage.scheme .global.storage.baseDir .fullname -}}
+      {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" .global.storage.scheme .global.storage.baseDir .fullname -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.savepoints.dir" $savepointsDir)) -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.checkpoints.dir" $checkpointsDir)) -}}
+    {{- end -}}
+    {{- if not (hasKey $configs "state.savepoints.dir") -}}
+      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.savepoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
+    {{- end -}}
+    {{- if not (hasKey $configs "state.checkpoints.dir") -}}
+      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.checkpoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $configs | toJson -}}
+{{- end -}}
+
+{{/*
+Set a key=value in a dictionary, if the key is not defined
+*/}}
+{{- define "flink-job._dictSet" -}}
+  {{- $dict := index . 0 -}}
+  {{- $key := index . 1 -}}
+  {{- $value := index . 2 -}}
+  {{- if not (hasKey $dict $key) -}}
+    {{- $_ := set $dict $key $value -}}
+  {{- end -}}
+  {{- $dict | toJson -}}
+{{- end -}}

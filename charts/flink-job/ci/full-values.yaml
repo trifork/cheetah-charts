@@ -313,7 +313,7 @@ ingress:
   pathType: ImplementationSpecific
   annotations:
     foo: bar
-  tlsSecret: foo-secret # FIXME: is not used for the selfsigned secret
+  tlsSecret: foo-secret
   selfSigned: true
 
 image-automation:

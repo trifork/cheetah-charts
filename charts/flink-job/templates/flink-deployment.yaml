@@ -1,3 +1,4 @@
+---
 apiVersion: flink.apache.org/v1beta1
 kind: FlinkDeployment
 metadata:
@@ -21,29 +22,8 @@ spec:
   {{- end }}
 
   flinkConfiguration:
-    {{- toYaml .Values.flinkConfiguration | nindent 4 -}}
-    {{/* TODO
-    {{- include "flink-job.storage-configuration" . | nindent 4 -}}
-    {{- include "flink-job.metrics-configuration" . | nindent 4 -}}
-      state.savepoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "savepoints") }}
-      state.checkpoints.dir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "checkpoints") }}
-      high-availability.storageDir: {{ include "cheetah-flink-native.s3Dir" (dict "context" . "dir" "ha") }}
-      {{- with .Values.flink.s3 }}
-      s3.path-style-access: {{ .pathStyleAccess | quote }}
-      s3.endpoint: {{ .endpoint | quote }}
-      {{- end }}
-      {{- toYaml .Values.flink.configuration | nindent 4 }}
-    {{ if .Values.monitoring.enabled }}
-      {{- if eq "v1_15" .Values.flink.version }}
-      metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
-      {{- else if eq "v1_16" .Values.flink.version }}
-      metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
-      {{- end }}
-      {{- with .Values.monitoring.flinkProperties }}
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
-    {{- end }}
-    */}}
+    {{- include "flink-job.calculateConfigurations" . | nindent 4 -}}
+
   {{- with .Values.podTemplate }}
   podTemplate:
     {{- tpl . $ | nindent 4 -}}
