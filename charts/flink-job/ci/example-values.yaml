@@ -9,6 +9,10 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   tlsSecret: letsencrypt
 
+storage:
+  scheme: s3
+  baseDir: /flink-data
+
 version: v1_16
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar

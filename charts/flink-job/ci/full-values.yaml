@@ -27,6 +27,10 @@ logConfiguration:
   "log4j.conf": |-
     turn: off
 
+storage:
+  scheme: s3
+  baseDir: /flink-data
+
 ports:
   - name: foo
     containerPort: 9999
@@ -55,7 +59,7 @@ job:
 
   parallelism: 2
   state: running
-  upgradeMode: "stateless"
+  upgradeMode: "last-state"
   savepointTriggerNonce: trigger!
   initialSavepointPath: ""
   allowNonRestoredState: false

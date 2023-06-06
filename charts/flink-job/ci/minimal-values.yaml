@@ -4,3 +4,7 @@ image:
 
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+
+storage:
+  scheme: s3
+  baseDir: /flink-data
