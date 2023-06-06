@@ -23,10 +23,12 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_15"` | Which Flink version to use |
-| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","high-availability":"org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory","kubernetes.jobmanager.cpu.limit-factor":"10.0","kubernetes.taskmanager.cpu.limit-factor":"10.0","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
+| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","kubernetes.jobmanager.cpu.limit-factor":"10.0","kubernetes.taskmanager.cpu.limit-factor":"10.0","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |
+| storage.scheme | string | `""` | File storage scheme. Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/) To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc. (Note the exclusion of `://`) |
+| storage.baseDir | string | `""` | Set the base directory for the HA, savepoints, and checkpoints storage. Generates a directory tree, based on the file system scheme, base directory, release name, and storage type |
 | ports | list | `[]` | Extra ports to open on both job- and task-manager |
 | env | list | `[]` | Extra environment variables to set on both job- and task-manager |
 | envFrom | list | `[]` | List of ConfigMap/Secrets where environment variables can be loaded from |
