@@ -6,7 +6,8 @@ ingress:
   enabled: true
   hostname: flink.cheetah.trifork.dev
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt"
+    cert-manager.io/cluster-issuer: letsencrypt
+  tlsSecret: letsencrypt
 
 version: v1_16
 job:
