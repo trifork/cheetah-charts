@@ -54,7 +54,7 @@ storage:
   # (Note the exclusion of `://`)
   scheme: ""
   # -- Set the base directory for the HA, savepoints, and checkpoints storage.
-  # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type
+  # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)
   baseDir: ""
 
 # -- Extra ports to open on both job- and task-manager

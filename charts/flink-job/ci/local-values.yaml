@@ -11,10 +11,6 @@ volumes:
   - name: flink-volume
     persistentVolumeClaim:
       claimName: flink-volume
-  - name: flink-volume
-    hostPath:
-      path: /tmp/flink
-      type: Directory
 
 storage:
   scheme: file
