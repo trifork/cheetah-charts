@@ -5,6 +5,14 @@
 
 {{ template "chart.description" . }}
 
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
 ## Usage
 
 ### Keeping state
@@ -94,14 +102,6 @@ However, for guarenteed availability, it is possible to run the job-manager in m
 Whenever `jobManager.replicas > 1` is set, a helper function will set the needed configuration in `flinkConfiguration`.
 
 Read more about Flink and highly available job-managers [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/ha/overview/).
-
-{{ template "chart.homepageLine" . }}
-
-{{ template "chart.maintainersSection" . }}
-
-{{ template "chart.sourcesSection" . }}
-
-{{ template "chart.requirementsSection" . }}
 
 {{ template "chart.valuesSection" . }}
 

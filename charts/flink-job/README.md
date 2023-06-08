@@ -4,6 +4,12 @@
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../image-automation | image-automation | * |
+
 ## Usage
 
 ### Keeping state
@@ -93,12 +99,6 @@ However, for guarenteed availability, it is possible to run the job-manager in m
 Whenever `jobManager.replicas > 1` is set, a helper function will set the needed configuration in `flinkConfiguration`.
 
 Read more about Flink and highly available job-managers [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/ha/overview/).
-
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../image-automation | image-automation | * |
 
 ## Values
 
