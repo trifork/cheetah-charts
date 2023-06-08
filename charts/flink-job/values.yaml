@@ -107,6 +107,25 @@ job:
   # -- If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed.
   allowNonRestoredState: false
 
+  # -- Define which topics this job will consume.
+  # Used for data-discovery in Cheetah Backstage.
+  # If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job
+  # See `values.yaml` for the format
+  topics: []
+  # must be defined as follows
+  # - arg: <optional name of argument>
+  #   type: <type of topic (input/output)>
+  #   name: <name of topic>
+  # ie:
+  # - type: input
+  #   name: defaultIngest
+  # - arg: input-kafka-topic
+  #   type: input
+  #   name: sourceTopic
+  # - arg: output-kafka-topic
+  #   type: output
+  #   name: sinkTopic
+
 # -- Shared job-/task-manager pod template.
 # Overridden by `(job/task)Manager.podTemplate`.
 # The main flink-container must be called "flink-main-container"

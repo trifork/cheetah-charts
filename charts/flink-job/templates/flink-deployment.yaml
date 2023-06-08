@@ -33,9 +33,15 @@ spec:
     {{- with .Values.job.entryClass }}
     entryClass: {{ . | quote }}
     {{- end }}
-    {{- with .Values.job.args }}
+    {{- if or .Values.job.args .Values.job.topics }}
     args:
-      {{- range . }}
+      {{- range .Values.job.topics }}
+        {{- if .arg }}
+        - {{ printf "--%s" .arg | quote }}
+        - {{ printf "%s" .name | quote }}
+        {{- end }}
+      {{- end }}
+      {{- range .Values.job.args }}
       - {{ . | quote }}
       {{- end }}
     {{- end }}

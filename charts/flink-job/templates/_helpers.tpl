@@ -84,6 +84,27 @@ Backstage labels
 */}}
 {{- define "flink-job.backstageLabels" -}}
 backstage.io/kubernetes-id: {{ .Release.Name }}
+{{ include "flink-job.topicLabels" . }}
+{{- end -}}
+
+{{- define "flink-job.topicLabels" -}}
+{{- $inputs := "" -}}
+{{- $outputs := "" -}}
+{{- range .Values.job.topics -}}
+  {{- if eq .type "input" -}}
+    {{- $inputs = printf "%s,%s" $inputs .name -}}
+  {{- else if eq .type "output" -}}
+    {{- $outputs = printf "%s,%s" $outputs .name -}}
+  {{- else -}}
+    {{- fail (printf "Topic type %s not understood. Allowed values are: input, output" .type) -}}
+  {{- end -}}
+{{- end -}}
+{{- with $inputs -}}
+backstage.io/input-kafka-topics: {{ . | trimPrefix "," }}
+{{- end }}
+{{- with $outputs }}
+backstage.io/output-kafka-topics: {{ . | trimPrefix "," }}
+{{- end }}
 {{- end -}}
 
 {{/*

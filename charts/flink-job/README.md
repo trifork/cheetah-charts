@@ -135,6 +135,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | job.savepointTriggerNonce | int | `0` | change this to trigger a savepoint manually, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
 | job.initialSavepointPath | string | `""` | change this to force a manual recovery checkpoint, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
 | job.allowNonRestoredState | bool | `false` | If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed. |
+| job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job See `values.yaml` for the format |
 | podTemplate | string | (see values.yaml) | Shared job-/task-manager pod template. Overridden by `(job/task)Manager.podTemplate`. The main flink-container must be called "flink-main-container" |
 | taskManager.replicas | int | `1` | Number of replicas |
 | taskManager.resource.memory | string | `"1Gb"` | Memory to reserve for each Task Manager. The amount needed depends on the amount of data to be processed by each Task Manager, and how much state it should store in memory. |
