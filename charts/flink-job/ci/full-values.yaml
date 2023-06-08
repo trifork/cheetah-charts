@@ -56,6 +56,15 @@ job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
   args: []
+  topics:
+    - type: input
+      name: defaultTopic
+    - arg: input-kafka-topic
+      type: input
+      name: sourceTopic
+    - arg: output-kafka-topic
+      type: output
+      name: sinkTopic
 
   parallelism: 2
   state: running
