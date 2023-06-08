@@ -159,7 +159,7 @@ Add necessary configuration for running in HA mode
   {{- if gt (int .global.jobManager.replicas) 1 -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability" "org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory")) -}}
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
-      {{- $haDir := printf "%s://%s/%s/ha" .global.storage.scheme .global.storage.baseDir .fullname -}}
+      {{- $haDir := printf "%s://%s/%s/ha" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability.storageDir" $haDir)) -}}
     {{- end -}}
     {{- if not (hasKey $configs "high-availability.storageDir") -}}
@@ -179,8 +179,8 @@ Validate the configuration
   {{- end -}}
   {{- if has .global.job.upgradeMode (list "savepoint" "last-state") -}}
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
-      {{- $savepointsDir := printf "%s://%s/%s/savepoints" .global.storage.scheme .global.storage.baseDir .fullname -}}
-      {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" .global.storage.scheme .global.storage.baseDir .fullname -}}
+      {{- $savepointsDir := printf "%s://%s/%s/savepoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
+      {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.savepoints.dir" $savepointsDir)) -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.checkpoints.dir" $checkpointsDir)) -}}
     {{- end -}}

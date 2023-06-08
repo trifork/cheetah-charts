@@ -51,7 +51,6 @@ storage:
   # -- File storage scheme.
   # Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/)
   # To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc.
-  # (Note the exclusion of `://`)
   scheme: ""
   # -- Set the base directory for the HA, savepoints, and checkpoints storage.
   # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)

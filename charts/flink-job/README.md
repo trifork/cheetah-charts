@@ -117,7 +117,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |
-| storage.scheme | string | `""` | File storage scheme. Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/) To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc. (Note the exclusion of `://`) |
+| storage.scheme | string | `""` | File storage scheme. Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/) To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc. |
 | storage.baseDir | string | `""` | Set the base directory for the HA, savepoints, and checkpoints storage. Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata) |
 | ports | list | `[]` | Extra ports to open on both job- and task-manager |
 | env | list | `[]` | Extra environment variables to set on both job- and task-manager |
