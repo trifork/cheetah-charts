@@ -36,10 +36,10 @@ spec:
     {{- if or .Values.job.args .Values.job.topics }}
     args:
       {{- range .Values.job.topics }}
-        {{- if .arg }}
-        - {{ printf "--%s" (trimPrefix "--" .arg) | quote }}
-        - {{ printf "%s" .name | quote }}
-        {{- end }}
+      {{- if .arg }}
+      - {{ printf "--%s" (trimPrefix "--" .arg) | quote }}
+      - {{ printf "%s" .name | quote }}
+      {{- end }}
       {{- end }}
       {{- range .Values.job.args }}
       - {{ . | quote }}

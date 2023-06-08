@@ -55,7 +55,9 @@ podAnnotations:
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
-  args: []
+  args:
+    - --kafka-bootstrap-servers
+    - kafka:9092
   topics:
     - type: input
       name: defaultTopic
@@ -73,56 +75,25 @@ job:
   initialSavepointPath: ""
   allowNonRestoredState: false
 
-podTemplate: |-
-  metadata:
-    labels:
-      app.kubernetes.io/component: metrics
-      {{- include "flink-job.backstageLabels" . | nindent 4 }}
-      {{- include "flink-job.selectorLabels" . | nindent 4 }}
-      {{- toYaml .Values.metrics.podMonitor.selectors | nindent 4 }}
-      {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
-    {{- with .Values.podAnnotations }}
-    annotations:
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
-  spec:
-    securityContext:
-      {{- toYaml .Values.podSecurityContext | nindent 4 }}
-    containers:
-      - name: flink-main-container
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 8 }}
-        {{- with .Values.env }}
-        env:
-          {{- toYaml . | nindent 8 -}}
-        {{- end }}
-        {{- with .Values.envFrom }}
-        envFrom:
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        ports:
-          {{- with .Values.ports }}
-          {{- toYaml . | nindent 8 -}}
-          {{- end }}
-          {{- if .Values.metrics.enabled }}
-          - name: metrics
-            containerPort: {{ .Values.metrics.port }}
-          {{- end }}
-        {{- with .Values.volumeMounts }}
-        volumeMounts:
-          {{- toYaml . | nindent 8 -}}
-        {{- end }}
-    {{- with .Values.volumes }}
-    volumes:
-      {{- toYaml . | nindent 4 -}}
-    {{- end }}
-    {{ $imagepullsecrets := coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets }}
-    {{- with $imagepullsecrets -}}
-    imagePullSecrets:
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
+# podTemplate: |-
+#   metadata:
+#     labels:
+#       {{- include "flink-job.podLabels" . | nindent 4 }}
+#     {{- with .Values.podAnnotations }}
+#     annotations:
+#       {{- toYaml . | nindent 4 }}
+#     {{- end }}
+#   spec:
+#     securityContext:
+#       {{- toYaml .Values.podSecurityContext | nindent 4 }}
+#     containers:
+#       - name: flink-main-container
+#         securityContext:
+#           {{- toYaml .Values.securityContext | nindent 8 }}
+#     {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
+#     imagePullSecrets:
+#       {{- toYaml . | nindent 4 }}
+#     {{- end }}
 
 taskManager:
   replicas: 2
@@ -152,10 +123,11 @@ taskManager:
 
   podTemplate: |-
     metadata:
-      {{- with .Values.taskManager.podLabels }}
       labels:
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
+        foo: bar
+        {{- with .Values.taskManager.podLabels }}
+          {{- toYaml . | nindent 4 }}
+        {{- end }}
       {{- with .Values.taskManager.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 4 }}
@@ -163,23 +135,27 @@ taskManager:
     spec:
       containers:
         - name: flink-main-container
-          {{- with .Values.taskManager.ports }}
           ports:
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.taskManager.ports) }}
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.taskManager.env }}
+          {{- with (concat .Values.env .Values.taskManager.env) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.taskManager.envFrom }}
+          {{- with (concat .Values.envFrom .Values.taskManager.envFrom) }}
           envFrom:
-            {{- toYaml . | nindent 8 -}}
+            {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with .Values.taskManager.volumeMounts }}
+          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with .Values.taskManager.volumes }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -224,24 +200,26 @@ jobManager:
       containers:
         - name: flink-main-container
           ports:
-            - name: ui
-              containerPort: {{ .Values.ingress.uiPort }}
-              {{- with .Values.jobManager.ports }}
-              {{- toYaml . | nindent 8 -}}
-              {{- end }}
-          {{- with .Values.jobManager.env }}
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.jobManager.ports) }}
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (concat .Values.env .Values.jobManager.env) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with .Values.jobManager.envFrom }}
+          {{- with (concat .Values.envFrom .Values.jobManager.envFrom) }}
           envFrom:
-            {{- toYaml . | nindent 8 -}}
+            {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with .Values.jobManager.volumeMounts }}
+          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with .Values.jobManager.volumes }}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}

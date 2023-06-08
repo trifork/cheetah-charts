@@ -61,6 +61,21 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Pod labels
+*/}}
+{{- define "flink-job.podLabels" -}}
+app.kubernetes.io/component: metrics
+{{ include "flink-job.labels" . }}
+{{ include "flink-job.backstageLabels" . }}
+{{ with .Values.metrics.podMonitor.selectors -}}
+  {{- toYaml . }}
+{{- end }}
+{{ with .Values.podLabels -}}
+  {{- toYaml . }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Create the name of the FlinkDeployment resource
 Needed to make sure that resource names does not surpass the character requirements
 */}}

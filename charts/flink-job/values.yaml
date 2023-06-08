@@ -132,15 +132,7 @@ job:
 podTemplate: |-
   metadata:
     labels:
-      app.kubernetes.io/component: metrics
-      {{- include "flink-job.backstageLabels" . | nindent 4 }}
-      {{- include "flink-job.selectorLabels" . | nindent 4 }}
-      {{- with .Values.metrics.podMonitor.selectors }}
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
-      {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
+      {{- include "flink-job.podLabels" . | nindent 4 }}
     {{- with .Values.podAnnotations }}
     annotations:
       {{- toYaml . | nindent 4 }}
