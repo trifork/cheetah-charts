@@ -24,7 +24,7 @@ image:
 imagePullSecrets: []
 
 # -- Which Flink version to use
-version: v1_15
+version: v1_16
 
 # -- Flink configuration
 # For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
