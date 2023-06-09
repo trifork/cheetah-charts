@@ -112,7 +112,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | image.sha | string | `""` | Which image sha to use. If used, the `image.tag` is ignored |
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
-| version | string | `"v1_15"` | Which Flink version to use |
+| version | string | `"v1_16"` | Which Flink version to use |
 | flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","kubernetes.jobmanager.cpu.limit-factor":"10.0","kubernetes.taskmanager.cpu.limit-factor":"10.0","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
