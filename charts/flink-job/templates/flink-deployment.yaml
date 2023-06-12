@@ -1,0 +1,77 @@
+---
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: {{ include "flink-job.flinkDeploymentName" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+spec:
+  image: {{ include "flink-job.image" . | quote }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  serviceAccount: {{ include "flink-job.serviceAccountName" . }}
+  flinkVersion: {{ .Values.version | quote }}
+  {{- with .Values.restartNonce }}
+  restartNonce: {{ . }}
+  {{- end }}
+  {{- with .Values.logConfiguration }}
+  logConfiguration:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.mode }}
+  mode: {{ . }}
+  {{- end }}
+
+  flinkConfiguration:
+    {{- include "flink-job.calculateConfigurations" . | nindent 4 -}}
+
+  {{- with .Values.podTemplate }}
+  podTemplate:
+    {{- tpl . $ | nindent 4 -}}
+  {{- end }}
+  job:
+    jarURI: {{ .Values.job.jarURI | quote }}
+    {{- with .Values.job.entryClass }}
+    entryClass: {{ . | quote }}
+    {{- end }}
+    {{- if or .Values.job.args .Values.job.topics }}
+    args:
+      {{- range .Values.job.topics }}
+      {{- if .arg }}
+      - {{ printf "--%s" (trimPrefix "--" .arg) | quote }}
+      - {{ printf "%s" .name | quote }}
+      {{- end }}
+      {{- end }}
+      {{- range .Values.job.args }}
+      - {{ . | quote }}
+      {{- end }}
+    {{- end }}
+    parallelism: {{ int .Values.job.parallelism }}
+    state: {{ .Values.job.state }}
+    {{- with .Values.job.savepointTriggerNonce }}
+    savepointTriggerNonce: {{ . }}
+    {{- end }}
+    {{- with .Values.job.initialSavepointPath }}
+    initialSavepointPath: {{ . }}
+    {{- end }}
+    {{- with .Values.job.allowNonRestoredState }}
+    allowNonRestoredState: {{ . }}
+    {{- end }}
+    upgradeMode: {{ .Values.job.upgradeMode | quote }}
+
+  jobManager:
+    replicas: {{ int .Values.jobManager.replicas }}
+    resource:
+      {{- toYaml .Values.jobManager.resource | nindent 6 }}
+    {{- with .Values.jobManager.podTemplate }}
+    podTemplate:
+      {{- tpl . $ | nindent 6 -}}
+    {{- end }}
+
+  taskManager:
+    replicas: {{ int .Values.taskManager.replicas }}
+    resource:
+      {{- toYaml .Values.taskManager.resource | nindent 6 }}
+    {{- with .Values.taskManager.podTemplate }}
+    podTemplate:
+      {{- tpl . $ | nindent 6 -}}
+    {{- end }}

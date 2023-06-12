@@ -1,0 +1,10 @@
+image:
+  repository: flink
+  tag: 1.16
+
+job:
+  jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
+
+storage:
+  scheme: s3
+  baseDir: /flink-data

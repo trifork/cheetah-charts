@@ -1,0 +1,108 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Usage
+
+### Keeping state
+
+For setting up savepoint/checkpoint/HA metadata state, it is possible to make use of a helper function.
+This is done by setting `storage.scheme` and `storage.baseDir`.
+These configure the file system scheme (such as local file system, Amazon S3, Azure Blob Storage), and the base directory in the file system (such as `/flink/data`), respectively.
+See [below](#values) for documentation on how to use these.
+
+It is possible to use local storage such as a Persistent Volume or using a path directly on the host node (not recommended).
+This can be a nice to use for development and quick testing, but is not recommended for production as many Kubernetes distributions doesn't support `ReadWriteMany` access modes.
+To set up using a Persistent Volume for storage, create a Persistent Volume Claim similar to this:
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flink-volume
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard
+```
+
+Mounting the Persistent Volume created by the `standard` StorageClass, is done by setting the following in the values file:
+
+```yaml
+volumeMounts:
+  - mountPath: /flink-data
+    name: flink-volume
+volumes:
+  - name: flink-volume
+    persistentVolumeClaim:
+      claimName: flink-volume
+```
+
+To tell the Flink job to use the `/flink-data` directory for file storage, set:
+
+```yaml
+storage:
+  scheme: file
+  baseDir: /flink-data
+```
+
+This tells Flink where to keep savepoint, checkpoint, and HA metadata data (if applicable).
+
+Depending on which file system to use for keeping state, custom configuration might be required.
+For example, to set up storage to an S3 bucket at the `/flink/data` directory, set `storage.scheme=s3` and `storage.baseDir=/flink/data`.
+Authentication is done using the `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` environment variables (the `AWS_` prefix is required for all S3-like storage systems, even if AWS has nothing to do with it).
+If these are kept in a secret looking like this
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: s3-credentials
+data:
+  AWS_ACCESS_KEY: YWNjZXNzLWtleQ==
+  AWS_SECRET_KEY: c2VjcmV0LWtleQ==
+```
+
+the environment variables can be loaded by setting
+
+```yaml
+envFrom:
+  - secretRef:
+      name: s3-credentials
+```
+
+This adds the environment variables from the `s3-credentials` Secret to both the job- and task-manager(s).
+It is also necessary to set the `flinkConfiguration."s3.endpoint"` to the endpoint of your S3 system.
+
+Sometimes it is also necessary to set `flinkConfiguration."s3.path-style-access"="true"`, in order to work around some S3 object stores not having virtual host style addressing enabled (such as with MinIO).
+See <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/s3/> for more documentation on S3 and Flink.
+
+### Job-manager HA mode
+
+By default, there is a single JobManager instance per Flink cluster.
+This creates a single point of failure (SPOF): if the JobManager crashes, no new programs can be submitted and running programs fail.
+
+This is normally not a problem with the Flink operator, as the job-manager is owned by a single-replica Kubernetes Deployment/ReplicaSet, which will start a new job-manager pod up if it crashes.
+However, for guarenteed availability, it is possible to run the job-manager in multi-replica mode, using a leader election system.
+
+Whenever `jobManager.replicas > 1` is set, a helper function will set the needed configuration in `flinkConfiguration`.
+
+Read more about Flink and highly available job-managers [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/ha/overview/).
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

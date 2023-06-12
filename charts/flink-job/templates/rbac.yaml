@@ -1,0 +1,39 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - configmaps
+    verbs:
+      - '*'
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - '*'
+{{- with .Values.rbac.additionalRules }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "flink-job.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "flink-job.serviceAccountName" . }}
+{{- end -}}
