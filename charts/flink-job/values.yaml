@@ -35,8 +35,6 @@ flinkConfiguration:
   execution.checkpointing.timeout: "5 minutes"
   rest.flamegraph.enabled: "true"
   taskmanager.numberOfTaskSlots: "2"
-  kubernetes.taskmanager.cpu.limit-factor: "10.0"
-  kubernetes.jobmanager.cpu.limit-factor: "10.0"
 
 # -- change this to force a restart of the job,
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
