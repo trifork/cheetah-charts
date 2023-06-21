@@ -107,7 +107,7 @@ job:
 
   # -- Application upgrade mode. Must be either: stateless, last_state, savepoint
   # `stateless` upgrades is done from an empty state
-  # `last-state` does a quick upgrade. Does not require the job to be in a healthy state
+  # `last-state` does a quick upgrade. Does not require the job to be in a healthy state, as it makes use of the HA metadata
   # `savepoint` makes use of savepoints when upgrading and requires the job to be running.
   # This provides maximal safety
   # Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades>
