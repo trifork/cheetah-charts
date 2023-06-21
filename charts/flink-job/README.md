@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -11,6 +11,21 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 | file://../image-automation | image-automation | * |
 
 ## Usage
+
+### Changing CPU limits
+
+By default, the Flink operator sets CPU/Memory resource limits equal to the requests.
+Sometimes, it could preferable to increase the CPU/memory limits, which could be done on both the job- and task-manager, using:
+
+```yaml
+flinkConfiguration:
+  kubernetes.jobmanager.cpu.limit-factor: "5.0"
+  kubernetes.taskmanager.cpu.limit-factor: "5.0"
+  kubernetes.jobmanager.memory.limit-factor: "2.0"
+  kubernetes.taskmanager.memory.limit-factor: "2.0"
+```
+
+This makes the CPU limit 5 times the CPU requests for both managers, and the memory limit 2 times the memory requests.
 
 ### Keeping state
 
@@ -113,7 +128,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
-| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","kubernetes.jobmanager.cpu.limit-factor":"10.0","kubernetes.taskmanager.cpu.limit-factor":"10.0","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
+| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |

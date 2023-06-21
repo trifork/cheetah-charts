@@ -27,7 +27,8 @@ imagePullSecrets: []
 version: v1_16
 
 # -- Flink configuration
-# For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
+# For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
+# For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
 flinkConfiguration:
   state.backend: "hashmap"
   execution.checkpointing.interval: "10 minutes"
@@ -35,8 +36,6 @@ flinkConfiguration:
   execution.checkpointing.timeout: "5 minutes"
   rest.flamegraph.enabled: "true"
   taskmanager.numberOfTaskSlots: "2"
-  kubernetes.taskmanager.cpu.limit-factor: "10.0"
-  kubernetes.jobmanager.cpu.limit-factor: "10.0"
 
 # -- change this to force a restart of the job,
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
