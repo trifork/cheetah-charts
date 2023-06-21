@@ -106,10 +106,11 @@ backstage.io/kubernetes-id: {{ .Release.Name }}
 {{- $inputs := "" -}}
 {{- $outputs := "" -}}
 {{- range .Values.job.topics -}}
+  {{- $name := required "topics.name is required" .name -}}
   {{- if eq .type "input" -}}
-    {{- $inputs = printf "%s,%s" $inputs .name -}}
+    {{- $inputs = printf "%s,%s" $inputs $name -}}
   {{- else if eq .type "output" -}}
-    {{- $outputs = printf "%s,%s" $outputs .name -}}
+    {{- $outputs = printf "%s,%s" $outputs $name -}}
   {{- else -}}
     {{- fail (printf "Topic type %s not understood. Allowed values are: input, output" .type) -}}
   {{- end -}}
@@ -156,7 +157,7 @@ Add necessary configuration for running in HA mode
 */}}
 {{- define "flink-job.haConfiguration" -}}
   {{- $configs := .configs -}}
-  {{- if gt (int .global.jobManager.replicas) 1 -}}
+  {{- if or (gt (int .global.jobManager.replicas) 1) (eq .global.job.upgradeMode "last-state") -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability" "org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory")) -}}
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
       {{- $haDir := printf "%s://%s/%s/ha" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
@@ -177,7 +178,7 @@ Validate the configuration
   {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
     {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
   {{- end -}}
-  {{- if has .global.job.upgradeMode (list "savepoint" "last-state") -}}
+  {{- if eq .global.job.upgradeMode "savepoint" -}}
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
       {{- $savepointsDir := printf "%s://%s/%s/savepoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
