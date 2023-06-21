@@ -27,7 +27,8 @@ imagePullSecrets: []
 version: v1_16
 
 # -- Flink configuration
-# For metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
+# For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
+# For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
 flinkConfiguration:
   state.backend: "hashmap"
   execution.checkpointing.interval: "10 minutes"

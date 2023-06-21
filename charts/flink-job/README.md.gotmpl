@@ -15,6 +15,21 @@
 
 ## Usage
 
+### Changing CPU limits
+
+By default, the Flink operator sets CPU/Memory resource limits equal to the requests.
+Sometimes, it could preferable to increase the CPU/memory limits, which could be done on both the job- and task-manager, using:
+
+```yaml
+flinkConfiguration:
+  kubernetes.jobmanager.cpu.limit-factor: "5.0"
+  kubernetes.taskmanager.cpu.limit-factor: "5.0"
+  kubernetes.jobmanager.memory.limit-factor: "2.0"
+  kubernetes.taskmanager.memory.limit-factor: "2.0"
+```
+
+This makes the CPU limit 5 times the CPU requests for both managers, and the memory limit 2 times the memory requests.
+
 ### Keeping state
 
 For setting up savepoint/checkpoint/HA metadata state, it is possible to make use of a helper function.
