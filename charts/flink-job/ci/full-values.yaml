@@ -48,9 +48,9 @@ volumeMounts:
     mountPath: /flink
 podLabels:
   cheetah-test: "true"
-# podAnnotations:
-#   vault.security.banzaicloud.io/vault-tls-secret: vault-tls
-#   vault.security.banzaicloud.io/vault-role: super-user
+podAnnotations:
+  vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+  vault.security.banzaicloud.io/vault-role: super-user
 
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
@@ -58,15 +58,15 @@ job:
   args:
     - --kafka-bootstrap-servers
     - kafka:9092
-  # topics:
-  #   - type: input
-  #     name: defaultTopic
-  #   - arg: input-kafka-topic
-  #     type: input
-  #     name: sourceTopic
-  #   - arg: output-kafka-topic
-  #     type: output
-  #     name: sinkTopic
+  topics:
+    - type: input
+      name: defaultTopic
+    - arg: input-kafka-topic
+      type: input
+      name: sourceTopic
+    - arg: output-kafka-topic
+      type: output
+      name: sinkTopic
 
   parallelism: 2
   state: running
