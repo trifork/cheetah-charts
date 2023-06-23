@@ -131,10 +131,8 @@ podTemplate: |-
   metadata:
     labels:
       {{- include "flink-job.podLabels" . | nindent 4 }}
-    {{- with .Values.podAnnotations }}
     annotations:
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
+      {{- include "flink-job.podAnnotations" . | nindent 4 }}
   spec:
     securityContext:
       {{- toYaml .Values.podSecurityContext | nindent 4 }}

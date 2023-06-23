@@ -64,15 +64,25 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Pod labels
 */}}
 {{- define "flink-job.podLabels" -}}
-app.kubernetes.io/component: metrics
 {{ include "flink-job.labels" . }}
-{{ include "flink-job.backstageLabels" . }}
+app.kubernetes.io/component: metrics
+backstage.io/kubernetes-id: {{ .Release.Name }}
 {{ with .Values.metrics.podMonitor.selectors -}}
   {{- toYaml . }}
 {{- end }}
 {{ with .Values.podLabels -}}
   {{- toYaml . }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Pod annotations
+*/}}
+{{- define "flink-job.podAnnotations" -}}
+{{- with .Values.podAnnotations }}
+  {{- toYaml . }}
+{{- end }}
+{{ include "flink-job.backstageTopicAnnotations" . }}
 {{- end -}}
 
 {{/*
@@ -94,15 +104,7 @@ Create the name of the service account to use
 {{- end }}
 {{- end -}}
 
-{{/*
-Backstage labels
-*/}}
-{{- define "flink-job.backstageLabels" -}}
-backstage.io/kubernetes-id: {{ .Release.Name }}
-{{ include "flink-job.topicLabels" . }}
-{{- end -}}
-
-{{- define "flink-job.topicLabels" -}}
+{{- define "flink-job.backstageTopicAnnotations" -}}
 {{- $inputs := "" -}}
 {{- $outputs := "" -}}
 {{- range .Values.job.topics -}}
