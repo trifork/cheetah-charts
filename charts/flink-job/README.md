@@ -128,7 +128,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
-| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"1"}` | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
+| flinkConfiguration | object | (see values.yaml) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |
