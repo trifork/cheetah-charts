@@ -18,9 +18,9 @@ spec:
       targetPort: {{ .targetPort }}
   type: ClusterIP
   selector:
-    {{- include "flink-job.selectorLabels" $ | nindent 8 }}
+    {{- include "flink-job.selectorLabels" $ | nindent 4 }}
     {{- with .selectors }}
-    {{- toYaml . | nindent 8 }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
 {{- end -}}
 {{- end -}}
