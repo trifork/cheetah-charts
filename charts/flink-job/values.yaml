@@ -314,12 +314,8 @@ metrics:
   
   service:
     enabled: true
-    # -- Override the protocol for transporting metrics
-    protocol: TCP
     # -- Override the target port for metrics
     targetPort: metrics
-    # -- Override the service type
-    type: ClusterIP
     # -- Extra pod selector labels
     selectors: {}
     # -- Extra Service labels

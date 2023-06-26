@@ -40,6 +40,15 @@ Additionally, pull-requests will also create a pre-release to GitHub releases, w
 After pull-requests has been merged to the main branch, charts that have changed version will be packaged and released.
 
 ## Development
+### Prerequisites
+For convenience, this repository uses `make` for linting and generating docs. Most dev-boxes already have `make`, and can easily be installed if you don't. On Windows, using `chocolatey`, simply run:
+```bash
+choco install make
+```
+
+If you have docker installed on your system, the make commands will run inside docker, if you do not, they will require [`ct`](https://github.com/helm/chart-testing) and [`helm-docs`](https://github.com/norwoodj/helm-docs) for linting and docs generation, respectively.
+
+### Linting and Docs
 
 To run linting on your local machine, use `make lint` at the root of this repository.
 This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.

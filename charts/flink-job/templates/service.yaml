@@ -14,9 +14,9 @@ spec:
   ports:
     - name: metrics
       port: {{ $port }}
-      protocol: {{ .protocol }}
+      protocol: TCP
       targetPort: {{ .targetPort }}
-  type: {{ .type}}
+  type: ClusterIP
   selector:
     {{- include "flink-job.selectorLabels" $ | nindent 8 }}
     {{- with .selectors }}

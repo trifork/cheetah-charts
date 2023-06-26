@@ -270,9 +270,7 @@ metrics:
   
   service:
     enabled: true
-    protocol: TCP
     targetPort: metrics
-    type: ClusterIP
     selectors: 
       k8s-service: myservice
 

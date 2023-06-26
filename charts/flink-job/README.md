@@ -189,9 +189,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.serviceMonitor.extraMetricsEndpoints | list | `[]` | Extra ServiceMonitor metrics endpoints |
 | metrics.serviceMonitor.targetLabels | list | `["component","cluster"]` | Copy pod labels onto the metrics targets |
 | metrics.service.enabled | bool | `true` |  |
-| metrics.service.protocol | string | `"TCP"` | Override the protocol for transporting metrics |
 | metrics.service.targetPort | string | `"metrics"` | Override the target port for metrics |
-| metrics.service.type | string | `"ClusterIP"` | Override the service type |
 | metrics.service.selectors | object | `{}` | Extra pod selector labels |
 | metrics.service.labels | object | `{}` | Extra Service labels |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
