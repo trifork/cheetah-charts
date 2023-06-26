@@ -36,7 +36,7 @@ taskManager:
 
 metrics:
   enabled: true
-  podMonitor:
+  serviceMonitor:
     enabled: false
 
 ingress:

@@ -128,7 +128,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
-| flinkConfiguration | object | `{"execution.checkpointing.interval":"10 minutes","execution.checkpointing.min-pause":"10 minutes","execution.checkpointing.timeout":"5 minutes","rest.flamegraph.enabled":"true","state.backend":"hashmap","taskmanager.numberOfTaskSlots":"2"}` | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
+| flinkConfiguration | object | (see values.yaml) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{}` | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |
@@ -176,16 +176,22 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | jobManager.podTemplate | string | (see values.yaml) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | metrics.enabled | bool | `true` | Enable metrics scraping. Define flinkProperties to define the monitoring properties |
 | metrics.port | int | `9249` | Port on both job- and task-manager where metrics are exposed |
-| metrics.podMonitor.enabled | bool | `true` |  |
-| metrics.podMonitor.path | string | `""` | Override the metrics scrape path |
-| metrics.podMonitor.interval | string | `""` | Override the default scrape interval |
-| metrics.podMonitor.scrapeTimeout | string | `""` | Override the default scrape timeout |
-| metrics.podMonitor.metricRelabelings | list | `[]` | MetricRelabelConfigs to apply to samples before ingestion |
-| metrics.podMonitor.relabelings | list | `[]` | RelabelConfigs to apply to samples before scraping |
-| metrics.podMonitor.selectors | object | `{}` | Extra pod selector labels |
-| metrics.podMonitor.labels | object | `{}` | Extra PodMonitor labels |
-| metrics.podMonitor.extraMetricsEndpoints | list | `[]` | Extra podmonitor metrics endpoints |
-| metrics.podMonitor.targetLabels | list | `["component","cluster"]` | Copy pod labels onto the metrics targets |
+| metrics.service.enabled | bool | `true` | Whether to enable the service for metrics |
+| metrics.service.protocol | string | `TCP` | Override the protocol for transporting metrics |
+| metrics.service.targetPort | string | `metrics` | Override the target port for metrics |
+| metrics.service.type | string | `ClusterIP` | Override the service type |
+| metrics.service.selectors | object | `{}` | Extra pod selector labels |
+| metrics.service.labels | object |`{}` | Extra Service labels |
+| metrics.serviceMonitor.enabled | bool | `true` |  |
+| metrics.serviceMonitor.path | string | `""` | Override the metrics scrape path |
+| metrics.serviceMonitor.interval | string | `""` | Override the default scrape interval |
+| metrics.serviceMonitor.scrapeTimeout | string | `""` | Override the default scrape timeout |
+| metrics.serviceMonitor.metricRelabelings | list | `[]` | MetricRelabelConfigs to apply to samples before ingestion |
+| metrics.serviceMonitor.relabelings | list | `[]` | RelabelConfigs to apply to samples before scraping |
+| metrics.serviceMonitor.selectors | object | `{}` | Extra pod selector labels |
+| metrics.serviceMonitor.labels | object | `{}` | Extra serviceMonitor labels |
+| metrics.serviceMonitor.extraMetricsEndpoints | list | `[]` | Extra serviceMonitor metrics endpoints |
+| metrics.serviceMonitor.targetLabels | list | `["component","cluster"]` | Copy pod labels onto the metrics targets |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |

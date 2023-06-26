@@ -77,13 +77,13 @@ Sometimes Helm is not able to generate the template even with `--debug`.
 When this happens, it is most likely due to a nil pointer exception.
 One of these errors might look like the following:
 
-> `Error: template: flink-job/templates/podmonitor.yaml:1:14: executing "flink-job/templates/podmonitor.yaml" at <.Values.metrics.podmonitor.enabled>: nil pointer evaluating interface {}.enabled`
+> `Error: template: flink-job/templates/servicemonitor.yaml:1:14: executing "flink-job/templates/servicemonitor.yaml" at <.Values.metrics.servicemonitor.enabled>: nil pointer evaluating interface {}.enabled`
 
-In this case it is caused by a spelling mistake in line `1` in `podmonitor.yaml`.
-I am trying to access `.Values.metrics.podmonitor.enabled` instead of `.Values.metrics.podMonitor.enabled`.
-As I haven't defined the `podmonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
+In this case it is caused by a spelling mistake in line `1` in `servicemonitor.yaml`.
+I am trying to access `.Values.metrics.servicemonitor.enabled` instead of `.Values.metrics.servicemonitor.enabled`.
+As I haven't defined the `servicemonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
 
-Changing the reference from `.Values.metrics.podmonitor.enabled` to `.Values.metrics.podMonitor.enabled`, the `helm template` is successful again.
+Changing the reference from `.Values.metrics.servicemonitor.enabled` to `.Values.metrics.servicemonitor.enabled`, the `helm template` is successful again.
 
 To run the linting command (the same included in `Makefile`), run:
 

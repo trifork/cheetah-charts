@@ -3,30 +3,52 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "flink-job.fullname" . }}
+  name: {{ include "flink-job.fullname" $ }}
   labels:
-    {{- include "flink-job.labels" . | nindent 4 }}
-    {{- toYaml .labels | nindent 4 }}
+    {{- include "flink-job.labels" $ | nindent 4 }}
+    {{- with .labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end}}
 spec:
   endpoints:
     - port: metrics
-      scheme: {{ .scheme }}
-      {{- if eq .scheme "https" }}
-      tlsConfig:
-        {{- toYaml .tlsConfig | nindent 8 }}
+      {{- with .scheme }}
+      scheme: {{ . }}
       {{- end }}
-      path: {{ .path }}
-      interval: {{ .interval }}
-      scrapeTimeout: {{ .scrapeTimeout }}
+      {{- if eq .scheme "https" }}
+      {{- with .tlsConfig }}
+      tlsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      {{- with .path }}
+      path: {{ . }}
+      {{- end }}
+      {{- with .interval }}
+      interval: {{ . }}
+      {{- end }}
+      {{- with .scrapeTimeout }}
+      scrapeTimeout: {{ . }}
+      {{- end }}
+      {{- with .relabelings }}
       relabelings:
-        {{- toYaml .relabelings | nindent 8 }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .metricsRelabelings }}
       metricsRelabelings:
-        {{- toYaml .metricsRelabelings | nindent 8 }}
-    {{- toYaml .extraMetricsEndPoints | nindent 4 }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}    
+    {{- with .extraMetricsEndpoints }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  podTargetLabels:
+    {{- toYaml .targetLabels | nindent 4 }}
   selector:
     matchLabels:
       app.kubernetes.io/component: metrics
-      {{- include "flink-job.selectorLabels" . | nindent 8 }}
-      {{- toYaml .selectors | nindent 8 }}
+      {{- include "flink-job.selectorLabels" $ | nindent 6 }}
+      {{- with .selectors }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
 {{- end -}}
 {{- end -}}

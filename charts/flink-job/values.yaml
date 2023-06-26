@@ -317,6 +317,8 @@ metrics:
     type: ClusterIP
     # -- Extra pod selector labels
     selectors: {}
+    # -- Extra Service labels
+    labels: {}
 
 
 serviceAccount:

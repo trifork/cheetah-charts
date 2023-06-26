@@ -67,7 +67,7 @@ Pod labels
 app.kubernetes.io/component: metrics
 {{ include "flink-job.labels" . }}
 {{ include "flink-job.backstageLabels" . }}
-{{ with .Values.metrics.podMonitor.selectors -}}
+{{ with .Values.metrics.serviceMonitor.selectors -}}
   {{- toYaml . }}
 {{- end }}
 {{ with .Values.podLabels -}}

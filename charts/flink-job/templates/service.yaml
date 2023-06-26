@@ -4,9 +4,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "flink-job.fullname" . }}-metrics
+  name: {{ include "flink-job.fullname" $ }}-metrics
   labels:
-    {{- include "flink-job.labels" . | nindent 4 -}}
+    {{- include "flink-job.labels" $ | nindent 4 }}
+    {{- with .labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end}}
 spec:
   ports:
     - name: metrics
@@ -15,7 +18,9 @@ spec:
       targetPort: {{ .targetPort }}
   type: {{ .type}}
   selector:
-    {{- include "flink-job.selectorLabels" . | nindent 8 }}
-    {{- toYaml .selectors | nindent 8 }}
+    {{- include "flink-job.selectorLabels" $ | nindent 8 }}
+    {{- with .selectors }}
+    {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end -}}
 {{- end -}}
