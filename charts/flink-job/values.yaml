@@ -29,6 +29,7 @@ version: v1_16
 # -- Flink configuration
 # For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
 # For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
+# @default -- (see values.yaml)
 flinkConfiguration:
   state.backend: "hashmap"
   execution.checkpointing.interval: "10 minutes"
@@ -284,8 +285,17 @@ metrics:
   # -- Port on both job- and task-manager where metrics are exposed
   port: 9249
 
-  podMonitor:
+  serviceMonitor:
     enabled: true
+    # -- The http scheme to use for the default metrics endpoint (http/https)
+    scheme: ""
+    # -- TLS config applied when using the 'https' scheme.
+    # @default -- (see values.yaml)
+    tlsConfig:
+      insecureSkipVerify: true
+      caFile: /etc/prom-certs/root-cert.pem
+      certFile: /etc/prom-certs/cert-chain.pem
+      keyFile: /etc/prom-certs/key.pem
     # -- Override the metrics scrape path
     path: ""
     # -- Override the default scrape interval
@@ -296,16 +306,25 @@ metrics:
     metricRelabelings: []
     # -- RelabelConfigs to apply to samples before scraping
     relabelings: []
-    # -- Extra pod selector labels
+    # -- Extra service selector labels
     selectors: {}
-    # -- Extra PodMonitor labels
+    # -- Extra ServiceMonitor labels
     labels: {}
-    # -- Extra podmonitor metrics endpoints
+    # -- Extra ServiceMonitor metrics endpoints
     extraMetricsEndpoints: []
     # -- Copy pod labels onto the metrics targets
     targetLabels:
       - component
       - cluster
+
+  service:
+    enabled: true
+    # -- Override the target port for metrics
+    targetPort: metrics
+    # -- Extra pod selector labels
+    selectors: {}
+    # -- Extra Service labels
+    labels: {}
 
 serviceAccount:
   # -- Specifies whether a service account should be created
