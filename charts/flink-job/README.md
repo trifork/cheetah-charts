@@ -182,7 +182,9 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.service.type | string | `ClusterIP` | Override the service type |
 | metrics.service.selectors | object | `{}` | Extra pod selector labels |
 | metrics.service.labels | object |`{}` | Extra Service labels |
-| metrics.serviceMonitor.enabled | bool | `true` |  |
+| metrics.serviceMonitor.enabled | bool | `true` | Whether to enable the servicemonitor for metrics |
+| metrics.serviceMonitor.scheme | string | `https` | The http scheme to use for the default metrics endpoint (http/https) |
+| metrics.serviceMonitor.tlsConfig | object | `{}` | TLS config applied when using the 'https' scheme. |
 | metrics.serviceMonitor.path | string | `""` | Override the metrics scrape path |
 | metrics.serviceMonitor.interval | string | `""` | Override the default scrape interval |
 | metrics.serviceMonitor.scrapeTimeout | string | `""` | Override the default scrape timeout |

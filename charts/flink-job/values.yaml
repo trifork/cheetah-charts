@@ -286,6 +286,10 @@ metrics:
 
   serviceMonitor:
     enabled: true
+    # -- The http scheme to use for the default metrics endpoint (http/https)
+    scheme: ""
+    # -- TLS config applied when using the 'https' scheme.
+    tlsConfig: {}
     # -- Override the metrics scrape path
     path: ""
     # -- Override the default scrape interval
