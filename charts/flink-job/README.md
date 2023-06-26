@@ -178,7 +178,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.port | int | `9249` | Port on both job- and task-manager where metrics are exposed |
 | metrics.serviceMonitor.enabled | bool | `true` |  |
 | metrics.serviceMonitor.scheme | string | `""` | The http scheme to use for the default metrics endpoint (http/https) |
-| metrics.serviceMonitor.tlsConfig | object | `{"caFile":"/etc/prom-certs/root-cert.pem","certFile":"/etc/prom-certs/cert-chain.pem","insecureSkipVerify":true,"keyFile":"/etc/prom-certs/key.pem"}` | TLS config applied when using the 'https' scheme. @default: (see values.yaml) |
+| metrics.serviceMonitor.tlsConfig | object | (see values.yaml) | TLS config applied when using the 'https' scheme. |
 | metrics.serviceMonitor.path | string | `""` | Override the metrics scrape path |
 | metrics.serviceMonitor.interval | string | `""` | Override the default scrape interval |
 | metrics.serviceMonitor.scrapeTimeout | string | `""` | Override the default scrape timeout |

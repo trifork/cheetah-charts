@@ -290,7 +290,7 @@ metrics:
     # -- The http scheme to use for the default metrics endpoint (http/https)
     scheme: ""
     # -- TLS config applied when using the 'https' scheme.
-    # @default: (see values.yaml)
+    # @default -- (see values.yaml)
     tlsConfig:         
       insecureSkipVerify: true
       caFile: /etc/prom-certs/root-cert.pem
