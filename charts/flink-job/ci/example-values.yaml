@@ -28,5 +28,3 @@ jobManager:
 
 metrics:
   enabled: true
-  serviceMonitor:
-    scheme: http
