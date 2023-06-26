@@ -35,7 +35,7 @@ flinkConfiguration:
   execution.checkpointing.min-pause: "10 minutes"
   execution.checkpointing.timeout: "5 minutes"
   rest.flamegraph.enabled: "true"
-  taskmanager.numberOfTaskSlots: "2"
+  taskmanager.numberOfTaskSlots: "1"
 
 # -- change this to force a restart of the job,
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
@@ -98,7 +98,7 @@ job:
 
   # -- How many jobs to run in parallel,
   # see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/>
-  parallelism: 2
+  parallelism: 1
 
   # -- Desired state of the job.
   # Must be either: `running` or `suspended`
