@@ -291,7 +291,7 @@ metrics:
     scheme: ""
     # -- TLS config applied when using the 'https' scheme.
     # @default -- (see values.yaml)
-    tlsConfig:         
+    tlsConfig:
       insecureSkipVerify: true
       caFile: /etc/prom-certs/root-cert.pem
       certFile: /etc/prom-certs/cert-chain.pem
