@@ -229,7 +229,7 @@ metrics:
 
   port: 9249
 
-  podMonitor:
+  serviceMonitor:
     enabled: true
     path: /metrics
     interval: 30m
@@ -261,6 +261,14 @@ metrics:
       - component
       - cluster
       - foo
+  
+  service:
+    enabled: true
+    protocol: TCP
+    targetPort: metrics
+    type: ClusterIP
+    selectors: 
+      k8s-service: myservice
 
 serviceAccount:
   create: true

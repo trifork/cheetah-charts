@@ -284,7 +284,7 @@ metrics:
   # -- Port on both job- and task-manager where metrics are exposed
   port: 9249
 
-  podMonitor:
+  serviceMonitor:
     enabled: true
     # -- Override the metrics scrape path
     path: ""
@@ -296,16 +296,28 @@ metrics:
     metricRelabelings: []
     # -- RelabelConfigs to apply to samples before scraping
     relabelings: []
-    # -- Extra pod selector labels
+    # -- Extra service selector labels
     selectors: {}
-    # -- Extra PodMonitor labels
+    # -- Extra ServiceMonitor labels
     labels: {}
-    # -- Extra podmonitor metrics endpoints
+    # -- Extra ServiceMonitor metrics endpoints
     extraMetricsEndpoints: []
     # -- Copy pod labels onto the metrics targets
     targetLabels:
       - component
       - cluster
+  
+  service:
+    enabled: true
+    # -- Override the protocol for transporting metrics
+    protocol: TCP
+    # -- Override the target port for metrics
+    targetPort: metrics
+    # -- Override the service type
+    type: ClusterIP
+    # -- Extra pod selector labels
+    selectors: {}
+
 
 serviceAccount:
   # -- Specifies whether a service account should be created

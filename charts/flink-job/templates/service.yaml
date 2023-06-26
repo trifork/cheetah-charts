@@ -1,0 +1,21 @@
+{{- if and .Values.metrics.enabled .Values.metrics.service.enabled -}}
+{{- $port := .Values.metrics.port -}}
+{{- with .Values.metrics.service -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "flink-job.fullname" . }}-metrics
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 -}}
+spec:
+  ports:
+    - name: metrics
+      port: {{ $port }}
+      protocol: {{ .protocol }}
+      targetPort: {{ .targetPort }}
+  type: {{ .type}}
+  selector:
+    {{- include "flink-job.selectorLabels" . | nindent 8 }}
+    {{- toYaml .selectors | nindent 8 }}
+{{- end -}}
+{{- end -}}

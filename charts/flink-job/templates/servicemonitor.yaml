@@ -1,0 +1,32 @@
+{{- if and .Values.metrics.enabled .Values.metrics.serviceMonitor.enabled -}}
+{{- with .Values.metrics.serviceMonitor -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+  labels:
+    {{- include "flink-job.labels" . | nindent 4 }}
+    {{- toYaml .labels | nindent 4 }}
+spec:
+  endpoints:
+    - port: metrics
+      scheme: {{ .scheme }}
+      {{- if eq .scheme "https" }}
+      tlsConfig:
+        {{- toYaml .tlsConfig | nindent 8 }}
+      {{- end }}
+      path: {{ .path }}
+      interval: {{ .interval }}
+      scrapeTimeout: {{ .scrapeTimeout }}
+      relabelings:
+        {{- toYaml .relabelings | nindent 8 }}
+      metricsRelabelings:
+        {{- toYaml .metricsRelabelings | nindent 8 }}
+    {{- toYaml .extraMetricsEndPoints | nindent 4 }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: metrics
+      {{- include "flink-job.selectorLabels" . | nindent 8 }}
+      {{- toYaml .selectors | nindent 8 }}
+{{- end -}}
+{{- end -}}
