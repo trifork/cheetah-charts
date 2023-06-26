@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -145,7 +145,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | job.entryClass | string | `""` | The name of the job class |
 | job.args | list | `[]` | Arguments for the job |
 | job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job See `values.yaml` for the format |
-| job.parallelism | int | `2` | How many jobs to run in parallel, see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/> |
+| job.parallelism | int | `1` | How many jobs to run in parallel, see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/> |
 | job.state | string | `"running"` | Desired state of the job. Must be either: `running` or `suspended` |
 | job.upgradeMode | string | `"savepoint"` | Application upgrade mode. Must be either: stateless, last_state, savepoint `stateless` upgrades is done from an empty state `last-state` does a quick upgrade. Does not require the job to be in a healthy state, as it makes use of the HA metadata `savepoint` makes use of savepoints when upgrading and requires the job to be running. This provides maximal safety Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades> |
 | job.savepointTriggerNonce | int | `0` | change this to trigger a savepoint manually, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
@@ -183,7 +183,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.service.selectors | object | `{}` | Extra pod selector labels |
 | metrics.service.labels | object |`{}` | Extra Service labels |
 | metrics.serviceMonitor.enabled | bool | `true` | Whether to enable the servicemonitor for metrics |
-| metrics.serviceMonitor.scheme | string | `https` | The http scheme to use for the default metrics endpoint (http/https) |
+| metrics.serviceMonitor.scheme | string | `""` | The http scheme to use for the default metrics endpoint (http/https) |
 | metrics.serviceMonitor.tlsConfig | object | `{}` | TLS config applied when using the 'https' scheme. |
 | metrics.serviceMonitor.path | string | `""` | Override the metrics scrape path |
 | metrics.serviceMonitor.interval | string | `""` | Override the default scrape interval |
