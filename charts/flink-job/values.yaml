@@ -290,7 +290,12 @@ metrics:
     # -- The http scheme to use for the default metrics endpoint (http/https)
     scheme: ""
     # -- TLS config applied when using the 'https' scheme.
-    tlsConfig: {}
+    # @default: (see values.yaml)
+    tlsConfig:         
+      insecureSkipVerify: true
+      caFile: /etc/prom-certs/root-cert.pem
+      certFile: /etc/prom-certs/cert-chain.pem
+      keyFile: /etc/prom-certs/key.pem
     # -- Override the metrics scrape path
     path: ""
     # -- Override the default scrape interval
@@ -311,7 +316,7 @@ metrics:
     targetLabels:
       - component
       - cluster
-  
+
   service:
     enabled: true
     # -- Override the target port for metrics
