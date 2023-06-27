@@ -132,8 +132,14 @@ metrics:
 
   port: 9249
 
-  podMonitor:
+  serviceMonitor:
     enabled: true
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+      caFile: /etc/prom-certs/root-cert.pem
+      certFile: /etc/prom-certs/cert-chain.pem
+      keyFile: /etc/prom-certs/key.pem
     path: /metrics
     interval: 30m
     scrapeTimeout: 5s
@@ -164,6 +170,12 @@ metrics:
       - component
       - cluster
       - foo
+
+  service:
+    enabled: true
+    targetPort: metrics
+    selectors:
+      k8s-service: myservice
 
 serviceAccount:
   create: true

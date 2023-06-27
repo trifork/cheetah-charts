@@ -40,6 +40,15 @@ Additionally, pull-requests will also create a pre-release to GitHub releases, w
 After pull-requests has been merged to the main branch, charts that have changed version will be packaged and released.
 
 ## Development
+### Prerequisites
+For convenience, this repository uses `make` for linting and generating docs. Most dev-boxes already have `make`, and can easily be installed if you don't. On Windows, using `chocolatey`, simply run:
+```bash
+choco install make
+```
+
+If you have docker installed on your system, the make commands will run inside docker, if you do not, they will require [`ct`](https://github.com/helm/chart-testing) and [`helm-docs`](https://github.com/norwoodj/helm-docs) for linting and docs generation, respectively.
+
+### Linting and Docs
 
 To run linting on your local machine, use `make lint` at the root of this repository.
 This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.
@@ -77,13 +86,13 @@ Sometimes Helm is not able to generate the template even with `--debug`.
 When this happens, it is most likely due to a nil pointer exception.
 One of these errors might look like the following:
 
-> `Error: template: flink-job/templates/podmonitor.yaml:1:14: executing "flink-job/templates/podmonitor.yaml" at <.Values.metrics.podmonitor.enabled>: nil pointer evaluating interface {}.enabled`
+> `Error: template: flink-job/templates/servicemonitor.yaml:1:14: executing "flink-job/templates/servicemonitor.yaml" at <.Values.metrics.servicemonitor.enabled>: nil pointer evaluating interface {}.enabled`
 
-In this case it is caused by a spelling mistake in line `1` in `podmonitor.yaml`.
-I am trying to access `.Values.metrics.podmonitor.enabled` instead of `.Values.metrics.podMonitor.enabled`.
-As I haven't defined the `podmonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
+In this case it is caused by a spelling mistake in line `1` in `servicemonitor.yaml`.
+I am trying to access `.Values.metrics.servicemonitor.enabled` instead of `.Values.metrics.servicemonitor.enabled`.
+As I haven't defined the `servicemonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
 
-Changing the reference from `.Values.metrics.podmonitor.enabled` to `.Values.metrics.podMonitor.enabled`, the `helm template` is successful again.
+Changing the reference from `.Values.metrics.servicemonitor.enabled` to `.Values.metrics.servicemonitor.enabled`, the `helm template` is successful again.
 
 To run the linting command (the same included in `Makefile`), run:
 
