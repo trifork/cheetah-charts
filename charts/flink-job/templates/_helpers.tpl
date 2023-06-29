@@ -86,6 +86,32 @@ Pod annotations
 {{- end -}}
 
 {{/*
+Taskmanager Pod annotations
+*/}}
+{{- define "flink-job.taskManagerPodAnnotations" -}}
+{{- with .Values.taskManager.podAnnotations }}
+  {{- toYaml . }}
+{{- end }}
+{{- if .Values.istio.enabled }}
+traffic.sidecar.istio.io/excludeOutboundPorts: "6123,41475"
+traffic.sidecar.istio.io/excludeInboundPorts: "6122,34101,41475"
+{{- end }}
+{{- end -}}
+
+{{/*
+Jobmanager Pod annotations
+*/}}
+{{- define "flink-job.jobManagerPodAnnotations" -}}
+{{- with .Values.jobManager.podAnnotations }}
+  {{- toYaml . }}
+{{- end }}
+{{- if .Values.istio.enabled }}
+traffic.sidecar.istio.io/excludeOutboundPorts: "6122,6123,6124,34101,41475"
+traffic.sidecar.istio.io/excludeInboundPorts: "6123,6124,34101,41475"
+{{- end }}
+{{- end -}}
+
+{{/*
 Create the name of the FlinkDeployment resource
 Needed to make sure that resource names does not surpass the character requirements
 */}}
@@ -134,6 +160,7 @@ Calculate the flinkConfiguration
   {{- $configs = fromJson (include "flink-job.metricsConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.haConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.storageConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- $configs = fromJson (include "flink-job.istioConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- toYaml $configs -}}
 {{- end -}}
 
@@ -150,6 +177,18 @@ Add necessary metrics configuration
     {{- else if eq "v1_16" .global.version -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.factory.class" "org.apache.flink.metrics.prometheus.PrometheusReporterFactory")) -}}
     {{- end -}}
+  {{- end -}}
+  {{- $configs | toJson -}}
+{{- end -}}
+
+{{/*
+Add necessary istio configuration
+*/}}
+{{- define "flink-job.istioConfiguration" -}}
+  {{- $configs := .configs -}}
+  {{- if .global.istio.enabled -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.internal.query-service.port" "34101")) -}}
+      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "taskmanager.data.port" "41475")) -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
