@@ -55,8 +55,8 @@ storage:
   # -- Set the base directory for the HA, savepoints, and checkpoints storage.
   # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)
   baseDir: ""
-# -- Whether istio is enabled on the cluster or not
 istio:
+  # -- Whether istio is enabled on the cluster or not
   enabled: true
 # -- Extra ports to open on both job- and task-manager
 ports: []
