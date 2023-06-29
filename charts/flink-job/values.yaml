@@ -55,7 +55,9 @@ storage:
   # -- Set the base directory for the HA, savepoints, and checkpoints storage.
   # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)
   baseDir: ""
-
+# -- Whether istio is enabled on the cluster or not
+istio:
+  enabled: true
 # -- Extra ports to open on both job- and task-manager
 ports: []
 # -- Extra environment variables to set on both job- and task-manager
@@ -179,10 +181,8 @@ taskManager:
       labels:
         {{- toYaml . | nindent 4 }}
       {{- end }}
-      {{- with .Values.taskManager.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
+        {{- include "flink-job.taskManagerPodAnnotations" . | nindent 4 }}
     spec:
       containers:
         - name: flink-main-container
@@ -244,10 +244,8 @@ jobManager:
       labels:
         {{- toYaml . | nindent 4 }}
       {{- end }}
-      {{- with .Values.jobManager.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 4 }}
-      {{- end }}
+        {{- include "flink-job.taskManagerPodAnnotations" . | nindent 4 }}
     spec:
       containers:
         - name: flink-main-container
