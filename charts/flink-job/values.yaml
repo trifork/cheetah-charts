@@ -245,7 +245,7 @@ jobManager:
         {{- toYaml . | nindent 4 }}
       {{- end }}
       annotations:
-        {{- include "flink-job.taskManagerPodAnnotations" . | nindent 4 }}
+        {{- include "flink-job.jobManagerPodAnnotations" . | nindent 4 }}
     spec:
       containers:
         - name: flink-main-container
