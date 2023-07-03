@@ -10,7 +10,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end}}
 spec:
-  jobLabel: {{ .jobLabel }}
+  jobLabel: {{ .jobLabel | quote }}
   endpoints:
     - port: metrics
       {{- with .scheme }}
