@@ -312,6 +312,8 @@ metrics:
     targetLabels:
       - component
       - cluster
+    # -- JobLabel selects the label from the associated Kubernetes Service resource which will be used as the job label for all metrics
+    jobLabel: app
 
   service:
     enabled: true
