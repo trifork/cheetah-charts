@@ -189,7 +189,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.serviceMonitor.labels | object | `{}` | Extra ServiceMonitor labels |
 | metrics.serviceMonitor.extraMetricsEndpoints | list | `[]` | Extra ServiceMonitor metrics endpoints |
 | metrics.serviceMonitor.targetLabels | list | `["component","cluster"]` | Copy pod labels onto the metrics targets |
-| metrics.serviceMonitor.jobLabel | string | `"app"` | JobLabel selects the label from the associated Kubernetes service which will be used as the job label for all metrics |
+| metrics.serviceMonitor.jobLabel | string | `"app"` | JobLabel selects the label from the associated Kubernetes Service resource which will be used as the job label for all metrics |
 | metrics.service.enabled | bool | `true` |  |
 | metrics.service.targetPort | string | `"metrics"` | Override the target port for metrics |
 | metrics.service.selectors | object | `{}` | Extra pod selector labels |
