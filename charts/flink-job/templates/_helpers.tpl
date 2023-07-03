@@ -93,8 +93,12 @@ Taskmanager Pod annotations
   {{- toYaml . }}
 {{- end }}
 {{- if .Values.istio.enabled }}
-traffic.sidecar.istio.io/excludeOutboundPorts: "6123,41475"
-traffic.sidecar.istio.io/excludeInboundPorts: "6122,34101,41475"
+{{- if not (hasKey .Values.taskManager.podAnnotations "traffic.sidecar.istio.io/excludeOutboundPorts")}}
+traffic.sidecar.istio.io/excludeOutboundPorts: "6123,6124,41475"
+{{- end -}}
+{{- if not (hasKey .Values.taskManager.podAnnotations "traffic.sidecar.istio.io/excludeInboundPorts")}}
+traffic.sidecar.istio.io/excludeInboundPorts: "6122,6124,34101,41475"
+{{- end -}}
 {{- end }}
 {{- end -}}
 
@@ -106,8 +110,12 @@ Jobmanager Pod annotations
   {{- toYaml . }}
 {{- end }}
 {{- if .Values.istio.enabled }}
+{{- if not (hasKey .Values.jobManager.podAnnotations "traffic.sidecar.istio.io/excludeOutboundPorts")}}
 traffic.sidecar.istio.io/excludeOutboundPorts: "6122,6123,6124,34101,41475"
+{{- end -}}
+{{- if not (hasKey .Values.jobManager.podAnnotations "traffic.sidecar.istio.io/excludeInboundPorts")}}
 traffic.sidecar.istio.io/excludeInboundPorts: "6123,6124,34101,41475"
+{{- end -}}
 {{- end }}
 {{- end -}}
 
