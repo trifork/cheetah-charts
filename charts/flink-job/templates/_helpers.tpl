@@ -224,28 +224,25 @@ Validate the configuration
 */}}
 {{- define "flink-job.storageConfiguration" -}}
   {{- $configs := .configs -}}
-  {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
-    {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
-  {{- end -}}
-  {{- if (has .global.job.upgradeMode (list "last-state" "savepoint")) -}}
-    {{- if and .global.storage.scheme .global.storage.baseDir -}}
+  {{- if and .global.storage.scheme .global.storage.baseDir (has .global.job.upgradeMode (list "last-state" "savepoint")) -}}
+    {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.checkpoints.dir" $checkpointsDir)) -}}
     {{- if eq .global.job.upgradeMode "savepoint" -}}
       {{- $savepointsDir := printf "%s://%s/%s/savepoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.savepoints.dir" $savepointsDir)) -}}
-      {{- if not (hasKey $configs "state.savepoints.dir") -}}
-        {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.savepoints.dir' is required when using job.upgradeMode=savepoint" -}}
-      {{- end -}}
     {{- end -}}
-      {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
-      {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.checkpoints.dir" $checkpointsDir)) -}}
-    {{- end -}}
-    {{- if not (hasKey $configs "state.checkpoints.dir") -}}
-      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.checkpoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
-    {{- end -}}
+  {{- end -}}
+  {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
+    {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
+  {{- end -}}
+  {{- if and (has .global.job.upgradeMode (list "last-state" "savepoint")) (not (hasKey $configs "state.checkpoints.dir")) -}}
+    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.checkpoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
+  {{- end -}}
+  {{- if and (eq .global.job.upgradeMode "savepoint") (not (hasKey $configs "state.savepoints.dir")) -}}
+    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.savepoints.dir' is required when using job.upgradeMode=savepoint" -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
-
 {{/*
 Set a key=value in a dictionary, if the key is not defined
 */}}
