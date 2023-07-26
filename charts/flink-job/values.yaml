@@ -42,7 +42,20 @@ flinkConfiguration:
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
 restartNonce: 0
 # -- Custom logging configuration
-logConfiguration: {}
+logConfiguration:
+  log4j-console.properties: |+
+    rootLogger.level = WARN
+    rootLogger.appenderRef.console.ref = ConsoleAppender
+
+    # Log all infos to the console                                                                                                                                                                                                                                             │
+    appender.console.name = ConsoleAppender                                                                                                                                                                                                                                    │
+    appender.console.type = CONSOLE                                                                                                                                                                                                                                            │
+    appender.console.layout.type = PatternLayout                                                                                                                                                                                                                               │
+    appender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n
+
+    # Suppress the irrelevant (wrong) warnings from the Netty channel handler                                                                                                                                                                                                  │
+    logger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline                                                                                                                                                                            │
+    logger.netty.level = OFF
 # -- Cluster deployment mode. Support values are `native` and `standalone`
 # `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes
 mode: native
