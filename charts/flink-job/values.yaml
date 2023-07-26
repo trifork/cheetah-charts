@@ -42,7 +42,7 @@ flinkConfiguration:
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
 restartNonce: 0
 # -- Custom logging configuration
-logConfiguration: 
+logConfiguration:
   log4j-console.properties: |+
       rootLogger.level = WARN
       rootLogger.appenderRef.console.ref = ConsoleAppender
