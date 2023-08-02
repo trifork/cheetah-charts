@@ -56,6 +56,10 @@ logConfiguration:
     # Suppress the irrelevant (wrong) warnings from the Netty channel handler
     logger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline
     logger.netty.level = OFF
+
+    # Ensure we get failure logs on startup
+    logger.bootstrap.name = org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap
+    logger.bootstrap.level = INFO
 # -- Cluster deployment mode. Support values are `native` and `standalone`
 # `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes
 mode: native
