@@ -167,7 +167,7 @@ podTemplate: |-
       {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.initContainers }}
-    initContainers:        
+    initContainers:
       {{- toYaml . | nindent 4 }}
     {{- end }}
 
@@ -236,7 +236,7 @@ taskManager:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
       {{- with .Values.taskManager.initContainers }}
-      initContainers:        
+      initContainers:
         {{- toYaml . | nindent 4 }}
       {{- end }}
 
@@ -304,9 +304,9 @@ jobManager:
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
-      
+
       {{- with .Values.jobManager.initContainers }}
-      initContainers:        
+      initContainers:
         {{- toYaml . | nindent 4 }}
       {{- end }}
 

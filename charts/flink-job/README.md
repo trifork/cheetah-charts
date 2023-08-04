@@ -4,6 +4,12 @@
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../image-automation | image-automation | * |
+
 ## Usage
 
 ### Changing CPU limits
