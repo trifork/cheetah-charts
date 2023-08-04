@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.3.7](https://img.shields.io/badge/Version-0.3.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.8](https://img.shields.io/badge/Version-0.3.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -142,6 +142,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | volumeMounts | list | `[]` | List of additional volume mounts for the both job- and task-manager |
 | podLabels | object | `{}` | Additional labels attached to the pods |
 | podAnnotations | object | `{}` | Additional annotations attached to the pods |
+| initContainers | list | `[]` | InitContainers for the pods |
 | job.jarURI | string | `""` | The path of the job jar |
 | job.entryClass | string | `""` | The name of the job class |
 | job.args | list | `[]` | Arguments for the job |
@@ -163,6 +164,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | taskManager.volumeMounts | list | `[]` | List of additional volume mounts |
 | taskManager.podLabels | object | `{}` | Additional labels attached to the pods |
 | taskManager.podAnnotations | object | `{}` | Additional annotations attached to the pods |
+| taskManager.initContainers | list | `[]` | InitContainers for the pods |
 | taskManager.podTemplate | string | (see values.yaml) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | jobManager.replicas | int | `1` | Number of replicas |
 | jobManager.resource.memory | string | `"1Gb"` | Memory to reserve for the Job Manager. The default value should be ok for most jobs. |
@@ -174,6 +176,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | jobManager.volumeMounts | list | `[]` | List of additional volume mounts |
 | jobManager.podLabels | object | `{}` | Additional labels attached to the pods |
 | jobManager.podAnnotations | object | `{}` | Additional annotations attached to the pods |
+| jobManager.initContainers | list | `[]` | InitContainers for the pods |
 | jobManager.podTemplate | string | (see values.yaml) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | metrics.enabled | bool | `true` | Enable metrics scraping. Define flinkProperties to define the monitoring properties |
 | metrics.port | int | `9249` | Port on both job- and task-manager where metrics are exposed |
