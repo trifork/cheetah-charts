@@ -89,6 +89,8 @@ volumeMounts: []
 podLabels: {}
 # -- Additional annotations attached to the pods
 podAnnotations: {}
+# -- InitContainers for the pods
+initContainers: []
 
 job:
   # -- The path of the job jar
@@ -164,6 +166,10 @@ podTemplate: |-
     imagePullSecrets:
       {{- toYaml . | nindent 4 }}
     {{- end }}
+    {{- with .Values.initContainers }}
+    initContainers:        
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 
 taskManager:
   # -- Number of replicas
@@ -188,6 +194,8 @@ taskManager:
   podLabels: {}
   # -- Additional annotations attached to the pods
   podAnnotations: {}
+  # -- InitContainers for the pods
+  initContainers: []
 
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
@@ -227,6 +235,10 @@ taskManager:
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
+      {{- with .Values.taskManager.initContainers }}
+      initContainers:        
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
 
 jobManager:
   # -- Number of replicas
@@ -251,6 +263,8 @@ jobManager:
   podLabels: {}
   # -- Additional annotations attached to the pods
   podAnnotations: {}
+  # -- InitContainers for the pods
+  initContainers: []
 
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
@@ -289,6 +303,11 @@ jobManager:
       {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
+      {{- end }}
+      
+      {{- with .Values.jobManager.initContainers }}
+      initContainers:        
+        {{- toYaml . | nindent 4 }}
       {{- end }}
 
 metrics:
