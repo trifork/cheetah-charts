@@ -142,7 +142,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | volumeMounts | list | `[]` | List of additional volume mounts for the both job- and task-manager |
 | podLabels | object | `{}` | Additional labels attached to the pods |
 | podAnnotations | object | `{}` | Additional annotations attached to the pods |
-| initContainers | list | `[]` | InitContainers for the pods |
+| initContainers | string | `"- name: cert-creator\n  image: docker.io/bitnami/java:11.0.20-8\n  command: [\"/bin/sh\", \"-c\"]\n  args:\n    [\n      \"keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \\\"CN=flink.internal\\\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12\",\n    ]\n  securityContext:\n    allowPrivilegeEscalation: false\n    capabilities:\n      add: []\n      drop:\n        - ALL\n    runAsGroup: 9999\n    runAsUser: 9999\n  volumeMounts:\n    - mountPath: /flinkkeystore\n      name: truststore\n      readOnly: false    "` | InitContainers for the pods |
 | job.jarURI | string | `""` | The path of the job jar |
 | job.entryClass | string | `""` | The name of the job class |
 | job.args | list | `[]` | Arguments for the job |
