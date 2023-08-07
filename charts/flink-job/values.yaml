@@ -116,8 +116,7 @@ initContainers: |-
       volumeMounts:
         - mountPath: /flinkkeystore
           name: truststore
-          readOnly: false    
-
+          readOnly: false
 
 job:
   # -- The path of the job jar
