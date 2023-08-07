@@ -296,12 +296,17 @@ jobManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts) }}
           volumeMounts:
+            - mountPath: /flinkkeystore
+              name: truststore
+              readOnly: true
+          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts) }}
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
       volumes:
+        - name: truststore
+          emptyDir: {}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
         {{- toYaml . | nindent 4 -}}
       {{- end }}
 

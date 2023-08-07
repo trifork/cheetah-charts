@@ -22,12 +22,38 @@ spec:
   {{- end }}
 
   flinkConfiguration:
+    security.ssl.internal.enabled: "true"
+    security.ssl.internal.keystore: /flinkkeystore/internal.keystore
+    security.ssl.internal.truststore: /flinkkeystore/internal.keystore
+    security.ssl.internal.keystore-password: internal_store_password
+    security.ssl.internal.truststore-password: internal_store_password
+    security.ssl.internal.key-password: internal_store_password
     {{- include "flink-job.calculateConfigurations" . | nindent 4 -}}
-
-  {{- with .Values.podTemplate }}
+ 
   podTemplate:
+  {{- with .Values.podTemplate }}
     {{- tpl . $ | nindent 4 -}}
   {{- end }}
+    initContainers:
+    - name: cert-creator
+        image: docker.io/bitnami/java:11.0.20-8
+        command: ["/bin/sh", "-c"]
+        args:
+          [
+            "keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \"CN=flink.internal\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12",
+          ]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add: []
+            drop:
+              - ALL
+          runAsGroup: 9999
+          runAsUser: 9999
+        volumeMounts:
+          - mountPath: /flinkkeystore
+            name: truststore
+            readOnly: false    
   job:
     jarURI: {{ .Values.job.jarURI | quote }}
     {{- with .Values.job.entryClass }}
