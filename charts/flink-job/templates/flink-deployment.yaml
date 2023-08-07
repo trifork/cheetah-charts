@@ -36,24 +36,24 @@ spec:
   {{- end }}
     initContainers:
     - name: cert-creator
-        image: docker.io/bitnami/java:11.0.20-8
-        command: ["/bin/sh", "-c"]
-        args:
-          [
-            "keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \"CN=flink.internal\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12",
-          ]
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            add: []
-            drop:
-              - ALL
-          runAsGroup: 9999
-          runAsUser: 9999
-        volumeMounts:
-          - mountPath: /flinkkeystore
-            name: truststore
-            readOnly: false    
+      image: docker.io/bitnami/java:11.0.20-8
+      command: ["/bin/sh", "-c"]
+      args:
+        [
+          "keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \"CN=flink.internal\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12",
+        ]
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop:
+            - ALL
+        runAsGroup: 9999
+        runAsUser: 9999
+      volumeMounts:
+        - mountPath: /flinkkeystore
+          name: truststore
+          readOnly: false    
   job:
     jarURI: {{ .Values.job.jarURI | quote }}
     {{- with .Values.job.entryClass }}
