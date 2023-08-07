@@ -169,7 +169,10 @@ Calculate the flinkConfiguration
   {{- $configs = fromJson (include "flink-job.haConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.storageConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.istioConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
-  {{- toYaml $configs -}}
+  {{ toYaml $configs }}
+{{ if .Values.useSSLInternally -}}
+  {{- toYaml .Values.flinkSSLConfiguration }}
+{{- end -}}
 {{- end -}}
 
 {{/*
