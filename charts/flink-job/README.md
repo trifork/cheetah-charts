@@ -129,7 +129,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
 | internalSsl.enabled | bool | `true` | Set up SSL authentication/encryption using an init-container for creating the certificate |
-| internalSsl.configuration.keystore | string | `"/flinkkeystore/internal.keystore"` |  |
+| internalSsl.configuration.keystore | string | `"/flinkkeystore/truststore.jks"` |  |
 | internalSsl.podVolumes[0].name | string | `"truststore"` |  |
 | internalSsl.podVolumes[0].secret.secretName | string | `"truststore.jks"` |  |
 | internalSsl.podVolumeMounts[0].name | string | `"truststore"` |  |
