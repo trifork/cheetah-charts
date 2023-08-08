@@ -53,12 +53,12 @@ internalSsl:
     keystorePassword: internal_store_password
   podVolumes:
     - name: truststore
-      emptyDir: {}    
+      emptyDir: {}
   podVolumeMounts:
     - mountPath: /flinkkeystore
       name: truststore
       readOnly: true
-    
+
 # -- Flink configuration
 # For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
 # For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
