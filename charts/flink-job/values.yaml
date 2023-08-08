@@ -30,11 +30,12 @@ internalSsl:
   # -- Set up SSL authentication/encryption using an init-container for creating the certificate
   enabled: true
   configuration:
-    keystore: /flinkkeystore/truststore.jks
+    keystore: /flinkkeystore/keystore.jks
+    truststore: /flinkkeystore/truststore.jks
   podVolumes:
     - name: truststore
       secret:
-        secretName: truststore.jks
+        secretName: "flink-job-mtls-secret"
   podVolumeMounts:
     - name: truststore
       mountPath: /flinkkeystore

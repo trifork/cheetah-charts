@@ -1,0 +1,72 @@
+imagePullSecrets:
+      - name: pullsecret-ghcr-io
+image:
+  repository: ghcr.io/trifork/idmappingpoc-flinkjobs
+  tag: "1.0.4"
+storage:
+  scheme: s3
+  baseDir: flink
+flinkConfiguration:
+  s3.endpoint: http://minio.minio.svc.cluster.local:9000
+  s3.path-style-access: "true"
+  high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+  high-availability.storageDir: s3://flink/infocode-mapping/ha
+  kubernetes.jobmanager.cpu.limit-factor: "5.0"
+  kubernetes.taskmanager.cpu.limit-factor: "5.0"
+  kubernetes.jobmanager.memory.limit-factor: "2.0"
+  kubernetes.taskmanager.memory.limit-factor: "2.0"
+  taskmanager.numberOfTaskSlots: "1"
+env:
+  - name: AWS_ACCESS_KEY
+    value: vault:secret/data/global/flink/s3/cheetah-flink#accessKey
+  - name: AWS_SECRET_KEY
+    value: vault:secret/data/global/flink/s3/cheetah-flink#secretKey
+  - name: INPUT_KAFKA_CLIENT_ID
+    value: vault:secret/data/global/guidedtour#kafka-client-id
+  - name: INPUT_KAFKA_CLIENT_SECRET
+    value: vault:secret/data/global/guidedtour#kafka-client-secret
+  - name: INPUT_KAFKA_TOKEN_URL
+    value: http://oauthsimulator-cheetah-application.oauthsimulator.svc:8000/oauth2/token
+  - name: OUTPUT_KAFKA_CLIENT_ID
+    value: vault:secret/data/global/guidedtour#kafka-client-id
+  - name: OUTPUT_KAFKA_CLIENT_SECRET
+    value: vault:secret/data/global/guidedtour#kafka-client-secret
+  - name: OUTPUT_KAFKA_TOKEN_URL
+    value: http://oauthsimulator-cheetah-application.oauthsimulator.svc:8000/oauth2/token            
+job:
+  jarURI: local:///opt/flink/usrlib/artifacts/device-id-mapping-1.0-SNAPSHOT.jar
+  entryClass: com.trifork.cheetah.job.DeviceIdMapperJob
+  name: DeviceIdMapperJob
+  args:
+  - --input-kafka-bootstrap-servers
+  - cheetah-kafka-kafka-brokers.kafka:9092
+  - --output-kafka-bootstrap-servers
+  - cheetah-kafka-kafka-brokers.kafka:9092
+  - --input-kafka-group-id
+  - id-mapping
+  - --id-service-url
+  - http://idservice-cheetah-application.idmapping:80/api/v1/idmapping/
+  state: running
+  upgradeMode: "stateless"
+  allowNonRestoredState: false
+  parallelism: 1
+  topics:
+    - arg: input-kafka-topic
+      name: ExternalIdReadings
+      type: input
+    - arg: output-kafka-topic
+      name: InternalIdReadings
+      type: output
+podAnnotations:
+  vault.security.banzaicloud.io/vault-role: default
+  vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+jobManager:
+  replicas: 1
+  resource:
+    cpu: 0.1
+    memory: 1Gb
+taskManager:
+  replicas: 1
+  resource:
+    cpu: 0.1
+    memory: 1Gb

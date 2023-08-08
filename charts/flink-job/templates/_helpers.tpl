@@ -195,17 +195,18 @@ Add necessary ssl configuration
 */}}
 {{- define "flink-job.sslConfiguration" -}}
   {{- $configs := .configs -}}
-  {{- $password := sha1sum (toYaml .global) }}
+  {{- $password := sha1sum (nospace (toString .global.image)) }}
   {{- if .global.internalSsl.enabled -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" (toString .global.internalSsl.configuration.keystore))) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" (toString .global.internalSsl.configuration.keystore))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" (toString .global.internalSsl.configuration.truststore))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore-password" (toString $password))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore-password" (toString $password))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.key-password" (toString $password))) -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
+
 
 {{/*
 Add necessary istio configuration
