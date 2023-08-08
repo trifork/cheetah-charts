@@ -195,13 +195,14 @@ Add necessary ssl configuration
 */}}
 {{- define "flink-job.sslConfiguration" -}}
   {{- $configs := .configs -}}
+  {{- $password := sha1sum (toYaml .global) }}
   {{- if .global.internalSsl.enabled -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" (toString .global.internalSsl.configuration.keystore))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" (toString .global.internalSsl.configuration.keystore))) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.key-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore-password" (toString $password))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore-password" (toString $password))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.key-password" (toString $password))) -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}

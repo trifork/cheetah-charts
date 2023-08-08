@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.3.9](https://img.shields.io/badge/Version-0.3.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -129,25 +129,11 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
 | internalSsl.enabled | bool | `true` | Set up SSL authentication/encryption using an init-container for creating the certificate |
-| internalSsl.image | string | `"docker.io/bitnami/java:11.0.20-8"` |  |
-| internalSsl.command[0] | string | `"/bin/sh"` |  |
-| internalSsl.command[1] | string | `"-c"` |  |
-| internalSsl.args[0] | string | `"keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \"CN=flink.internal\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12"` |  |
-| internalSsl.resources | object | `{}` |  |
-| internalSsl.securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| internalSsl.securityContext.capabilities.add | list | `[]` |  |
-| internalSsl.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| internalSsl.securityContext.runAsGroup | int | `9999` |  |
-| internalSsl.securityContext.runAsUser | int | `9999` |  |
-| internalSsl.volumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
-| internalSsl.volumeMounts[0].name | string | `"truststore"` |  |
-| internalSsl.volumeMounts[0].readOnly | bool | `false` |  |
 | internalSsl.configuration.keystore | string | `"/flinkkeystore/internal.keystore"` |  |
-| internalSsl.configuration.keystorePassword | string | `"internal_store_password"` |  |
 | internalSsl.podVolumes[0].name | string | `"truststore"` |  |
-| internalSsl.podVolumes[0].emptyDir | object | `{}` |  |
-| internalSsl.podVolumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
+| internalSsl.podVolumes[0].secret.secretName | string | `"truststore.jks"` |  |
 | internalSsl.podVolumeMounts[0].name | string | `"truststore"` |  |
+| internalSsl.podVolumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
 | internalSsl.podVolumeMounts[0].readOnly | bool | `true` |  |
 | flinkConfiguration | object | (see values.yaml) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
@@ -158,7 +144,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | istio.enabled | bool | `true` | Whether istio is enabled on the cluster or not |
 | ports | list | `[]` | Extra ports to open on both job- and task-manager |
 | env | list | `[]` | Extra environment variables to set on both job- and task-manager |
-| envFrom | list | `[]` | List of ConfigMap/Secrets where environment variables can be loaded from |
+| envFrom | string | `nil` | List of ConfigMap/Secrets where environment variables can be loaded from |
 | volumes | list | `[]` | List of additional volumes for the both job- and task-manager |
 | volumeMounts | list | `[]` | List of additional volume mounts for the both job- and task-manager |
 | podLabels | object | `{}` | Additional labels attached to the pods |

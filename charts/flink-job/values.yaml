@@ -29,34 +29,15 @@ version: v1_16
 internalSsl:
   # -- Set up SSL authentication/encryption using an init-container for creating the certificate
   enabled: true
-  image: docker.io/bitnami/java:11.0.20-8
-  command:
-    - /bin/sh
-    - -c
-  args:
-    - "keytool -genkeypair -alias flink.internal -keystore /flinkkeystore/internal.keystore -dname \"CN=flink.internal\" -storepass internal_store_password -keyalg RSA -keysize 4096 -storetype PKCS12"
-  resources: {}
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      add: []
-      drop:
-        - ALL
-    runAsGroup: 9999
-    runAsUser: 9999
-  volumeMounts:
-    - mountPath: /flinkkeystore
-      name: truststore
-      readOnly: false
   configuration:
     keystore: /flinkkeystore/internal.keystore
-    keystorePassword: internal_store_password
   podVolumes:
     - name: truststore
-      emptyDir: {}
+      secret:
+        secretName: truststore.jks
   podVolumeMounts:
-    - mountPath: /flinkkeystore
-      name: truststore
+    - name: truststore
+      mountPath: /flinkkeystore
       readOnly: true
 
 # -- Flink configuration
@@ -113,7 +94,7 @@ ports: []
 # -- Extra environment variables to set on both job- and task-manager
 env: []
 # -- List of ConfigMap/Secrets where environment variables can be loaded from
-envFrom: []
+envFrom: 
 # -- List of additional volumes for the both job- and task-manager
 volumes: []
 # -- List of additional volume mounts for the both job- and task-manager
@@ -204,16 +185,8 @@ podTemplate: |-
       {{- tpl . $ | nindent 4 }}
     {{- end }}
     {{ if .Values.internalSsl.enabled }}
-    - name: cert-creator
-      image: {{ .Values.internalSsl.image }}
-      command: {{ toYaml .Values.internalSsl.command | nindent 8 }}
-      args:
-        {{ toYaml .Values.internalSsl.args | nindent 8 }}
-      securityContext:
-        {{ toYaml .Values.internalSsl.securityContext | nindent 8 }}
-      volumeMounts:
-        {{ toYaml .Values.internalSsl.volumeMounts | nindent 8}}
     {{- end }}
+
 
 taskManager:
   # -- Number of replicas
