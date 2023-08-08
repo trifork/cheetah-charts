@@ -35,7 +35,7 @@ internalSsl:
   volumes:
     - name: truststore
       secret:
-        secretName: "flink-job-mtls-secret"
+        secretName: "release-name-flink-job-mtls-secret"
   volumeMounts:
     - name: truststore
       mountPath: /flinkkeystore
