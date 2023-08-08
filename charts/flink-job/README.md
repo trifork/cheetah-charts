@@ -129,12 +129,13 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
 | version | string | `"v1_16"` | Which Flink version to use |
 | internalSsl.enabled | bool | `true` | Set up SSL authentication/encryption using an init-container for creating the certificate |
-| internalSsl.configuration.keystore | string | `"/flinkkeystore/truststore.jks"` |  |
-| internalSsl.podVolumes[0].name | string | `"truststore"` |  |
-| internalSsl.podVolumes[0].secret.secretName | string | `"truststore.jks"` |  |
-| internalSsl.podVolumeMounts[0].name | string | `"truststore"` |  |
-| internalSsl.podVolumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
-| internalSsl.podVolumeMounts[0].readOnly | bool | `true` |  |
+| internalSsl.configuration.keystore | string | `"/flinkkeystore/keystore.jks"` |  |
+| internalSsl.configuration.truststore | string | `"/flinkkeystore/truststore.jks"` |  |
+| internalSsl.volumes[0].name | string | `"truststore"` |  |
+| internalSsl.volumes[0].secret.secretName | string | `"flink-job-mtls-secret"` |  |
+| internalSsl.volumeMounts[0].name | string | `"truststore"` |  |
+| internalSsl.volumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
+| internalSsl.volumeMounts[0].readOnly | bool | `true` |  |
 | flinkConfiguration | object | (see values.yaml) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
 | logConfiguration | object | `{"log4j-console.properties":"rootLogger.level = WARN\nrootLogger.appenderRef.console.ref = ConsoleAppender\n\n# Log all infos to the console\nappender.console.name = ConsoleAppender\nappender.console.type = CONSOLE\nappender.console.layout.type = PatternLayout\nappender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n\n\n# Suppress the irrelevant (wrong) warnings from the Netty channel handler\nlogger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline\nlogger.netty.level = OFF\n\n# Ensure we get failure logs on startup\nlogger.bootstrap.name = org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap\nlogger.bootstrap.level = INFO\n"}` | Custom logging configuration |

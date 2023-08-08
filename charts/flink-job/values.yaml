@@ -32,11 +32,11 @@ internalSsl:
   configuration:
     keystore: /flinkkeystore/keystore.jks
     truststore: /flinkkeystore/truststore.jks
-  podVolumes:
+  volumes:
     - name: truststore
       secret:
         secretName: "flink-job-mtls-secret"
-  podVolumeMounts:
+  volumeMounts:
     - name: truststore
       mountPath: /flinkkeystore
       readOnly: true
@@ -183,7 +183,7 @@ podTemplate: |-
     {{- end }}
     {{- with .Values.initContainers }}
     initContainers:
-      {{- toYaml . $ | nindent 4 }}
+      {{- toYaml .  | nindent 4 }}
     {{- end }}
 
 taskManager:
@@ -242,11 +242,11 @@ taskManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts .Values.internalSsl.podVolumeMounts) }}
+          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts .Values.internalSsl.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.taskManager.volumes .Values.internalSsl.podVolumes) }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes .Values.internalSsl.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -311,11 +311,11 @@ jobManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts .Values.internalSsl.podVolumeMounts) }}
+          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts .Values.internalSsl.volumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.jobManager.volumes .Values.internalSsl.podVolumes) }}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes .Values.internalSsl.volumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
