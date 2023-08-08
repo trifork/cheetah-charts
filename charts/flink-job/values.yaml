@@ -94,7 +94,7 @@ ports: []
 # -- Extra environment variables to set on both job- and task-manager
 env: []
 # -- List of ConfigMap/Secrets where environment variables can be loaded from
-envFrom: 
+envFrom: []
 # -- List of additional volumes for the both job- and task-manager
 volumes: []
 # -- List of additional volume mounts for the both job- and task-manager
