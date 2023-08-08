@@ -144,7 +144,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | istio.enabled | bool | `true` | Whether istio is enabled on the cluster or not |
 | ports | list | `[]` | Extra ports to open on both job- and task-manager |
 | env | list | `[]` | Extra environment variables to set on both job- and task-manager |
-| envFrom | string | `nil` | List of ConfigMap/Secrets where environment variables can be loaded from |
+| envFrom | list | `[]` | List of ConfigMap/Secrets where environment variables can be loaded from |
 | volumes | list | `[]` | List of additional volumes for the both job- and task-manager |
 | volumeMounts | list | `[]` | List of additional volume mounts for the both job- and task-manager |
 | podLabels | object | `{}` | Additional labels attached to the pods |
