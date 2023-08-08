@@ -30,7 +30,7 @@ internalSsl:
   # -- Set up SSL authentication/encryption using an init-container for creating the certificate
   enabled: true
   configuration:
-    keystore: /flinkkeystore/internal.keystore
+    keystore: /flinkkeystore/truststore.jks
   podVolumes:
     - name: truststore
       secret:
@@ -182,9 +182,8 @@ podTemplate: |-
     {{- end }}
     {{- with .Values.initContainers }}
     initContainers:
-      {{- tpl . $ | nindent 4 }}
+      {{- toYaml . $ | nindent 4 }}
     {{- end }}
-
 
 taskManager:
   # -- Number of replicas
@@ -242,11 +241,11 @@ taskManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts) }}
+          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts .Values.internalSsl.podVolumeMounts) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.taskManager.volumes) }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes .Values.internalSsl.podVolumes) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}

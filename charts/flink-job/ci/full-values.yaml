@@ -52,8 +52,6 @@ podAnnotations:
   vault.security.banzaicloud.io/vault-tls-secret: vault-tls
   vault.security.banzaicloud.io/vault-role: super-user
 
-useSSLInternally: true
-
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
