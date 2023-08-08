@@ -180,11 +180,9 @@ podTemplate: |-
     imagePullSecrets:
       {{- toYaml . | nindent 4 }}
     {{- end }}
-    initContainers:
     {{- with .Values.initContainers }}
+    initContainers:
       {{- tpl . $ | nindent 4 }}
-    {{- end }}
-    {{ if .Values.internalSsl.enabled }}
     {{- end }}
 
 
