@@ -169,10 +169,8 @@ Calculate the flinkConfiguration
   {{- $configs = fromJson (include "flink-job.haConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.storageConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.istioConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- $configs = fromJson (include "flink-job.sslConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{ toYaml $configs }}
-{{ if .Values.useSSLInternally -}}
-  {{- toYaml .Values.flinkSSLConfiguration }}
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -188,6 +186,22 @@ Add necessary metrics configuration
     {{- else if eq "v1_16" .global.version -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.factory.class" "org.apache.flink.metrics.prometheus.PrometheusReporterFactory")) -}}
     {{- end -}}
+  {{- end -}}
+  {{- $configs | toJson -}}
+{{- end -}}
+
+{{/*
+Add necessary ssl configuration
+*/}}
+{{- define "flink-job.sslConfiguration" -}}
+  {{- $configs := .configs -}}
+  {{- if .global.internalSsl.enabled -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" (toString .global.internalSsl.configuration.keystore))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" (toString .global.internalSsl.configuration.keystore))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.key-password" (toString .global.internalSsl.configuration.keystorePassword))) -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
