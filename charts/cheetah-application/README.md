@@ -1,6 +1,6 @@
 # cheetah-application
 
-![Version: 0.6.2](https://img.shields.io/badge/Version-0.6.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.6.3](https://img.shields.io/badge/Version-0.6.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Cheetah Data Platform applications
 
@@ -29,12 +29,13 @@ If the container must run as root, you can set `podSecurityContext.runAsNonRoot=
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| replicaCount | int | `1` |  |
-| image.repository | string | `""` | Image repository. Such as ghcr.io/trifork/cheetah-webapi |
-| image.tag | string | `""` | Image tag |
-| image.pullPolicy | string | `"IfNotPresent"` |  |
-| global | object | `{"image":{"repository":""},"imagePullSecrets":[]}` | Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart. Overrides the local values if given |
-| imagePullSecrets | list | `[]` |  |
+| replicaCount | int | `1` | Number of pod replicas. For high availability, 3 or more is recommended |
+| image.repository | string | `""` | Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi |
+| image.tag | string | `""` | Which image tag to use |
+| image.pullPolicy | string | `"IfNotPresent"` | Which image pull policy to use |
+| global.image.repository | string | `""` | Set the global image repository If image automation is enabled, this is useful to reduce configuration duplication |
+| global.imagePullSecrets | list | `[]` | Set the global image pull secrets If image automation is enabled, this is useful to reduce configuration duplication |
+| imagePullSecrets | list | `[]` | Array of image pull secrets. Each entry follows the `name: <secret-name>` format |
 | nameOverride | string | `""` |  |
 | fullnameOverride | string | `""` |  |
 | command | list | `[]` | Override the default command |
@@ -42,51 +43,48 @@ If the container must run as root, you can set `podSecurityContext.runAsNonRoot=
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| podAnnotations | object | `{}` |  |
-| podLabels | object | `{}` |  |
-| podSecurityContext.runAsNonRoot | bool | `true` |  |
-| podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
-| securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| securityContext.readOnlyRootFilesystem | bool | `true` |  |
-| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| containerPort | int | `8000` |  |
-| volumes | list | `[]` |  |
-| volumeMounts | list | `[]` |  |
-| service.type | string | `"ClusterIP"` |  |
-| service.port | int | `8000` |  |
+| podLabels | object | `{}` | Extra pod labels |
+| podAnnotations | object | `{}` | Extra pod annotations |
+| containerPort | int | `8000` | Which container port to use for primary traffic |
+| volumes | list | `[]` | Extra volumes added to the pod See https://kubernetes.io/docs/concepts/storage/volumes/ |
+| volumeMounts | list | `[]` | Extra volume mounts added to the primary container See https://kubernetes.io/docs/concepts/storage/volumes/ |
+| service.type | string | `"ClusterIP"` | Which type of service to expose the pods with |
+| service.port | int | `8000` | Which service port to use |
 | ingress.enabled | bool | `false` | Whether to expose the service or not |
-| ingress.className | string | `"nginx"` |  |
-| ingress.annotations."nginx.ingress.kubernetes.io/ssl-redirect" | string | `"true"` |  |
-| ingress.annotations."nginx.ingress.kubernetes.io/force-ssl-redirect" | string | `"true"` |  |
-| ingress.annotations."cert-manager.io/cluster-issuer" | string | `"letsencrypt-prod"` |  |
-| ingress.hosts[0] | object | `{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}` | Which host to expose the service under |
-| ingress.tls.enabled | bool | `true` |  |
-| ingress.tls.secretName | string | `""` |  |
-| env | list | `[]` |  |
-| envFrom | list | `[]` |  |
-| startupProbe.enabled | bool | `false` |  |
-| startupProbe.httpGet.path | string | `"/"` |  |
-| startupProbe.httpGet.port | string | `"http"` |  |
+| ingress.className | string | `"nginx"` | Which ingressClass to use |
+| ingress.annotations | object | (see [values.yaml](values.yaml)) | Extra ingress annotations. |
+| ingress.hosts | list | `[]` | Host configuration. See [values.yaml](values.yaml) for formatting |
+| ingress.tls.enabled | bool | `true` | Enable TLS in the ingress resource |
+| ingress.tls.secretName | string | `""` | Secret containing TLS certificates |
+| env | list | `[]` | Extra environment variables for the container. See [values.yaml](values.yaml) for formatting |
+| envFrom | list | `[]` | Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting |
+| startupProbe.enabled | bool | `false` | Whether to enable a startup probe for the application. This generally not recommended, but can be used for slow-starting applications. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
+| startupProbe.httpGet.path | string | `"/"` | Which path to look for liveness |
+| startupProbe.httpGet.port | string | `"http"` | Which port to use |
 | startupProbe.initialDelaySeconds | int | `30` |  |
 | startupProbe.failureThreshold | int | `3` |  |
 | startupProbe.periodSeconds | int | `10` |  |
 | startupProbe.timeoutSeconds | int | `1` |  |
-| livenessProbe.enabled | bool | `true` |  |
+| livenessProbe.enabled | bool | `true` | Whether to enable a liveness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
 | livenessProbe.httpGet.path | string | `"/"` | Which path to look for liveness |
-| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe.httpGet.port | string | `"http"` | Which port to use |
 | livenessProbe.initialDelaySeconds | int | `30` |  |
 | livenessProbe.failureThreshold | int | `3` |  |
 | livenessProbe.periodSeconds | int | `10` |  |
 | livenessProbe.timeoutSeconds | int | `1` |  |
-| readinessProbe.enabled | bool | `true` |  |
+| readinessProbe.enabled | bool | `true` | Whether to enable a readiness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
 | readinessProbe.httpGet.path | string | `"/"` | Which path to look for readiness |
-| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe.httpGet.port | string | `"http"` | Which port to use |
 | readinessProbe.initialDelaySeconds | int | `30` |  |
 | readinessProbe.failureThreshold | int | `3` |  |
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.timeoutSeconds | int | `1` |  |
-| resources | object | `{}` | Resource limits. See `values.yaml` for an example |
-| monitoring | object | `{"enabled":false,"path":"/metrics","port":1854}` | Observability settings |
+| resources | object | `{}` | Resource limits. See [values.yaml](values.yaml) for formatting |
+| podSecurityContext | object | (see [values.yaml](values.yaml)) | Security context for the entire pod. |
+| securityContext | object | (see [values.yaml](values.yaml)) | Security context for the primary container. |
+| monitoring.enabled | bool | `false` | Whether to enable Prometheus scraping by creating a ServiceMonitor resource |
+| monitoring.port | int | `1854` | Which port to look for Prometheus metrics |
+| monitoring.path | string | `"/metrics"` | Which path to look for Prometheus metrics |
 | pdb.create | bool | `false` | Whether to create a PodDisruptionBudget for ensuring that an application is always available |
 | pdb.labels | object | `{}` | Extra labels for the PodDisruptionBudget |
 | pdb.annotations | object | `{}` | Extra annotations for the PodDisruptionBudget |
@@ -100,7 +98,7 @@ If the container must run as root, you can set `podSecurityContext.runAsNonRoot=
 | nodeSelector | object | `{}` |  |
 | tolerations | list | `[]` |  |
 | affinity | object | `{}` |  |
-| image-automation | object | `{"enabled":false}` | Settings passed to the image-automation chart |
+| image-automation.enabled | bool | `false` | Whether to enable the image-automation subchart. Any other configuration given here, is passed to it |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
