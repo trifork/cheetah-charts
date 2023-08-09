@@ -3,13 +3,6 @@
 nameOverride: ""
 fullnameOverride: ""
 
-# -- Only used to decrease duplicate configuration of this chart, if image-automation is used as a sub chart.
-# Overrides the local values if given
-global:
-  image:
-    repository: ""
-  imagePullSecrets: []
-
 image:
   # -- Which image repository to use
   repository: flink
@@ -20,7 +13,17 @@ image:
   # -- Which image pull policy to use
   pullPolicy: Always
 
-# -- Image pull secrets. A list of `name: <secret-name>`
+global:
+  image:
+    # -- Set the global image repository
+    # If image automation is enabled, this is useful to reduce configuration duplication
+    repository: ""
+  # -- Set the global image pull secrets
+  # If image automation is enabled, this is useful to reduce configuration duplication
+  imagePullSecrets: []
+
+# -- Array of image pull secrets.
+# Each entry follows the `name: <secret-name>` format
 imagePullSecrets: []
 
 # -- Which Flink version to use
@@ -29,7 +32,7 @@ version: v1_16
 # -- Flink configuration
 # For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
 # For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
-# @default -- (see values.yaml)
+# @default -- (see [values.yaml](values.yaml))
 flinkConfiguration:
   state.backend: "hashmap"
   execution.checkpointing.interval: "10 minutes"
@@ -41,7 +44,9 @@ flinkConfiguration:
 # -- change this to force a restart of the job,
 # see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
 restartNonce: 0
+
 # -- Custom logging configuration
+# @default -- (see [values.yaml](values.yaml))
 logConfiguration:
   log4j-console.properties: |+
     rootLogger.level = WARN
@@ -60,6 +65,7 @@ logConfiguration:
     # Ensure we get failure logs on startup
     logger.bootstrap.name = org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap
     logger.bootstrap.level = INFO
+
 # -- Cluster deployment mode. Support values are `native` and `standalone`
 # `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes
 mode: native
@@ -72,9 +78,11 @@ storage:
   # -- Set the base directory for the HA, savepoints, and checkpoints storage.
   # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)
   baseDir: ""
+
 istio:
   # -- Whether istio is enabled on the cluster or not
   enabled: true
+
 # -- Extra ports to open on both job- and task-manager
 ports: []
 # -- Extra environment variables to set on both job- and task-manager
@@ -102,7 +110,7 @@ job:
   # -- Define which topics this job will consume.
   # Used for data-discovery in Cheetah Backstage.
   # If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job
-  # See `values.yaml` for the format
+  # See [values.yaml](values.yaml) for the format
   topics: []
   # must be defined as follows
   # - arg: <optional name of argument>
@@ -148,7 +156,7 @@ job:
 # -- Shared job-/task-manager pod template.
 # Overridden by `(job/task)Manager.podTemplate`.
 # The main flink-container must be called "flink-main-container"
-# @default -- (see values.yaml)
+# @default -- (see [values.yaml](values.yaml))
 podTemplate: |-
   metadata:
     labels:
@@ -199,7 +207,7 @@ taskManager:
 
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
-  # @default -- (see values.yaml)
+  # @default -- (see [values.yaml](values.yaml))
   podTemplate: |-
     metadata:
       {{- with .Values.taskManager.podLabels }}
@@ -268,7 +276,7 @@ jobManager:
 
   # -- Pod template. Overrides the main `podTemplate`.
   # The main flink-container must be called "flink-main-container"
-  # @default -- (see values.yaml)
+  # @default -- (see [values.yaml](values.yaml))
   podTemplate: |-
     metadata:
       {{- with .Values.jobManager.podLabels }}
@@ -318,11 +326,12 @@ metrics:
   port: 9249
 
   serviceMonitor:
+    # -- Whether to create a ServiceMonitor for easy configuration of scrape targets
     enabled: true
     # -- The http scheme to use for the default metrics endpoint (http/https)
     scheme: ""
     # -- TLS config applied when using the 'https' scheme.
-    # @default -- (see values.yaml)
+    # @default -- (see [values.yaml](values.yaml))
     tlsConfig:
       insecureSkipVerify: true
       caFile: /etc/prom-certs/root-cert.pem
@@ -352,6 +361,7 @@ metrics:
     jobLabel: app
 
   service:
+    # -- Whether to create a Kubernetes Service
     enabled: true
     # -- Override the target port for metrics
     targetPort: metrics
@@ -422,7 +432,8 @@ ingress:
   # -- Create a self-signed TLS secret
   selfSigned: false
 
-# -- Settings passed to the image-automation chart,
-# Image-automation is not possible when using image-sha as a tagging strategy
 image-automation:
+  # -- Whether to enable the image-automation subchart.
+  # Image-automation is not possible when using image-sha as a tagging strategy.
+  # Any other configuration given here, is passed to it
   enabled: false
