@@ -2,23 +2,30 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# -- Number of pod replicas. For high availability, 3 or more is recommended
 replicaCount: 1
 
 image:
-  # -- Image repository. Such as ghcr.io/trifork/cheetah-webapi
+  # -- Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi
   repository: ""
-  # -- Image tag
+  # -- Which image tag to use
   tag: ""
+  # -- Which image pull policy to use
   pullPolicy: IfNotPresent
 
-# -- Only used to decrease duplicate configuration of this chart, if imageAutomation is used as a sub chart.
-# Overrides the local values if given
 global:
   image:
+    # -- Set the global image repository
+    # If image automation is enabled, this is useful to reduce configuration duplication
     repository: ""
+  # -- Set the global image pull secrets
+  # If image automation is enabled, this is useful to reduce configuration duplication
   imagePullSecrets: []
 
+# -- Array of image pull secrets.
+# Each entry follows the `name: <secret-name>` format
 imagePullSecrets: []
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -36,52 +43,55 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+# -- Extra pod labels
 podLabels: {}
+# -- Extra pod annotations
+podAnnotations: {}
 
-podSecurityContext:
-  runAsNonRoot: true
-  seccompProfile:
-    type: RuntimeDefault
-  # fsGroup: 2000
-
-securityContext:
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop:
-      - ALL
-  # runAsUser: 1000
-  # runAsGroup: 1000
-
+# -- Which container port to use for primary traffic
 containerPort: 8000
 
+# -- Extra volumes added to the pod
+# See https://kubernetes.io/docs/concepts/storage/volumes/
 volumes: []
 
+# -- Extra volume mounts added to the primary container
+# See https://kubernetes.io/docs/concepts/storage/volumes/
 volumeMounts: []
 
 service:
+  # -- Which type of service to expose the pods with
   type: ClusterIP
+  # -- Which service port to use
   port: 8000
 
 ingress:
   # -- Whether to expose the service or not
   enabled: false
+  # -- Which ingressClass to use
   className: "nginx"
+  # -- Extra ingress annotations.
+  # @default -- (see [values.yaml](values.yaml))
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  # -- Host configuration.
+  # See [values.yaml](values.yaml) for formatting
   hosts:
-    # -- Which host to expose the service under
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+    []
+    # - host: chart-example.local
+    #   paths:
+    #     - path: /
+    #       pathType: ImplementationSpecific
   tls:
+    # -- Enable TLS in the ingress resource
     enabled: true
+    # -- Secret containing TLS certificates
     secretName: ""
 
+# -- Extra environment variables for the container.
+# See [values.yaml](values.yaml) for formatting
 env: []
 # - name: SECRET_USERNAME
 #   valueFrom:
@@ -91,14 +101,21 @@ env: []
 # - name: DEMO_GREETING
 #   value: "Hello from the environment"
 
+# -- Extra sources of environment variables, such as ConfigMap/Secret.
+# See [values.yaml](values.yaml) for formatting
 envFrom: []
 # - secretRef:
 #     name: very-secret-secret
 
 startupProbe:
+  # -- Whether to enable a startup probe for the application.
+  # This generally not recommended, but can be used for slow-starting applications.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   enabled: false
   httpGet:
+    # -- Which path to look for liveness
     path: /
+    # -- Which port to use
     port: http
   initialDelaySeconds: 30
   failureThreshold: 3
@@ -106,10 +123,13 @@ startupProbe:
   timeoutSeconds: 1
 
 livenessProbe:
+  # -- Whether to enable a liveness probe for the application.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   enabled: true
   httpGet:
     # -- Which path to look for liveness
     path: /
+    # -- Which port to use
     port: http
   initialDelaySeconds: 30
   failureThreshold: 3
@@ -117,17 +137,21 @@ livenessProbe:
   timeoutSeconds: 1
 
 readinessProbe:
+  # -- Whether to enable a readiness probe for the application.
+  # See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   enabled: true
   httpGet:
     # -- Which path to look for readiness
     path: /
+    # -- Which port to use
     port: http
   initialDelaySeconds: 30
   failureThreshold: 3
   periodSeconds: 10
   timeoutSeconds: 1
 
-# -- Resource limits. See `values.yaml` for an example
+# -- Resource limits.
+# See [values.yaml](values.yaml) for formatting
 resources:
   {}
   # limits:
@@ -137,10 +161,31 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
-# -- Observability settings
+# -- Security context for the entire pod.
+# @default -- (see [values.yaml](values.yaml))
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+  # fsGroup: 2000
+
+# -- Security context for the primary container.
+# @default -- (see [values.yaml](values.yaml))
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+  # runAsUser: 1000
+  # runAsGroup: 1000
+
 monitoring:
+  # -- Whether to enable Prometheus scraping by creating a ServiceMonitor resource
   enabled: false
+  # -- Which port to look for Prometheus metrics
   port: 1854
+  # -- Which path to look for Prometheus metrics
   path: "/metrics"
 
 pdb:
@@ -173,6 +218,7 @@ tolerations: []
 
 affinity: {}
 
-# -- Settings passed to the image-automation chart
 image-automation:
+  # -- Whether to enable the image-automation subchart.
+  # Any other configuration given here, is passed to it
   enabled: false
