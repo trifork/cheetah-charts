@@ -29,6 +29,10 @@ imagePullSecrets: []
 # -- Which Flink version to use
 version: v1_16
 
+internalSsl:
+  # -- Whether to use SSL between the job- and taskmanager
+  enabled: true
+
 # -- Flink configuration
 # For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
 # For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
@@ -176,7 +180,7 @@ podTemplate: |-
     {{- end }}
     {{- with .Values.initContainers }}
     initContainers:
-      {{- toYaml . | nindent 4 }}
+      {{- toYaml .  | nindent 4 }}
     {{- end }}
 
 taskManager:
@@ -235,11 +239,11 @@ taskManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts) }}
+          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml))) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.taskManager.volumes) }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -304,11 +308,11 @@ jobManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts) }}
+          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml))) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.jobManager.volumes) }}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}

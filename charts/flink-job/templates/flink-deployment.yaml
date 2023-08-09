@@ -24,6 +24,7 @@ spec:
   flinkConfiguration:
     {{- include "flink-job.calculateConfigurations" . | nindent 4 -}}
 
+
   {{- with .Values.podTemplate }}
   podTemplate:
     {{- tpl . $ | nindent 4 -}}

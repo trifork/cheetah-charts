@@ -1,0 +1,24 @@
+{{- if .Values.internalSsl.enabled -}}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ printf "%s-mtls-issuer" ( include "flink-job.fullname" . ) | quote }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ printf "%s-mtls-crt" ( include "flink-job.fullname" . ) | quote }}
+spec:
+  secretName: {{ printf "%s-mtls-secret" ( include "flink-job.fullname" . ) | quote }}
+  commonName: {{ printf "%s-mtls-crt" ( include "flink-job.fullname" . ) | quote }}
+  issuerRef:
+    name: {{ printf "%s-mtls-issuer" ( include "flink-job.fullname" . ) | quote }}
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef: # Password used to encrypt the keystore
+        key: password
+        name: {{ printf "%s-mtls-password" ( include "flink-job.fullname" . ) | quote }}
+{{- end -}}
