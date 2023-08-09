@@ -27,12 +27,17 @@ imagePullSecrets: []
 version: v1_16
 
 internalSsl:
-  # -- Set up SSL authentication/encryption using an init-container for creating the certificate
+  # -- Whether to use SSL between the job- and taskmanager
   enabled: true
+  # -- SSL Configuration
   configuration:
+    # -- The keystore file used for MTLS between the job- and taskmanager
     keystore: /flinkkeystore/keystore.jks
+    # -- The truststore file used for MTLS between the job- and taskmanager
     truststore: /flinkkeystore/truststore.jks
+  # -- The volume name used for accessing the key and truststore
   volumeName: truststore
+  # -- The volumeMount used for accessing the key and truststore
   volumeMounts:
     - name: truststore
       mountPath: /flinkkeystore
