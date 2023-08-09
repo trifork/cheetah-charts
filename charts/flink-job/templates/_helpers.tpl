@@ -198,8 +198,8 @@ Add necessary ssl configuration
   {{- $password := sha1sum (nospace (toString .global.image)) | trunc 10 }}
   {{- if .global.internalSsl.enabled -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" (toString .global.internalSsl.configuration.keystore))) -}}
-    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" (toString .global.internalSsl.configuration.truststore))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" "/flinkkeystore/keystore.jks")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore" "/flinkkeystore/truststore.jks")) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore-password" (toString $password))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.truststore-password" (toString $password))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.key-password" (toString $password))) -}}
@@ -278,6 +278,12 @@ Set a key=value in a dictionary, if the key is not defined
 
 {{- define "flink-job.sslVolumes" -}}
   {{- if $.Values.internalSsl.enabled -}}
-  {{ (dict "name" $.Values.internalSsl.volumeName "secret" (dict "secretName" (print (include "flink-job.fullname" . ) "-mtls-secret"))) | toYaml }}
+  {{ (dict "name" "truststore" "secret" (dict "secretName" (print (include "flink-job.fullname" . ) "-mtls-secret"))) | toYaml }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "flink-job.sslVolumeMounts" -}}
+  {{- if $.Values.internalSsl.enabled -}}
+    {{ (dict "name" "truststore" "mountPath" "/flinkkeystore" "readOnly" "true") | toYaml}}
   {{- end -}}
 {{- end -}}
