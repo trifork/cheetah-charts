@@ -121,12 +121,13 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 |-----|------|---------|-------------|
 | nameOverride | string | `""` |  |
 | fullnameOverride | string | `""` |  |
-| global | object | `{"image":{"repository":""},"imagePullSecrets":[]}` | Only used to decrease duplicate configuration of this chart, if image-automation is used as a sub chart. Overrides the local values if given |
 | image.repository | string | `"flink"` | Which image repository to use |
 | image.tag | string | `"main"` | Which image tag to use |
 | image.sha | string | `""` | Which image sha to use. If used, the `image.tag` is ignored |
 | image.pullPolicy | string | `"Always"` | Which image pull policy to use |
-| imagePullSecrets | list | `[]` | Image pull secrets. A list of `name: <secret-name>` |
+| global.image.repository | string | `""` | Set the global image repository If image automation is enabled, this is useful to reduce configuration duplication |
+| global.imagePullSecrets | list | `[]` | Set the global image pull secrets If image automation is enabled, this is useful to reduce configuration duplication |
+| imagePullSecrets | list | `[]` | Array of image pull secrets. Each entry follows the `name: <secret-name>` format |
 | version | string | `"v1_16"` | Which Flink version to use |
 | internalSsl.enabled | bool | `true` | Whether to use SSL between the job- and taskmanager |
 | internalSsl.configuration | object | `{"keystore":"/flinkkeystore/keystore.jks","truststore":"/flinkkeystore/truststore.jks"}` | SSL Configuration |
@@ -134,9 +135,9 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | internalSsl.configuration.truststore | string | `"/flinkkeystore/truststore.jks"` | The truststore file used for MTLS between the job- and taskmanager |
 | internalSsl.volumeName | string | `"truststore"` | The volume name used for accessing the key and truststore |
 | internalSsl.volumeMounts | list | `[{"mountPath":"/flinkkeystore","name":"truststore","readOnly":true}]` | The volumeMount used for accessing the key and truststore |
-| flinkConfiguration | object | (see values.yaml) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
+| flinkConfiguration | object | (see [values.yaml](values.yaml)) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
 | restartNonce | int | `0` | change this to force a restart of the job, see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info |
-| logConfiguration | object | `{"log4j-console.properties":"rootLogger.level = WARN\nrootLogger.appenderRef.console.ref = ConsoleAppender\n\n# Log all infos to the console\nappender.console.name = ConsoleAppender\nappender.console.type = CONSOLE\nappender.console.layout.type = PatternLayout\nappender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n\n\n# Suppress the irrelevant (wrong) warnings from the Netty channel handler\nlogger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline\nlogger.netty.level = OFF\n\n# Ensure we get failure logs on startup\nlogger.bootstrap.name = org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap\nlogger.bootstrap.level = INFO\n"}` | Custom logging configuration |
+| logConfiguration | object | (see [values.yaml](values.yaml)) | Custom logging configuration |
 | mode | string | `"native"` | Cluster deployment mode. Support values are `native` and `standalone` `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes |
 | storage.scheme | string | `""` | File storage scheme. Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/) To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc. |
 | storage.baseDir | string | `""` | Set the base directory for the HA, savepoints, and checkpoints storage. Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata) |
@@ -152,14 +153,14 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | job.jarURI | string | `""` | The path of the job jar |
 | job.entryClass | string | `""` | The name of the job class |
 | job.args | list | `[]` | Arguments for the job |
-| job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job See `values.yaml` for the format |
+| job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job See [values.yaml](values.yaml) for the format |
 | job.parallelism | int | `1` | How many jobs to run in parallel, see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/> |
 | job.state | string | `"running"` | Desired state of the job. Must be either: `running` or `suspended` |
 | job.upgradeMode | string | `"savepoint"` | Application upgrade mode. Must be either: stateless, last_state, savepoint `stateless` upgrades is done from an empty state `last-state` does a quick upgrade. Does not require the job to be in a healthy state, as it makes use of the HA metadata `savepoint` makes use of savepoints when upgrading and requires the job to be running. This provides maximal safety Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades> |
 | job.savepointTriggerNonce | int | `0` | change this to trigger a savepoint manually, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
 | job.initialSavepointPath | string | `""` | change this to force a manual recovery checkpoint, see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> |
 | job.allowNonRestoredState | bool | `false` | If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed. |
-| podTemplate | string | (see values.yaml) | Shared job-/task-manager pod template. Overridden by `(job/task)Manager.podTemplate`. The main flink-container must be called "flink-main-container" |
+| podTemplate | string | (see [values.yaml](values.yaml)) | Shared job-/task-manager pod template. Overridden by `(job/task)Manager.podTemplate`. The main flink-container must be called "flink-main-container" |
 | taskManager.replicas | int | `1` | Number of replicas |
 | taskManager.resource.memory | string | `"1Gb"` | Memory to reserve for each Task Manager. The amount needed depends on the amount of data to be processed by each Task Manager, and how much state it should store in memory. |
 | taskManager.resource.cpu | float | `0.1` | CPU requests. CPU limits is CPU requests multiplied by flinkConfiguration."kubernetes.jobmanager.cpu.limit-factor" |
@@ -171,7 +172,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | taskManager.podLabels | object | `{}` | Additional labels attached to the pods |
 | taskManager.podAnnotations | object | `{}` | Additional annotations attached to the pods |
 | taskManager.initContainers | list | `[]` | InitContainers for the pods |
-| taskManager.podTemplate | string | (see values.yaml) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
+| taskManager.podTemplate | string | (see [values.yaml](values.yaml)) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | jobManager.replicas | int | `1` | Number of replicas |
 | jobManager.resource.memory | string | `"1Gb"` | Memory to reserve for the Job Manager. The default value should be ok for most jobs. |
 | jobManager.resource.cpu | float | `0.1` | CPU requests. CPU limits is CPU requests multiplied by flinkConfiguration."kubernetes.jobmanager.cpu.limit-factor" |
@@ -183,12 +184,12 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | jobManager.podLabels | object | `{}` | Additional labels attached to the pods |
 | jobManager.podAnnotations | object | `{}` | Additional annotations attached to the pods |
 | jobManager.initContainers | list | `[]` | InitContainers for the pods |
-| jobManager.podTemplate | string | (see values.yaml) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
+| jobManager.podTemplate | string | (see [values.yaml](values.yaml)) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | metrics.enabled | bool | `true` | Enable metrics scraping. Define flinkProperties to define the monitoring properties |
 | metrics.port | int | `9249` | Port on both job- and task-manager where metrics are exposed |
-| metrics.serviceMonitor.enabled | bool | `true` |  |
+| metrics.serviceMonitor.enabled | bool | `true` | Whether to create a ServiceMonitor for easy configuration of scrape targets |
 | metrics.serviceMonitor.scheme | string | `""` | The http scheme to use for the default metrics endpoint (http/https) |
-| metrics.serviceMonitor.tlsConfig | object | (see values.yaml) | TLS config applied when using the 'https' scheme. |
+| metrics.serviceMonitor.tlsConfig | object | (see [values.yaml](values.yaml)) | TLS config applied when using the 'https' scheme. |
 | metrics.serviceMonitor.path | string | `""` | Override the metrics scrape path |
 | metrics.serviceMonitor.interval | string | `""` | Override the default scrape interval |
 | metrics.serviceMonitor.scrapeTimeout | string | `""` | Override the default scrape timeout |
@@ -199,7 +200,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | metrics.serviceMonitor.extraMetricsEndpoints | list | `[]` | Extra ServiceMonitor metrics endpoints |
 | metrics.serviceMonitor.targetLabels | list | `["component","cluster"]` | Copy pod labels onto the metrics targets |
 | metrics.serviceMonitor.jobLabel | string | `"app"` | JobLabel selects the label from the associated Kubernetes Service resource which will be used as the job label for all metrics |
-| metrics.service.enabled | bool | `true` |  |
+| metrics.service.enabled | bool | `true` | Whether to create a Kubernetes Service |
 | metrics.service.targetPort | string | `"metrics"` | Override the target port for metrics |
 | metrics.service.selectors | object | `{}` | Extra pod selector labels |
 | metrics.service.labels | object | `{}` | Extra Service labels |
@@ -226,7 +227,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | ingress.annotations | object | `{}` | Extra Ingress annotations |
 | ingress.tlsSecret | string | `""` | Add TLS certificates from an existing secret |
 | ingress.selfSigned | bool | `false` | Create a self-signed TLS secret |
-| image-automation | object | `{"enabled":false}` | Settings passed to the image-automation chart, Image-automation is not possible when using image-sha as a tagging strategy |
+| image-automation.enabled | bool | `false` | Whether to enable the image-automation subchart. Image-automation is not possible when using image-sha as a tagging strategy. Any other configuration given here, is passed to it |
 
 ----------------------------------------------
 Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
