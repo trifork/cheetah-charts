@@ -195,7 +195,7 @@ Add necessary ssl configuration
 */}}
 {{- define "flink-job.sslConfiguration" -}}
   {{- $configs := .configs -}}
-  {{- $password := sha1sum (nospace (toString .global.image)) }}
+  {{- $password := sha1sum (nospace (toString .global.image)) | trunc 10 }}
   {{- if .global.internalSsl.enabled -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" (toString .global.internalSsl.configuration.keystore))) -}}
@@ -262,6 +262,7 @@ Validate the configuration
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
+
 {{/*
 Set a key=value in a dictionary, if the key is not defined
 */}}
@@ -273,4 +274,10 @@ Set a key=value in a dictionary, if the key is not defined
     {{- $_ := set $dict $key $value -}}
   {{- end -}}
   {{- $dict | toJson -}}
+{{- end -}}
+
+{{- define "flink-job.sslVolumes" -}}
+  {{- if $.Values.internalSsl.enabled -}}
+  {{ (dict "name" $.Values.internalSsl.volumeName "secret" (dict "secretName" (print (include "flink-job.fullname" . ) "-mtls-secret"))) | toYaml }}
+  {{- end -}}
 {{- end -}}

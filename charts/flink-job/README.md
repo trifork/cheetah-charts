@@ -131,8 +131,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | internalSsl.enabled | bool | `true` | Set up SSL authentication/encryption using an init-container for creating the certificate |
 | internalSsl.configuration.keystore | string | `"/flinkkeystore/keystore.jks"` |  |
 | internalSsl.configuration.truststore | string | `"/flinkkeystore/truststore.jks"` |  |
-| internalSsl.volumes[0].name | string | `"truststore"` |  |
-| internalSsl.volumes[0].secret.secretName | string | `"flink-job-mtls-secret"` |  |
+| internalSsl.volumeName | string | `"truststore"` |  |
 | internalSsl.volumeMounts[0].name | string | `"truststore"` |  |
 | internalSsl.volumeMounts[0].mountPath | string | `"/flinkkeystore"` |  |
 | internalSsl.volumeMounts[0].readOnly | bool | `true` |  |

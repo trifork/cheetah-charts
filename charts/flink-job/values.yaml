@@ -32,10 +32,7 @@ internalSsl:
   configuration:
     keystore: /flinkkeystore/keystore.jks
     truststore: /flinkkeystore/truststore.jks
-  volumes:
-    - name: truststore
-      secret:
-        secretName: "release-name-flink-job-mtls-secret"
+  volumeName: truststore
   volumeMounts:
     - name: truststore
       mountPath: /flinkkeystore
@@ -246,7 +243,7 @@ taskManager:
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.taskManager.volumes .Values.internalSsl.volumes) }}
+      {{- with (concat .Values.volumes .Values.taskManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -315,7 +312,7 @@ jobManager:
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.jobManager.volumes .Values.internalSsl.volumes) }}
+      {{- with (concat .Values.volumes .Values.jobManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
