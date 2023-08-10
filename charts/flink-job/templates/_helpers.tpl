@@ -278,7 +278,7 @@ Set a key=value in a dictionary, if the key is not defined
 
 {{- define "flink-job.sslVolumes" -}}
   {{- if $.Values.internalSsl.enabled -}}
-  {{ (dict "name" "truststore" "secret" (dict "secretName" (print (include "flink-job.fullname" . ) "-mtls-secret"))) | toYaml }}
+  {{ (dict "name" "truststore" "secret" (dict "secretName" (print (include "flink-job.nameWithimageHash" . ) "-mtls-secret"))) | toYaml }}
   {{- end -}}
 {{- end -}}
 
@@ -286,4 +286,8 @@ Set a key=value in a dictionary, if the key is not defined
   {{- if $.Values.internalSsl.enabled -}}
     {{ (dict "name" "truststore" "mountPath" "/flinkkeystore" "readOnly" true) | toYaml}}
   {{- end -}}
+{{- end -}}
+
+{{- define "flink-job.nameWithimageHash" -}}
+  {{ include "flink-job.fullname" . }}{{ (sha256sum (nospace (toString .Values.image))) | trunc 10 }}
 {{- end -}}
