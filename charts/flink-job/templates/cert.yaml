@@ -10,6 +10,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ printf "%s-mtls-crt" ( include "flink-job.fullname" . ) | quote }}
+  imageHash: {{ sha256sum (nospace (toString .Values.image)) }}
 spec:
   secretName: {{ printf "%s-mtls-secret" ( include "flink-job.fullname" . ) | quote }}
   commonName: {{ printf "%s-mtls-crt" ( include "flink-job.fullname" . ) | quote }}
