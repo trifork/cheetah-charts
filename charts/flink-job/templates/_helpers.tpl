@@ -284,6 +284,6 @@ Set a key=value in a dictionary, if the key is not defined
 
 {{- define "flink-job.sslVolumeMounts" -}}
   {{- if $.Values.internalSsl.enabled -}}
-    {{ (dict "name" "truststore" "mountPath" "/flinkkeystore" "readOnly" "true") | toYaml}}
+    {{ (dict "name" "truststore" "mountPath" "/flinkkeystore" "readOnly" true) | toYaml}}
   {{- end -}}
 {{- end -}}
