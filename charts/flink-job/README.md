@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.4.4](https://img.shields.io/badge/Version-0.4.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.5](https://img.shields.io/badge/Version-0.4.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -165,7 +165,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | taskManager.volumes | list | `[]` | List of additional volumes |
 | taskManager.volumeMounts | list | `[]` | List of additional volume mounts |
 | taskManager.podLabels | object | `{}` | Additional labels attached to the pods |
-| taskManager.podAnnotations | object | `{}` | Additional annotations attached to the pods |
+| taskManager.podAnnotations | object | `{"cluster-autoscaler.kubernetes.io/safe-to-evict":"true"}` | Additional annotations attached to the pods |
 | taskManager.initContainers | list | `[]` | InitContainers for the pods |
 | taskManager.podTemplate | string | (see [values.yaml](values.yaml)) | Pod template. Overrides the main `podTemplate`. The main flink-container must be called "flink-main-container" |
 | jobManager.replicas | int | `1` | Number of replicas |
