@@ -205,7 +205,9 @@ taskManager:
   # -- Additional labels attached to the pods
   podLabels: {}
   # -- Additional annotations attached to the pods
-  podAnnotations: {}
+  podAnnotations:
+    # As the task-manager is a raw pod with no controller, the cluster-autoscaler is not able to evict it
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
   # -- InitContainers for the pods
   initContainers: []
 
