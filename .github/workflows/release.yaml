@@ -29,13 +29,6 @@ jobs:
           name: cheetah-application
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: cheetah-flink-native
-        uses: ./.github/actions/release-chart
-        continue-on-error: true
-        with:
-          name: cheetah-flink-native
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: flink-job
         uses: ./.github/actions/release-chart
         continue-on-error: true

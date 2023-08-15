@@ -1,7 +1,0 @@
-image:
-  repository: flink
-  tag: 1.16
-
-flink:
-  job:
-    jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
