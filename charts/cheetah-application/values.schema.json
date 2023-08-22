@@ -1,25 +1,45 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "JSON schema for cheetah-application/values.yaml",
-  "description": "",
+  "description": "Default values for cheetah-application",
   "type": "object",
-  "required": ["replicaCount", "image"],
+  "required": [
+    "replicaCount",
+    "image",
+    "global",
+    "serviceAccount",
+    "containerPort",
+    "service",
+    "ingress",
+    "startupProbe",
+    "livenessProbe",
+    "readinessProbe",
+    "podSecurityContext",
+    "securityContext",
+    "monitoring",
+    "pdb",
+    "autoscaling",
+    "image-automation"
+  ],
   "properties": {
     "replicaCount": {
       "description": "Number of pod replicas. For high availability, 3 or more is recommended",
       "type": "number"
     },
     "image": {
-      "description": "",
+      "description": "Image config",
       "type": "object",
       "properties": {
         "repository": {
+          "description": "Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi",
           "type": "string"
         },
         "tag": {
+          "description": "Which image tag to use",
           "type": "string"
         },
         "pullPolicy": {
+          "description": "Which image pull policy to use",
           "type": "string"
         }
       }
@@ -31,49 +51,50 @@
         "image": {
           "properties": {
             "repository": {
+              "description": "Set the global image repository. If image automation is enabled, this is useful to reduce configuration duplication",
               "type": "string"
             }
           }
         },
         "imagePullSecrets": {
+          "description": "Set the global image pull secrets. If image automation is enabled, this is useful to reduce configuration duplication",
           "type": "array",
           "items": {
             "type": "object",
+            "required": ["name"],
             "properties": {
               "name": {
                 "type": "string"
               }
-            },
-            "required": ["name"]
+            }
           }
         }
       }
     },
     "imagePullSecrets": {
+      "description": "Array of image pull secrets.",
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["name"],
         "properties": {
           "name": {
             "type": "string"
           }
-        },
-        "required": ["name"]
+        }
       }
     },
-    "nameOverride": {
-      "type": "string"
-    },
-    "fullnameOverride": {
-      "type": "string"
-    },
+    "nameOverride": { "type": "string" },
+    "fullnameOverride": { "type": "string" },
     "command": {
+      "description": "Override the default command",
       "type": "array",
       "items": {
         "type": "string"
       }
     },
     "args": {
+      "description": "Override the arguments to the command",
       "type": "array",
       "items": {
         "type": "string"
@@ -83,32 +104,40 @@
       "type": "object",
       "properties": {
         "create": {
+          "description": "Specifies whether a service account should be created",
           "type": "boolean"
         },
         "annotations": {
+          "description": "Annotations to add to the service account",
           "type": "object"
         },
         "name": {
+          "description": "The name of the service account to use. If not set and create is true, a name is generated using the fullname template",
           "type": "string"
         }
       }
     },
     "podLabels": {
+      "description": "Extra pod labels",
       "type": "object"
     },
     "podAnnotations": {
+      "description": "Extra pod annotations",
       "type": "object"
     },
     "containerPort": {
+      "description": "Which container port to use for primary traffic",
       "type": "number"
     },
     "volumes": {
+      "description": "Extra volumes added to the pod. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
         "type": "object"
       }
     },
     "volumeMounts": {
+      "description": "Extra volume mounts added to the primary container. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
         "type": "object"
@@ -118,9 +147,11 @@
       "type": "object",
       "properties": {
         "type": {
+          "description": "Which type of service to expose the pods with",
           "type": "string"
         },
         "port": {
+          "description": "Which service port to use",
           "type": "number"
         }
       }
@@ -129,18 +160,20 @@
       "type": "object",
       "properties": {
         "enabled": {
+          "description": "Whether to expose the service or not",
           "type": "boolean"
         },
         "className": {
+          "description": "Which ingressClass to use",
           "type": "string"
         },
         "annotations": {
+          "description": "Extra ingress annotations. @default -- (see [values.yaml](values.yaml))",
           "type": "object",
           "properties": {
             "nginx.ingress.kubernetes.io/ssl-redirect": {
               "type": "string"
             },
-
             "nginx.ingress.kubernetes.io/force-ssl-redirect": {
               "type": "string"
             },
@@ -150,21 +183,19 @@
           }
         },
         "hosts": {
+          "description": "Host configuration. See [values.yaml](values.yaml) for formatting",
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "host": {
-                "type": "string"
-              },
+              "host": { "type": "string" },
               "paths": {
-                "type": "object",
-                "properties": {
-                  "path": {
-                    "type": "string"
-                  },
-                  "pathType": {
-                    "type": "string"
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": { "type": "string" },
+                    "pathType": { "type": "string" }
                   }
                 }
               }
@@ -172,12 +203,15 @@
           }
         },
         "tls": {
+          "description": "Enable TLS in the ingress resource",
           "type": "object",
           "properties": {
             "enabled": {
+              "description": "Enable TLS in the ingress resource",
               "type": "boolean"
             },
             "secretName": {
+              "description": "Secret containing TLS certificates",
               "type": "string"
             }
           }
@@ -185,28 +219,21 @@
       }
     },
     "env": {
+      "description": "Extra environment variables for the container. See [values.yaml](values.yaml) for formatting",
       "type": "array",
       "items": {
-        "type":"object",
+        "type": "object",
         "properties": {
-          "name": {
-            "type":"string"
-          },
-          "value": {
-            "type":"string"
-          },
+          "name": { "type": "string" },
+          "value": { "type": "string" },
           "valueFrom": {
-            "type":"object",
+            "type": "object",
             "properties": {
               "secretKeyRef": {
-                "type":"object",
+                "type": "object",
                 "properties": {
-                  "name": {
-                    "type":"string"
-                  },
-                  "key": {
-                    "type":"string"
-                  }
+                  "name": { "type": "string" },
+                  "key": { "type": "string" }
                 }
               }
             }
@@ -215,21 +242,23 @@
       }
     },
     "envFrom": {
+      "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
       "type": "array"
     },
     "startupProbe": {
+      "description": "Whether to enable a startup probe for the application. This generally not recommended, but can be used for slow-starting applications. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
+        "enabled": { "type": "boolean" },
         "httpGet": {
           "type": "object",
           "properties": {
             "path": {
+              "description": "Which path to look for liveness",
               "type": "string"
             },
             "port": {
+              "description": "Which port to use",
               "type": "string"
             }
           }
@@ -241,18 +270,19 @@
       }
     },
     "livenessProbe": {
+      "description": "Whether to enable a liveness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
+        "enabled": { "type": "boolean" },
         "httpGet": {
           "type": "object",
           "properties": {
             "path": {
+              "description": "Which path to look for liveness",
               "type": "string"
             },
             "port": {
+              "description": "Which port to use",
               "type": "string"
             }
           }
@@ -264,18 +294,19 @@
       }
     },
     "readinessProbe": {
+      "description": "Whether to enable a readiness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
       "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
+        "enabled": { "type": "boolean" },
         "httpGet": {
           "type": "object",
           "properties": {
             "path": {
+              "description": "Which path to look for readiness",
               "type": "string"
             },
             "port": {
+              "description": "Which port to use",
               "type": "string"
             }
           }
@@ -287,38 +318,56 @@
       }
     },
     "resources": {
-      "type": "object"
-    },
-    "podSecurityContext": {
+      "description": "Resource limits. See [values.yaml](values.yaml) for formatting",
       "type": "object",
-      "properties": {
-        "runAsNonRoot": {
-          "type": "boolean"
-        },
-        "seccompProfile": {
-          "type": "object",
-          "properties": {
-            "type": {
-              "type": "string"
+      "items": {
+        "type": "object",
+        "properties": {
+          "limits": {
+            "type": "object",
+            "properties": {
+              "cpu": { "type": "string" },
+              "memory": { "type": "string" }
+            }
+          },
+          "requests": {
+            "type": "object",
+            "properties": {
+              "cpu": { "type": "string" },
+              "memory": { "type": "string" }
             }
           }
         }
       }
     },
-    "securityContext": {
+    "podSecurityContext": {
+      "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
       "type": "object",
       "properties": {
-        "allowPrivilegeEscalation": {
-          "type": "boolean"
+        "runAsNonRoot": { "type": "boolean" },
+        "seccompProfile": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" }
+          }
         },
-        "readOnlyRootFilesystem": {
-          "type": "boolean"
-        },
+        "fsGroup": { "type": "number" }
+      }
+    },
+    "securityContext": {
+      "description": "Security context for the primary container. @default -- (see [values.yaml](values.yaml))",
+      "type": "object",
+      "properties": {
+        "allowPrivilegeEscalation": { "type": "boolean" },
+        "readOnlyRootFilesystem": { "type": "boolean" },
+        "runAsUser": { "type": "number" },
+        "runAsGroup": { "type": "number" },
         "capabilities": {
           "type": "object",
           "properties": {
             "drop": {
-              "type": "array"
+              "type": "array",
+              "items": { "type": "string" }
             }
           }
         }
@@ -327,11 +376,16 @@
     "monitoring": {
       "type": "object",
       "properties": {
-        "enabled": { "type": "boolean" },
+        "enabled": {
+          "description": "Whether to enable Prometheus scraping by creating a ServiceMonitor resource",
+          "type": "boolean"
+        },
         "port": {
+          "description": "Which port to look for Prometheus metrics",
           "type": "number"
         },
         "path": {
+          "description": "Which path to look for Prometheus metrics",
           "type": "string"
         }
       }
@@ -340,18 +394,23 @@
       "type": "object",
       "properties": {
         "create": {
+          "description": "Whether to create a PodDisruptionBudget for ensuring that an application is always available",
           "type": "boolean"
         },
         "labels": {
+          "description": "Extra labels for the PodDisruptionBudget",
           "type": "object"
         },
         "annotations": {
+          "description": "Extra annotations for the PodDisruptionBudget",
           "type": "object"
         },
         "minAvailable": {
+          "description": "How many pod replicas must always be available after eviction. Ignored if 0",
           "type": "number"
         },
         "maxUnavailable": {
+          "description": "How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0",
           "type": "number"
         }
       }
@@ -360,35 +419,36 @@
       "type": "object",
       "properties": {
         "enabled": {
+          "description": "Whether to enable horizontal pod autoscaling",
           "type": "boolean"
         },
         "minReplicas": {
+          "description": "Minimum number of replicas",
           "type": "number"
         },
         "maxReplicas": {
+          "description": "Maximum number of replicas",
           "type": "number"
         },
         "targetCPUUtilizationPercentage": {
+          "description": "Target CPU requests percentage utilization. Ignored if 0",
           "type": "number"
         },
         "targetMemoryUtilizationPercentage": {
+          "description": "Target RAM requests percentage utilization. Ignored if 0",
           "type": "number"
         }
       }
     },
-    "nodeSelector": {
-      "type": "object"
-    },
-    "tolerations": {
-      "type": "array"
-    },
-    "affinity": {
-      "type": "object"
-    },
+    "nodeSelector": { "type": "object" },
+    "tolerations": { "type": "array" },
+    "affinity": { "type": "object" },
     "image-automation": {
       "type": "object",
       "properties": {
-        "enabled": { "type": "boolean" }
+        "enabled": {
+          "description": "Whether to enable the image-automation subchart. Any other configuration given here, is passed to it",
+          "type": "boolean" }
       }
     }
   }
