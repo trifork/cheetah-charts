@@ -241,11 +241,11 @@ taskManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.taskManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml))) }}
+          {{- with (compact (concat .Values.volumeMounts .Values.taskManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml)))) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.taskManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
+      {{- with (compact (concat .Values.volumes .Values.taskManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml)))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
@@ -310,11 +310,11 @@ jobManager:
           envFrom:
             {{- toYaml . | nindent 8 }}
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.jobManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml))) }}
+          {{- with (compact (concat .Values.volumeMounts .Values.jobManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml)))) }}
           volumeMounts:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-      {{- with (concat .Values.volumes .Values.jobManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml))) }}
+      {{- with (compact (concat .Values.volumes .Values.jobManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml)))) }}
       volumes:
         {{- toYaml . | nindent 4 -}}
       {{- end }}
