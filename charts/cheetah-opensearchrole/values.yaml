@@ -1,0 +1,4 @@
+# -- name of the index and the mapped role to be created
+roleName: my-index-name
+# -- Will add a * to the suffix of the index name. Valid values are true, false
+addSuffixWildcardToIndex: false

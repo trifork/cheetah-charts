@@ -1,0 +1,4 @@
+# helm template cheetah-opensearchrole charts/cheetah-opensearchrole -f charts/cheetah-opensearchrole/ci/example-values.yaml > output.yaml
+
+roleName: obiscodes
+addSuffixWildcardToIndex: true

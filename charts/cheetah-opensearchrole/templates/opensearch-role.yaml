@@ -1,0 +1,41 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchRole
+metadata:
+  name: {{ include "roleNameRead.fullname" . }}
+spec:
+  opensearchCluster:
+    name: opensearch
+  clusterPermissions:
+    # For node sniffing
+    - cluster:monitor/nodes/info
+    - cluster:monitor/health
+    # For index and template discovery
+    - indices:admin/template/get
+    - indices:admin/exists
+    - indices:admin/create
+  indexPermissions:
+    - indexPatterns:
+        - {{ include "indexPattern" . | quote }}
+      allowedActions: # action groups
+        - read_access
+---
+apiVersion: opensearch.opster.io/v1
+kind: OpensearchRole
+metadata:
+  name: {{ include "roleNameWrite.fullname" . }}
+spec:
+  opensearchCluster:
+    name: opensearch
+  clusterPermissions:
+    # For node sniffing
+    - cluster:monitor/nodes/info
+    - cluster:monitor/health
+    # For index and template discovery
+    - indices:admin/template/get
+    - indices:admin/exists
+  indexPermissions:
+    - indexPatterns:
+        - {{ include "indexPattern" . | quote  }}
+      allowedActions: # action groups
+        - read_access
+        - write_access
