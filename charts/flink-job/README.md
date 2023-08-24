@@ -148,7 +148,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | job.jarURI | string | `""` | The path of the job jar |
 | job.entryClass | string | `""` | The name of the job class |
 | job.args | list | `[]` | Arguments for the job |
-| job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job See [values.yaml](values.yaml) for the format |
+| job.topics | list | `[]` | Define which topics this job will consume. Used for data-discovery in Cheetah Backstage. If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job If `arg` is not set, adds `--<type>-kafka-topic <name>` or `--<type>-kafka-topic-<postfix> <name>` See [values.yaml](values.yaml) for the format |
 | job.parallelism | int | `1` | How many jobs to run in parallel, see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/> |
 | job.state | string | `"running"` | Desired state of the job. Must be either: `running` or `suspended` |
 | job.upgradeMode | string | `"savepoint"` | Application upgrade mode. Must be either: stateless, last_state, savepoint `stateless` upgrades is done from an empty state `last-state` does a quick upgrade. Does not require the job to be in a healthy state, as it makes use of the HA metadata `savepoint` makes use of savepoints when upgrading and requires the job to be running. This provides maximal safety Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades> |

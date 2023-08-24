@@ -40,6 +40,13 @@ spec:
       {{- if .arg }}
       - {{ printf "--%s" (trimPrefix "--" .arg) | quote }}
       - {{ printf "%s" .name | quote }}
+      {{- else }}
+        {{- if .postfix }}
+      - {{ printf "--%s-kafka-topic-%s" .type .postfix | quote }}
+        {{- else }}
+      - {{ printf "--%s-kafka-topic" .type | quote }}
+        {{- end }}
+      - {{ printf "%s" .name | quote }}
       {{- end }}
       {{- end }}
       {{- range .Values.job.args }}

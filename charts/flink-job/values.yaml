@@ -114,10 +114,12 @@ job:
   # -- Define which topics this job will consume.
   # Used for data-discovery in Cheetah Backstage.
   # If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job
+  # If `arg` is not set, adds `--<type>-kafka-topic <name>` or `--<type>-kafka-topic-<postfix> <name>`
   # See [values.yaml](values.yaml) for the format
   topics: []
   # must be defined as follows
   # - arg: <optional name of argument>
+  #   postfix: <optional postfix for topic argument>
   #   type: <type of topic (input/output)>
   #   name: <name of topic>
   # ie:
@@ -129,6 +131,9 @@ job:
   # - arg: output-kafka-topic
   #   type: output
   #   name: sinkTopic
+  # - postfix: special
+  #   type: output
+  #   name: specialSinkTopic
 
   # -- How many jobs to run in parallel,
   # see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/>
