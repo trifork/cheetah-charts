@@ -95,7 +95,7 @@ If the container must run as root, you can set `podSecurityContext.runAsNonRoot=
 | autoscaling.maxReplicas | int | `5` | Maximum number of replicas |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU requests percentage utilization. Ignored if 0 |
 | autoscaling.targetMemoryUtilizationPercentage | int | `0` | Target RAM requests percentage utilization. Ignored if 0 |
-| nodeSelector | object | `{}` |  |
+| nodeSelector.nodeSelectorTerms | list | `[]` |  |
 | tolerations | list | `[]` |  |
 | affinity | object | `{}` |  |
 | image-automation.enabled | bool | `false` | Whether to enable the image-automation subchart. Any other configuration given here, is passed to it |
