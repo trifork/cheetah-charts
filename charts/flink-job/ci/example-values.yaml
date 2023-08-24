@@ -18,6 +18,10 @@ job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
   parallelism: 2
+  topics:
+  - name: test
+    type: input
+    postfix: postfix
 taskManager:
   replicas: 2
   resource:
