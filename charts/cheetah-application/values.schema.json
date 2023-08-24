@@ -24,7 +24,8 @@
   "properties": {
     "replicaCount": {
       "description": "Number of pod replicas. For high availability, 3 or more is recommended",
-      "type": "number"
+      "type": "number",
+      "minimum": 1
     },
     "image": {
       "description": "Image config",
@@ -133,14 +134,16 @@
       "description": "Extra volumes added to the pod. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volume.json"
       }
     },
     "volumeMounts": {
       "description": "Extra volume mounts added to the primary container. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volumemount.json"
       }
     },
     "service": {
@@ -223,99 +226,31 @@
       "type": "array",
       "items": {
         "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "value": { "type": "string" },
-          "valueFrom": {
-            "type": "object",
-            "properties": {
-              "secretKeyRef": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "key": { "type": "string" }
-                }
-              }
-            }
-          }
-        }
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envvar.json"
       }
     },
     "envFrom": {
       "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type":"object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envfromsource.json"
+      }
     },
     "startupProbe": {
       "description": "Whether to enable a startup probe for the application. This generally not recommended, but can be used for slow-starting applications. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
-      "properties": {
-        "enabled": { "type": "boolean" },
-        "httpGet": {
-          "type": "object",
-          "properties": {
-            "path": {
-              "description": "Which path to look for liveness",
-              "type": "string"
-            },
-            "port": {
-              "description": "Which port to use",
-              "type": "string"
-            }
-          }
-        },
-        "initialDelaySeconds": { "type": "number" },
-        "failureThreshold": { "type": "number" },
-        "periodSeconds": { "type": "number" },
-        "timeoutSeconds": { "type": "number" }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
     },
     "livenessProbe": {
       "description": "Whether to enable a liveness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
-      "properties": {
-        "enabled": { "type": "boolean" },
-        "httpGet": {
-          "type": "object",
-          "properties": {
-            "path": {
-              "description": "Which path to look for liveness",
-              "type": "string"
-            },
-            "port": {
-              "description": "Which port to use",
-              "type": "string"
-            }
-          }
-        },
-        "initialDelaySeconds": { "type": "number" },
-        "failureThreshold": { "type": "number" },
-        "periodSeconds": { "type": "number" },
-        "timeoutSeconds": { "type": "number" }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
     },
     "readinessProbe": {
       "description": "Whether to enable a readiness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
       "type": "object",
-      "properties": {
-        "enabled": { "type": "boolean" },
-        "httpGet": {
-          "type": "object",
-          "properties": {
-            "path": {
-              "description": "Which path to look for readiness",
-              "type": "string"
-            },
-            "port": {
-              "description": "Which port to use",
-              "type": "string"
-            }
-          }
-        },
-        "initialDelaySeconds": { "type": "number" },
-        "failureThreshold": { "type": "number" },
-        "periodSeconds": { "type": "number" },
-        "timeoutSeconds": { "type": "number" }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
     },
     "resources": {
       "description": "Resource limits. See [values.yaml](values.yaml) for formatting",
@@ -343,35 +278,12 @@
     "podSecurityContext": {
       "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
       "type": "object",
-      "properties": {
-        "runAsNonRoot": { "type": "boolean" },
-        "seccompProfile": {
-          "type": "object",
-          "properties": {
-            "type": { "type": "string" }
-          }
-        },
-        "fsGroup": { "type": "number" }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/podsecuritycontext.json"
     },
     "securityContext": {
       "description": "Security context for the primary container. @default -- (see [values.yaml](values.yaml))",
       "type": "object",
-      "properties": {
-        "allowPrivilegeEscalation": { "type": "boolean" },
-        "readOnlyRootFilesystem": { "type": "boolean" },
-        "runAsUser": { "type": "number" },
-        "runAsGroup": { "type": "number" },
-        "capabilities": {
-          "type": "object",
-          "properties": {
-            "drop": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/securitycontext.json"
     },
     "monitoring": {
       "type": "object",
@@ -440,15 +352,28 @@
         }
       }
     },
-    "nodeSelector": { "type": "object" },
-    "tolerations": { "type": "array" },
-    "affinity": { "type": "object" },
+    "nodeSelector": {
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/nodeselector.json"
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/toleration.json"
+      }
+    },
+    "affinity": {
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/affinity.json"
+    },
     "image-automation": {
       "type": "object",
       "properties": {
         "enabled": {
           "description": "Whether to enable the image-automation subchart. Any other configuration given here, is passed to it",
-          "type": "boolean" }
+          "type": "boolean"
+        }
       }
     }
   }
