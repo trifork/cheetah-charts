@@ -1,0 +1,3 @@
+# helm template cheetah-opensearchrole charts/cheetah-opensearchrole -f charts/cheetah-opensearchrole/ci/example-noindexpattern.yaml > output.yaml
+
+roleName: obiscodes

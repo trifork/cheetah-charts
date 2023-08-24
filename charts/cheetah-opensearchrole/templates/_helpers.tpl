@@ -1,3 +1,13 @@
+{{/* Define a template for creating an indexPattern */}}
+{{- define "indexPattern" -}}
+{{- if .Values.indexPattern -}}
+{{ .Values.indexPattern }}*
+{{- else -}}
+{{ .Values.roleName }}
+{{- end -}}
+{{- end -}}
+
+
 {{/* Define a template for creating a read roleName */}}
 {{- define "roleNameRead" -}}
 {{ .Values.roleNamePrefix }}{{ .Values.roleName }}_read
