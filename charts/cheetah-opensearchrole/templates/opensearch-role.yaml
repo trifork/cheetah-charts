@@ -15,7 +15,7 @@ spec:
     - indices:admin/create
   indexPermissions:
     - indexPatterns:
-        - {{ include "indexPattern" . | quote }}
+        - {{ .Values.indexPattern | quote }}
       allowedActions: # action groups
         - read_access
 ---
@@ -35,7 +35,7 @@ spec:
     - indices:admin/exists
   indexPermissions:
     - indexPatterns:
-        - {{ include "indexPattern" . | quote  }}
+        - {{ .Values.indexPattern | quote  }}
       allowedActions: # action groups
         - read_access
         - write_access

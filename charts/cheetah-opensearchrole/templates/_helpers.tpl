@@ -1,26 +1,19 @@
-{{/* Define a template for creating an indexPattern */}}
-{{- define "indexPattern" -}}
-{{- if .Values.addSuffixWildcardToIndex -}}
-{{ .Values.roleName }}*
-{{- else -}}
-{{ .Values.roleName }}
-{{- end -}}
-{{- end -}}
-
 {{/* Define a template for creating a read roleName */}}
 {{- define "roleNameRead" -}}
-{{ .Values.roleName }}_read
-{{- end -}}
-
-{{- define "roleNameRead.fullname" -}}
-{{ include "roleNameRead" . | replace "_" "-" }}
+{{ .Values.roleNamePrefix }}{{ .Values.roleName }}_read
 {{- end -}}
 
 {{/* Define a template for creating a write roleName */}}
 {{- define "roleNameWrite" -}}
-{{ .Values.roleName }}_write
+{{ .Values.roleNamePrefix }}{{ .Values.roleName }}_write
 {{- end -}}
 
+{{/* Fully qualified name used in metadata.name */}}
+{{- define "roleNameRead.fullname" -}}
+{{ include "roleNameRead" . | replace "_" "-" }}
+{{- end -}}
+
+{{/* Fully qualified name used in metadata.name */}}
 {{- define "roleNameWrite.fullname" -}}
 {{ include "roleNameWrite" . | replace "_" "-" }}
 {{- end -}}

@@ -21,17 +21,45 @@ This is to support the OAuth2 security model and helps scaffold the nessesary ro
 
 The chart creates two OpensearchUserRoleBinding and OpensearchRole resources:
 
-1. A OpenSearch role with read permissions (`roleName_read`).
-2. A OpenSearch role with write permissions (`roleName_write`).
-
-It translated the roleName to a indexname and optionally allows wildcard suffixes to be added to the indexname.
+1. A OpenSearch role with read permissions (`roleNamePrefix_roleName_read`).
+2. A OpenSearch role with write permissions (`roleNamePrefix_roleName_write`).
 
 Each role has cluster permissions for node sniffing, health monitoring, and index and template discovery.
+
+
+## Example
+
+```sh
+# JWT claim
+{
+    "osroles": [
+        "opensearch_myindex_read"
+    ]
+}
+```
+
+Works together with the HelmRelease:
+
+```yaml
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: opensearch-role-obiscode
+  ...
+spec:
+  releaseName: opensearch-role-myindex
+  chart:
+    ...
+  values:
+    roleName: myindex
+    indexPattern: myindex*
+
+```
+
+{{ template "chart.valuesSection" . }}
 
 ## Conclusion
 
 This Helm chart simplifies the process of setting up roles in an OpenSearch cluster. By using this chart, administrators can ensure that they have a consistent and reproducible method for configuring OpenSearch roles in their Kubernetes environments.
-
-{{ template "chart.valuesSection" . }}
 
 {{ template "helm-docs.versionFooter" . }}
