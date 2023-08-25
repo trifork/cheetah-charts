@@ -1,7 +1,7 @@
 {{/* Define a template for creating an indexPattern */}}
 {{- define "indexPattern" -}}
 {{- if .Values.indexPattern -}}
-{{ .Values.indexPattern }}*
+{{ .Values.indexPattern }}
 {{- else -}}
 {{ .Values.roleName }}
 {{- end -}}
