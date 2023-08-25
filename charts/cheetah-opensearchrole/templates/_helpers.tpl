@@ -7,15 +7,14 @@
 {{- end -}}
 {{- end -}}
 
-
 {{/* Define a template for creating a read roleName */}}
 {{- define "roleNameRead" -}}
-{{ .Values.roleNamePrefix }}{{ .Values.roleName }}_read
+{{- printf "%s%s_read" .Values.roleNamePrefix (required "roleName is required" .Values.roleName) -}}
 {{- end -}}
 
 {{/* Define a template for creating a write roleName */}}
 {{- define "roleNameWrite" -}}
-{{ .Values.roleNamePrefix }}{{ .Values.roleName }}_write
+{{- printf "%s%s_write" .Values.roleNamePrefix (required "roleName is required" .Values.roleName) -}}
 {{- end -}}
 
 {{/* Fully qualified name used in metadata.name */}}
