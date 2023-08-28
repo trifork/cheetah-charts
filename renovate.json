@@ -19,6 +19,12 @@
   "packageRules": [
     {
       "matchFileNames": [
+        ".devcontainer/**"
+      ],
+      "automerge": true
+    },
+    {
+      "matchFileNames": [
         ".github/**"
       ],
       "automerge": true
