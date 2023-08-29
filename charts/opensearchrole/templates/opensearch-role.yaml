@@ -1,7 +1,7 @@
 apiVersion: opensearch.opster.io/v1
 kind: OpensearchRole
 metadata:
-  name: {{ include "roleNameRead.fullname" . }}
+  name: {{ include "opensearchrole.resourceName.read" . }}
 spec:
   opensearchCluster:
     name: opensearch
@@ -15,14 +15,14 @@ spec:
     - indices:admin/create
   indexPermissions:
     - indexPatterns:
-        - {{ include "indexPattern" . | quote }}
+        - {{ include "opensearchrole.indexPattern" . | quote }}
       allowedActions: # action groups
         - read_access
 ---
 apiVersion: opensearch.opster.io/v1
 kind: OpensearchRole
 metadata:
-  name: {{ include "roleNameWrite.fullname" . }}
+  name: {{ include "opensearchrole.resourceName.write" . }}
 spec:
   opensearchCluster:
     name: opensearch
@@ -35,7 +35,7 @@ spec:
     - indices:admin/exists
   indexPermissions:
     - indexPatterns:
-        - {{ include "indexPattern" . | quote  }}
+        - {{ include "opensearchrole.indexPattern" . | quote  }}
       allowedActions: # action groups
         - read_access
         - write_access

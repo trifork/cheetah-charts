@@ -2,23 +2,23 @@
 apiVersion: opensearch.opster.io/v1
 kind: OpensearchUserRoleBinding
 metadata:
-  name: {{ include "roleNameRead.fullname" . }}
+  name: {{ include "opensearchrole.resourceName.read" . }}
 spec:
   opensearchCluster:
     name: opensearch
   backendRoles:
-    - {{ include "roleNameRead" . }} # mapped from role claim in JWT
+    - {{ include "opensearchrole.roleName.read" . }} # mapped from role claim in JWT
   roles:
-    - {{ include "roleNameRead.fullname" . }}
+    - {{ include "opensearchrole.resourceName.read" . }}
 ---
 apiVersion: opensearch.opster.io/v1
 kind: OpensearchUserRoleBinding
 metadata:
-  name: {{ include "roleNameWrite.fullname" . }}
+  name: {{ include "opensearchrole.resourceName.write" . }}
 spec:
   opensearchCluster:
     name: opensearch
   backendRoles:
-    - {{ include "roleNameWrite" . }} # mapped from role claim in JWT
+    - {{ include "opensearchrole.roleName.write" . }} # mapped from role claim in JWT
   roles:
-    - {{ include "roleNameWrite.fullname" . }}
+    - {{ include "opensearchrole.resourceName.write" . }}
