@@ -4,7 +4,6 @@
   "description": "Default values for cheetah-application",
   "type": "object",
   "required": [
-    "replicaCount",
     "image",
     "global",
     "serviceAccount",
@@ -20,6 +19,24 @@
     "pdb",
     "autoscaling",
     "image-automation"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "autoScaling": {
+            "properties": {
+              "enabled": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": ["replicaCount"]
+      }
+    }
   ],
   "properties": {
     "replicaCount": {
@@ -37,10 +54,7 @@
         },
         "tag": {
           "description": "Which image tag to use",
-          "type": [
-            "string",
-            "number"
-          ]
+          "type": ["string", "number"]
         },
         "pullPolicy": {
           "description": "Which image pull policy to use",
@@ -200,11 +214,7 @@
                     "path": { "type": "string" },
                     "pathType": {
                       "type": "string",
-                      "enum": [
-                        "Prefix",
-                        "Exact",
-                        "ImplementationSpecific"
-                      ]
+                      "enum": ["Prefix", "Exact", "ImplementationSpecific"]
                     }
                   }
                 }
@@ -240,7 +250,7 @@
       "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
       "type": "array",
       "items": {
-        "type":"object",
+        "type": "object",
         "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envfromsource.json"
       }
     },
@@ -308,17 +318,11 @@
         },
         "minAvailable": {
           "description": "How many pod replicas must always be available after eviction. Ignored if 0",
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         },
         "maxUnavailable": {
           "description": "How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0",
-          "type": [
-            "number",
-            "string"
-          ]
+          "type": ["number", "string"]
         }
       }
     },
