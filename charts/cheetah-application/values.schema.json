@@ -262,25 +262,7 @@
     "resources": {
       "description": "Resource limits. See [values.yaml](values.yaml) for formatting",
       "type": "object",
-      "items": {
-        "type": "object",
-        "properties": {
-          "limits": {
-            "type": "object",
-            "properties": {
-              "cpu": { "type": "string" },
-              "memory": { "type": "string" }
-            }
-          },
-          "requests": {
-            "type": "object",
-            "properties": {
-              "cpu": { "type": "string" },
-              "memory": { "type": "string" }
-            }
-          }
-        }
-      }
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements"
     },
     "podSecurityContext": {
       "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
