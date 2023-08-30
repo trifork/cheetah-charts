@@ -25,7 +25,7 @@
     "replicaCount": {
       "description": "Number of pod replicas. For high availability, 3 or more is recommended",
       "type": "number",
-      "minimum": 1
+      "minimum": 0
     },
     "image": {
       "description": "Image config",
