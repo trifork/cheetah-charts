@@ -212,8 +212,7 @@ autoscaling:
   # -- Target RAM requests percentage utilization. Ignored if 0
   targetMemoryUtilizationPercentage: 0
 
-nodeSelector:
-  nodeSelectorTerms: []
+nodeSelector: {}
 
 tolerations: []
 
