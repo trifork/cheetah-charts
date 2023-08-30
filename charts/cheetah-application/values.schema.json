@@ -37,7 +37,10 @@
         },
         "tag": {
           "description": "Which image tag to use",
-          "type": "string"
+          "type": [
+            "string",
+            "number"
+          ]
         },
         "pullPolicy": {
           "description": "Which image pull policy to use",
