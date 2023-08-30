@@ -312,11 +312,17 @@
         },
         "minAvailable": {
           "description": "How many pod replicas must always be available after eviction. Ignored if 0",
-          "type": "number"
+          "type": [
+            "number",
+            "string"
+          ]
         },
         "maxUnavailable": {
           "description": "How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0",
-          "type": "number"
+          "type": [
+            "number",
+            "string"
+          ]
         }
       }
     },
