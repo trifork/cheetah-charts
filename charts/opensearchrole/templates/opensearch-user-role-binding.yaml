@@ -5,7 +5,7 @@ metadata:
   name: {{ include "opensearchrole.resourceName.read" . }}
 spec:
   opensearchCluster:
-    name: opensearch
+    name: {{ .Values.clusterName | quote }}
   backendRoles:
     - {{ include "opensearchrole.roleName.read" . }} # mapped from role claim in JWT
   roles:
@@ -17,7 +17,7 @@ metadata:
   name: {{ include "opensearchrole.resourceName.write" . }}
 spec:
   opensearchCluster:
-    name: opensearch
+    name: {{ .Values.clusterName | quote }}
   backendRoles:
     - {{ include "opensearchrole.roleName.write" . }} # mapped from role claim in JWT
   roles:

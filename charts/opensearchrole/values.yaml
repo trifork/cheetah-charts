@@ -6,3 +6,5 @@ roleName: ""
 # -- name of the index pattern to be mapped to the role. Can contain wildcards
 # if not set, will reuse roleName
 indexPattern: ""
+# -- name of the cluster used by the operator
+clusterName: "opensearch"

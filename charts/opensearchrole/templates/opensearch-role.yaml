@@ -4,7 +4,7 @@ metadata:
   name: {{ include "opensearchrole.resourceName.read" . }}
 spec:
   opensearchCluster:
-    name: opensearch
+    name: {{ .Values.clusterName | quote }}
   clusterPermissions:
     # For node sniffing
     - cluster:monitor/nodes/info
@@ -12,7 +12,6 @@ spec:
     # For index and template discovery
     - indices:admin/template/get
     - indices:admin/exists
-    - indices:admin/create
   indexPermissions:
     - indexPatterns:
         - {{ include "opensearchrole.indexPattern" . | quote }}
@@ -25,7 +24,7 @@ metadata:
   name: {{ include "opensearchrole.resourceName.write" . }}
 spec:
   opensearchCluster:
-    name: opensearch
+    name: {{ .Values.clusterName | quote }}
   clusterPermissions:
     # For node sniffing
     - cluster:monitor/nodes/info
@@ -33,6 +32,7 @@ spec:
     # For index and template discovery
     - indices:admin/template/get
     - indices:admin/exists
+    - indices:admin/create
   indexPermissions:
     - indexPatterns:
         - {{ include "opensearchrole.indexPattern" . | quote  }}
