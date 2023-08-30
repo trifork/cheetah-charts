@@ -186,6 +186,20 @@
     },
     "ingress": {
       "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["tls", "hosts", "className"]
+          }
+        }
+      ],
       "properties": {
         "enabled": {
           "description": "Whether to expose the service or not",
@@ -202,6 +216,7 @@
         "hosts": {
           "description": "Host configuration. See [values.yaml](values.yaml) for formatting",
           "type": "array",
+          "required": ["host", "paths"],
           "items": {
             "type": "object",
             "properties": {
@@ -210,6 +225,7 @@
                 "type": "array",
                 "items": {
                   "type": "object",
+                  "required": ["path", "pathType"],
                   "properties": {
                     "path": { "type": "string" },
                     "pathType": {
@@ -225,6 +241,20 @@
         "tls": {
           "description": "Enable TLS in the ingress resource",
           "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "required": ["secretName"]
+              }
+            }
+          ],
           "properties": {
             "enabled": {
               "description": "Enable TLS in the ingress resource",
@@ -286,6 +316,18 @@
     },
     "monitoring": {
       "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "required": ["port", "path"]
+        }
+      ],
       "properties": {
         "enabled": {
           "description": "Whether to enable Prometheus scraping by creating a ServiceMonitor resource",
@@ -303,6 +345,20 @@
     },
     "pdb": {
       "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "create": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["minAvailable", "maxUnavailable"]
+          }
+        }
+      ],
       "properties": {
         "create": {
           "description": "Whether to create a PodDisruptionBudget for ensuring that an application is always available",
@@ -328,6 +384,25 @@
     },
     "autoscaling": {
       "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "minReplicas",
+              "maxReplicas",
+              "targetCPUUtilizationPercentage",
+              "targetMemoryUtilizationPercentage"
+            ]
+          }
+        }
+      ],
       "properties": {
         "enabled": {
           "description": "Whether to enable horizontal pod autoscaling",
@@ -335,7 +410,8 @@
         },
         "minReplicas": {
           "description": "Minimum number of replicas",
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "maxReplicas": {
           "description": "Maximum number of replicas",
@@ -343,11 +419,15 @@
         },
         "targetCPUUtilizationPercentage": {
           "description": "Target CPU requests percentage utilization. Ignored if 0",
-          "type": "number"
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
         },
         "targetMemoryUtilizationPercentage": {
           "description": "Target RAM requests percentage utilization. Ignored if 0",
-          "type": "number"
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
         }
       }
     },
