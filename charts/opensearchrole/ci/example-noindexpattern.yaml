@@ -1,0 +1,3 @@
+# helm template opensearchrole charts/opensearchrole -f charts/opensearchrole/ci/example-noindexpattern.yaml > output.yaml
+
+roleName: obiscodes
