@@ -9,12 +9,10 @@
 {{- $suffix := .suffix -}}
 
 {{/* Calculate the max length allowed for roleName */}}
-{{- $maxRoleNameLength := sub 64 (add (len $roleNamePrefix) (len $suffix)) -}}
+{{- $maxRoleNameLength := sub 64 (add (len $roleNamePrefix) (len $suffix)) | int -}}
 
 {{/* Truncate roleName if it exceeds the max length */}}
-{{- if gt (len $roleName) $maxRoleNameLength -}}
-  {{- $roleName = slice $roleName 0 $maxRoleNameLength -}}
-{{- end -}}
+{{- $roleName =  $roleName | trunc $maxRoleNameLength -}}
 
 {{- include "opensearchrole.base.roleName" (dict "Values" .Values "suffix" $suffix) | replace "_" "-" -}}
 {{- end -}}
