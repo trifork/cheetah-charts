@@ -198,7 +198,14 @@
                   "type": "object",
                   "properties": {
                     "path": { "type": "string" },
-                    "pathType": { "type": "string" }
+                    "pathType": {
+                      "type": "string",
+                      "enum": [
+                        "Prefix",
+                        "Exact",
+                        "ImplementationSpecific"
+                      ]
+                    }
                   }
                 }
               }
