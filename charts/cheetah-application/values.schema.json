@@ -155,7 +155,14 @@
       "properties": {
         "type": {
           "description": "Which type of service to expose the pods with",
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName",
+            "Headless"
+          ]
         },
         "port": {
           "description": "Which service port to use",
