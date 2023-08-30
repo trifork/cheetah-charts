@@ -175,18 +175,7 @@
         },
         "annotations": {
           "description": "Extra ingress annotations. @default -- (see [values.yaml](values.yaml))",
-          "type": "object",
-          "properties": {
-            "nginx.ingress.kubernetes.io/ssl-redirect": {
-              "type": "string"
-            },
-            "nginx.ingress.kubernetes.io/force-ssl-redirect": {
-              "type": "string"
-            },
-            "cert-manager.io/cluster-issuer": {
-              "type": "string"
-            }
-          }
+          "type": "object"
         },
         "hosts": {
           "description": "Host configuration. See [values.yaml](values.yaml) for formatting",
