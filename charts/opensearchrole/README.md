@@ -53,6 +53,7 @@ spec:
 | roleNamePrefix | string | `"opensearch_"` | prefix to be added to the role name. |
 | roleName | string | `""` | name of the role to be created and mapped from the claims in the JWT token. Will create 2 roles, with a _read and _write suffix. Usually matches index name without wildcards. |
 | indexPattern | string | `""` | name of the index pattern to be mapped to the role. Can contain wildcards if not set, will reuse roleName |
+| clusterName | string | `"opensearch"` | name of the cluster used by the operator |
 
 ## Conclusion
 
