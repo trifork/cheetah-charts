@@ -342,14 +342,21 @@
             }
           },
           "then": {
-            "oneOf": [
-              {
-                "required": ["minAvailable"]
-              },
-              {
-                "required": ["maxUnavailable"]
+            "if": {
+              "properties": {
+                "minAvailable": {
+                  "type": "null"
+                }
               }
-            ]
+            },
+            "then": {
+              "required": ["maxUnavailable"],
+              "not": {"required": ["minAvailable"]}
+            },
+            "else": {
+              "required": ["minAvailable"],
+              "not": {"required": ["maxUnavailable"]}
+            }
           }
         }
       ],
