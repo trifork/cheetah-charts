@@ -229,7 +229,7 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": ["path", "pathType"],
+                  "required": ["path"],
                   "properties": {
                     "path": { "type": "string" },
                     "pathType": {
