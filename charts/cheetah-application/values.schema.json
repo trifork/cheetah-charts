@@ -386,9 +386,7 @@
           "then": {
             "required": [
               "minReplicas",
-              "maxReplicas",
-              "targetCPUUtilizationPercentage",
-              "targetMemoryUtilizationPercentage"
+              "maxReplicas"
             ]
           }
         }
