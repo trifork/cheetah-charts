@@ -1,7 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
   "title": "JSON schema for cheetah-application/values.yaml",
-  "description": "Default values for cheetah-application",
   "type": "object",
   "required": [
     "image",
