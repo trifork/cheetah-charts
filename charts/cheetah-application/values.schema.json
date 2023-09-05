@@ -166,6 +166,10 @@
     },
     "service": {
       "type": "object",
+      "required": [
+        "type",
+        "port"
+      ],
       "properties": {
         "type": {
           "description": "Which type of service to expose the pods with",
