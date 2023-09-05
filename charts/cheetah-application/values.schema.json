@@ -166,10 +166,7 @@
     },
     "service": {
       "type": "object",
-      "required": [
-        "type",
-        "port"
-      ],
+      "required": ["type", "port"],
       "properties": {
         "type": {
           "description": "Which type of service to expose the pods with",
@@ -345,7 +342,14 @@
             }
           },
           "then": {
-            "required": ["minAvailable", "maxUnavailable"]
+            "oneOf": [
+              {
+                "required": ["minAvailable"]
+              },
+              {
+                "required": ["maxUnavailable"]
+              }
+            ]
           }
         }
       ],
@@ -384,10 +388,7 @@
             }
           },
           "then": {
-            "required": [
-              "minReplicas",
-              "maxReplicas"
-            ]
+            "required": ["minReplicas", "maxReplicas"]
           }
         }
       ],
