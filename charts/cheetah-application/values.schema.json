@@ -245,20 +245,6 @@
         "tls": {
           "description": "Enable TLS in the ingress resource",
           "type": "object",
-          "allOf": [
-            {
-              "if": {
-                "properties": {
-                  "enabled": {
-                    "const": true
-                  }
-                }
-              },
-              "then": {
-                "required": ["secretName"]
-              }
-            }
-          ],
           "properties": {
             "enabled": {
               "description": "Enable TLS in the ingress resource",
