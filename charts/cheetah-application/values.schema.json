@@ -196,7 +196,7 @@
             }
           },
           "then": {
-            "required": ["tls", "hosts", "className"]
+            "required": ["tls", "hosts"]
           }
         }
       ],
