@@ -342,21 +342,38 @@
             }
           },
           "then": {
-            "if": {
-              "properties": {
-                "minAvailable": {
-                  "type": "null"
-                }
+            "oneOf": [
+              {
+                "required": ["minAvailable"],
+                "oneOf": [
+                  {
+                    "not": { "required": ["maxUnavailable"] }
+                  },
+                  {
+                    "properties": {
+                      "maxUnavailable": {
+                        "enum": [0, null]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "required": ["maxUnavailable"],
+                "oneOf": [
+                  {
+                    "not": { "required": ["minAvailable"] }
+                  },
+                  {
+                    "properties": {
+                      "minAvailable": {
+                        "enum": [0, null]
+                      }
+                    }
+                  }
+                ]
               }
-            },
-            "then": {
-              "required": ["maxUnavailable"],
-              "not": {"required": ["minAvailable"]}
-            },
-            "else": {
-              "required": ["minAvailable"],
-              "not": {"required": ["maxUnavailable"]}
-            }
+            ]
           }
         }
       ],
