@@ -449,6 +449,6 @@ image-automation:
   # Any other configuration given here, is passed to it
   enabled: false
 
-local-network-configuration:
+localNetworkConfiguration:
   # -- Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager
   enabled: false

@@ -225,5 +225,5 @@ ingress:
 image-automation:
   enabled: false
 
-local-network-configuration:
+localNetworkConfiguration:
   enabled: true

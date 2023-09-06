@@ -1,4 +1,4 @@
-{{- if .Values.local-network-configuration.enabled -}}
+{{- if .Values.localNetworkConfiguration.enabled -}}
 apiVersion: networking.tcs.trifork.com/v1alpha1
 kind: LocalNetworkConfig
 metadata:
