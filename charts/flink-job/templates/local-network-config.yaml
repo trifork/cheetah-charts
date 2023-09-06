@@ -14,7 +14,7 @@ spec:
         matchLabels:
           app.kubernetes.io/instance: {{ .Release.Name }}
           component: jobmanager
-    ready-adapter-job-flink-job-taskmanager-component:
+    {{ include "flink-job.fullname" . }}-taskmanager-component:
       dependsOn:
       - component: {{ include "flink-job.fullname" . }}-job-component
         port: jobmanager-rpc
