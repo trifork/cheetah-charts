@@ -2,28 +2,28 @@
 apiVersion: networking.tcs.trifork.com/v1alpha1
 kind: LocalNetworkConfig
 metadata:
-  name: local-network-config-{{ include "flink-job.fullname" . }}
+  name: {{ include "flink-job.fullname" . }}
 spec:
   components:
-    {{ include "flink-job.fullname" . }}-job-component:
+    {{ include "flink-job.fullname" . }}-job:
       dependsOn:
-      - component: {{ include "flink-job.fullname" . }}-taskmanager-component
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
         port: taskmanager-rpc
         protocol: TCP
       podSelector:
         matchLabels:
-          app.kubernetes.io/instance: {{ .Release.Name }}
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
           component: jobmanager
-    {{ include "flink-job.fullname" . }}-taskmanager-component:
+    {{ include "flink-job.fullname" . }}-taskmanager:
       dependsOn:
-      - component: {{ include "flink-job.fullname" . }}-job-component
+      - component: {{ include "flink-job.fullname" . }}-job
         port: jobmanager-rpc
         protocol: TCP
-      - component: {{ include "flink-job.fullname" . }}-job-component
+      - component: {{ include "flink-job.fullname" . }}-job
         port: blobserver
         protocol: TCP
       podSelector:
         matchLabels:
-          app.kubernetes.io/instance: {{ .Release.Name }}
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
           component: taskmanager
 {{- end -}}

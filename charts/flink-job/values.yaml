@@ -443,12 +443,14 @@ ingress:
   # -- Create a self-signed TLS secret
   selfSigned: false
 
+localNetworkConfiguration:
+  # -- Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager.
+  # For use in a deny-all environment
+  enabled: false
+
 image-automation:
   # -- Whether to enable the image-automation subchart.
   # Image-automation is not possible when using image-sha as a tagging strategy.
   # Any other configuration given here, is passed to it
   enabled: false
 
-localNetworkConfiguration:
-  # -- Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager
-  enabled: false

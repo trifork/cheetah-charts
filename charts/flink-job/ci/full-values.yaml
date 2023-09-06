@@ -222,8 +222,8 @@ ingress:
   tlsSecret: foo-secret
   selfSigned: true
 
-image-automation:
-  enabled: false
-
 localNetworkConfiguration:
   enabled: true
+
+image-automation:
+  enabled: false
