@@ -1,0 +1,29 @@
+{{- if .Values.localNetworkConfiguration.enabled -}}
+apiVersion: networking.tcs.trifork.com/v1alpha1
+kind: LocalNetworkConfig
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+spec:
+  components:
+    {{ include "flink-job.fullname" . }}-job:
+      dependsOn:
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: taskmanager-rpc
+        protocol: TCP
+      podSelector:
+        matchLabels:
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
+          component: jobmanager
+    {{ include "flink-job.fullname" . }}-taskmanager:
+      dependsOn:
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: jobmanager-rpc
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: blobserver
+        protocol: TCP
+      podSelector:
+        matchLabels:
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
+          component: taskmanager
+{{- end -}}
