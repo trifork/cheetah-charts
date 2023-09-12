@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "JSON schema for cheetah-application/values.yaml",
+  "type": "object",
+  "required": [
+    "image",
+    "global",
+    "serviceAccount",
+    "containerPort",
+    "service",
+    "ingress",
+    "startupProbe",
+    "livenessProbe",
+    "readinessProbe",
+    "podSecurityContext",
+    "securityContext",
+    "monitoring",
+    "pdb",
+    "autoscaling",
+    "image-automation"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "autoScaling": {
+            "properties": {
+              "enabled": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": ["replicaCount"]
+      }
+    }
+  ],
+  "properties": {
+    "replicaCount": {
+      "description": "Number of pod replicas. For high availability, 3 or more is recommended",
+      "type": "number",
+      "minimum": 0
+    },
+    "image": {
+      "description": "Image config",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "description": "Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi",
+          "type": "string"
+        },
+        "tag": {
+          "description": "Which image tag to use",
+          "type": ["string", "number"]
+        },
+        "pullPolicy": {
+          "description": "Which image pull policy to use",
+          "type": "string",
+          "enum": ["IfNotPresent", "Always", "Never"]
+        }
+      }
+    },
+    "global": {
+      "description": "",
+      "type": "object",
+      "properties": {
+        "image": {
+          "properties": {
+            "repository": {
+              "description": "Set the global image repository. If image automation is enabled, this is useful to reduce configuration duplication",
+              "type": "string"
+            }
+          }
+        },
+        "imagePullSecrets": {
+          "description": "Set the global image pull secrets. If image automation is enabled, this is useful to reduce configuration duplication",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "description": "Array of image pull secrets.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "nameOverride": { "type": "string" },
+    "fullnameOverride": { "type": "string" },
+    "command": {
+      "description": "Override the default command",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "args": {
+      "description": "Override the arguments to the command",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "description": "Specifies whether a service account should be created",
+          "type": "boolean"
+        },
+        "annotations": {
+          "description": "Annotations to add to the service account",
+          "type": "object"
+        },
+        "name": {
+          "description": "The name of the service account to use. If not set and create is true, a name is generated using the fullname template",
+          "type": "string"
+        }
+      }
+    },
+    "podLabels": {
+      "description": "Extra pod labels",
+      "type": "object"
+    },
+    "podAnnotations": {
+      "description": "Extra pod annotations",
+      "type": "object"
+    },
+    "containerPort": {
+      "description": "Which container port to use for primary traffic",
+      "type": "number"
+    },
+    "volumes": {
+      "description": "Extra volumes added to the pod. See https://kubernetes.io/docs/concepts/storage/volumes/",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volume.json"
+      }
+    },
+    "volumeMounts": {
+      "description": "Extra volume mounts added to the primary container. See https://kubernetes.io/docs/concepts/storage/volumes/",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volumemount.json"
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": ["type", "port"],
+      "properties": {
+        "type": {
+          "description": "Which type of service to expose the pods with",
+          "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName",
+            "Headless"
+          ]
+        },
+        "port": {
+          "description": "Which service port to use",
+          "type": "number"
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["tls", "hosts"]
+          }
+        }
+      ],
+      "properties": {
+        "enabled": {
+          "description": "Whether to expose the service or not",
+          "type": "boolean"
+        },
+        "className": {
+          "description": "Which ingressClass to use",
+          "type": "string"
+        },
+        "annotations": {
+          "description": "Extra ingress annotations. @default -- (see [values.yaml](values.yaml))",
+          "type": "object"
+        },
+        "hosts": {
+          "description": "Host configuration. See [values.yaml](values.yaml) for formatting",
+          "type": "array",
+          "required": ["host", "paths"],
+          "items": {
+            "type": "object",
+            "properties": {
+              "host": { "type": "string" },
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["path"],
+                  "properties": {
+                    "path": { "type": "string" },
+                    "pathType": {
+                      "type": "string",
+                      "enum": ["Prefix", "Exact", "ImplementationSpecific"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tls": {
+          "description": "Enable TLS in the ingress resource",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Enable TLS in the ingress resource",
+              "type": "boolean"
+            },
+            "secretName": {
+              "description": "Secret containing TLS certificates",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "env": {
+      "description": "Extra environment variables for the container. See [values.yaml](values.yaml) for formatting",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envvar.json"
+      }
+    },
+    "envFrom": {
+      "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envfromsource.json"
+      }
+    },
+    "startupProbe": {
+      "description": "Whether to enable a startup probe for the application. This generally not recommended, but can be used for slow-starting applications. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
+    },
+    "livenessProbe": {
+      "description": "Whether to enable a liveness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
+    },
+    "readinessProbe": {
+      "description": "Whether to enable a readiness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/probe.json"
+    },
+    "resources": {
+      "description": "Resource limits. See [values.yaml](values.yaml) for formatting",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements"
+    },
+    "podSecurityContext": {
+      "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/podsecuritycontext.json"
+    },
+    "securityContext": {
+      "description": "Security context for the primary container. @default -- (see [values.yaml](values.yaml))",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/securitycontext.json"
+    },
+    "monitoring": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "required": ["port", "path"]
+        }
+      ],
+      "properties": {
+        "enabled": {
+          "description": "Whether to enable Prometheus scraping by creating a ServiceMonitor resource",
+          "type": "boolean"
+        },
+        "port": {
+          "description": "Which port to look for Prometheus metrics",
+          "type": "number"
+        },
+        "path": {
+          "description": "Which path to look for Prometheus metrics",
+          "type": "string"
+        }
+      }
+    },
+    "pdb": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "create": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "oneOf": [
+              {
+                "required": ["minAvailable"],
+                "oneOf": [
+                  {
+                    "not": { "required": ["maxUnavailable"] }
+                  },
+                  {
+                    "properties": {
+                      "maxUnavailable": {
+                        "enum": [0, null]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "required": ["maxUnavailable"],
+                "oneOf": [
+                  {
+                    "not": { "required": ["minAvailable"] }
+                  },
+                  {
+                    "properties": {
+                      "minAvailable": {
+                        "enum": [0, null]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "create": {
+          "description": "Whether to create a PodDisruptionBudget for ensuring that an application is always available",
+          "type": "boolean"
+        },
+        "labels": {
+          "description": "Extra labels for the PodDisruptionBudget",
+          "type": "object"
+        },
+        "annotations": {
+          "description": "Extra annotations for the PodDisruptionBudget",
+          "type": "object"
+        },
+        "minAvailable": {
+          "description": "How many pod replicas must always be available after eviction. Ignored if 0",
+          "type": ["number", "string"]
+        },
+        "maxUnavailable": {
+          "description": "How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0",
+          "type": ["number", "string"]
+        }
+      }
+    },
+    "autoscaling": {
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["minReplicas", "maxReplicas"]
+          }
+        }
+      ],
+      "properties": {
+        "enabled": {
+          "description": "Whether to enable horizontal pod autoscaling",
+          "type": "boolean"
+        },
+        "minReplicas": {
+          "description": "Minimum number of replicas",
+          "type": "number",
+          "minimum": 0
+        },
+        "maxReplicas": {
+          "description": "Maximum number of replicas",
+          "type": "number"
+        },
+        "targetCPUUtilizationPercentage": {
+          "description": "Target CPU requests percentage utilization. Ignored if 0",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "targetMemoryUtilizationPercentage": {
+          "description": "Target RAM requests percentage utilization. Ignored if 0",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "nodeSelector": {
+      "description": "NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/",
+      "type": ["object", "null"],
+      "additionalProperties": {
+        "type": ["string", "null"]
+      }
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/toleration.json"
+      }
+    },
+    "affinity": {
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/affinity.json"
+    },
+    "image-automation": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Whether to enable the image-automation subchart. Any other configuration given here, is passed to it",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
