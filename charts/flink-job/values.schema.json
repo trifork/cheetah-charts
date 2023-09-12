@@ -1,0 +1,590 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "JSON schema for flink-job/values.yaml",
+  "type": "object",
+  "properties": {
+    "nameOverride": { "type": "string" },
+    "fullnameOverride": { "type": "string" },
+    "image": {
+      "description": "Image config",
+      "type": "object",
+      "properties": {
+        "repository": {
+          "description": "Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi",
+          "type": "string"
+        },
+        "tag": {
+          "description": "Which image tag to use",
+          "type": ["string", "number"]
+        },
+        "pullPolicy": {
+          "description": "Which image pull policy to use",
+          "type": "string",
+          "enum": ["IfNotPresent", "Always", "Never"]
+        },
+        "sha": { "type": "string" }
+      }
+    },
+    "global": {
+      "description": "",
+      "type": "object",
+      "properties": {
+        "image": {
+          "properties": {
+            "repository": {
+              "description": "Set the global image repository. If image automation is enabled, this is useful to reduce configuration duplication",
+              "type": "string"
+            }
+          }
+        },
+        "imagePullSecrets": {
+          "description": "Set the global image pull secrets. If image automation is enabled, this is useful to reduce configuration duplication",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "imagePullSecrets": {
+      "description": "Array of image pull secrets.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "version": {
+      "type": "string"
+    },
+    "internalSsl": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "flinkConfiguration": {
+      "type": "object",
+      "properties": {
+        "state.backend": { "type": "string" },
+        "execution.checkpointing.interval": { "type": "string" },
+        "execution.checkpointing.min-pause": { "type": "string" },
+        "execution.checkpointing.timeout": { "type": "string" },
+        "rest.flamegraph.enabled": { "type": "string" },
+        "taskmanager.numberOfTaskSlots": { "type": "string" }
+      },
+      "required": [
+        "execution.checkpointing.interval",
+        "execution.checkpointing.min-pause",
+        "execution.checkpointing.timeout",
+        "rest.flamegraph.enabled",
+        "state.backend",
+        "taskmanager.numberOfTaskSlots"
+      ]
+    },
+    "restartNonce": {
+      "type": ["integer", "string"]
+    },
+    "logConfiguration": {
+      "type": "object",
+      "properties": {
+        "log4j-console.properties": {
+          "type": "string"
+        }
+      },
+      "required": ["log4j-console.properties"]
+    },
+    "mode": {
+      "type": "string"
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "scheme": {
+          "type": "string"
+        },
+        "baseDir": {
+          "type": "string"
+        }
+      },
+      "required": ["baseDir", "scheme"]
+    },
+    "istio": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": ["enabled"]
+    },
+    "ports": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "containerPort": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": ["string", "number"]
+          }
+        }
+      }
+    },
+    "envFrom": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "configMapRef": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "volumes": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "name": { "type": "string" },
+          "emptyDir": {}
+        }
+      }
+    },
+    "volumeMounts": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "name": { "type": "string" },
+          "mountPath": { "type": "string" }
+        }
+      }
+    },
+    "podLabels": {
+      "type": "object"
+    },
+    "podAnnotations": {
+      "type": "object"
+    },
+    "initContainers": {
+      "type": "array",
+      "items": {}
+    },
+    "job": {
+      "type": "object",
+      "properties": {
+        "jarURI": {
+          "type": "string"
+        },
+        "entryClass": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {}
+        },
+        "topics": {
+          "type": "array",
+          "items": {}
+        },
+        "parallelism": {
+          "type": "integer"
+        },
+        "state": {
+          "type": "string"
+        },
+        "upgradeMode": {
+          "type": "string"
+        },
+        "savepointTriggerNonce": {
+          "type": ["integer", "string"]
+        },
+        "initialSavepointPath": {
+          "type": "string"
+        },
+        "allowNonRestoredState": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allowNonRestoredState",
+        "args",
+        "entryClass",
+        "initialSavepointPath",
+        "jarURI",
+        "parallelism",
+        "savepointTriggerNonce",
+        "state",
+        "topics",
+        "upgradeMode"
+      ]
+    },
+    "podTemplate": {
+      "type": "string"
+    },
+    "taskManager": {
+      "$ref": "#/definitions/Manager"
+    },
+    "jobManager": {
+      "$ref": "#/definitions/Manager"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "serviceMonitor": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "scheme": {
+              "type": "string"
+            },
+            "tlsConfig": {
+              "type": "object",
+              "properties": {
+                "insecureSkipVerify": {
+                  "type": "boolean"
+                },
+                "caFile": {
+                  "type": "string"
+                },
+                "certFile": {
+                  "type": "string"
+                },
+                "keyFile": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "caFile",
+                "certFile",
+                "insecureSkipVerify",
+                "keyFile"
+              ]
+            },
+            "path": {
+              "type": "string"
+            },
+            "interval": {
+              "type": "string"
+            },
+            "scrapeTimeout": {
+              "type": "string"
+            },
+            "metricRelabelings": {
+              "type": "array",
+              "items": {}
+            },
+            "relabelings": {
+              "type": "array",
+              "items": {}
+            },
+            "selectors": {
+              "type": "object"
+            },
+            "labels": {
+              "type": "object"
+            },
+            "extraMetricsEndpoints": {
+              "type": "array",
+              "items": {}
+            },
+            "targetLabels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "jobLabel": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enabled",
+            "extraMetricsEndpoints",
+            "interval",
+            "jobLabel",
+            "labels",
+            "metricRelabelings",
+            "path",
+            "relabelings",
+            "scheme",
+            "scrapeTimeout",
+            "selectors",
+            "targetLabels",
+            "tlsConfig"
+          ]
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "targetPort": {
+              "type": "string"
+            },
+            "selectors": {
+              "type": "object"
+            },
+            "labels": {
+              "type": "object"
+            }
+          },
+          "required": ["enabled", "labels", "selectors", "targetPort"]
+        }
+      },
+      "required": ["enabled", "port", "service", "serviceMonitor"]
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        },
+        "automountServiceAccountToken": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "annotations",
+        "automountServiceAccountToken",
+        "create",
+        "name"
+      ]
+    },
+    "rbac": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean"
+        },
+        "additionalRules": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "create": true
+            }
+          },
+          "then": {
+            "required": ["additionalRules"]
+          }
+        }
+      ]
+    },
+    "podSecurityContext": {
+      "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/podsecuritycontext.json"
+    },
+    "securityContext": {
+      "description": "Security context for the primary container. @default -- (see [values.yaml](values.yaml))",
+      "type": "object",
+      "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/securitycontext.json"
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "uiPort": {
+          "type": "integer"
+        },
+        "ingressClassName": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "pathType": {
+          "type": "string"
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "tlsSecret": {
+          "type": "string"
+        },
+        "selfSigned": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "annotations",
+        "enabled",
+        "hostname",
+        "ingressClassName",
+        "path",
+        "pathType",
+        "selfSigned",
+        "tlsSecret",
+        "uiPort"
+      ],
+      "title": "Ingress"
+    },
+    "image-automation": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Whether to enable the image-automation subchart. Any other configuration given here, is passed to it",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "required": [
+    "env",
+    "envFrom",
+    "flinkConfiguration",
+    "fullnameOverride",
+    "global",
+    "image",
+    "image-automation",
+    "imagePullSecrets",
+    "ingress",
+    "initContainers",
+    "internalSsl",
+    "istio",
+    "job",
+    "jobManager",
+    "logConfiguration",
+    "metrics",
+    "mode",
+    "nameOverride",
+    "podAnnotations",
+    "podLabels",
+    "podSecurityContext",
+    "podTemplate",
+    "ports",
+    "rbac",
+    "restartNonce",
+    "securityContext",
+    "serviceAccount",
+    "storage",
+    "taskManager",
+    "version",
+    "volumeMounts",
+    "volumes"
+  ],
+  "definitions": {
+    "Manager": {
+      "type": "object",
+      "properties": {
+        "replicas": {
+          "type": "integer"
+        },
+        "resource": {
+          "type": "object",
+          "properties": {
+            "memory": {
+              "type": "string"
+            },
+            "cpu": {
+              "type": "number"
+            }
+          },
+          "required": ["cpu", "memory"]
+        },
+        "ports": {
+          "type": "array",
+          "items": {}
+        },
+        "env": {
+          "type": "array",
+          "items": {}
+        },
+        "envFrom": {
+          "type": "array",
+          "items": {}
+        },
+        "volumes": {
+          "type": "array",
+          "items": {}
+        },
+        "volumeMounts": {
+          "type": "array",
+          "items": {}
+        },
+        "podLabels": {
+          "type": "object"
+        },
+        "podAnnotations": {
+          "type": "object"
+        },
+        "initContainers": {
+          "type": "array",
+          "items": {}
+        },
+        "podTemplate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "env",
+        "envFrom",
+        "initContainers",
+        "podAnnotations",
+        "podLabels",
+        "podTemplate",
+        "ports",
+        "replicas",
+        "resource",
+        "volumeMounts",
+        "volumes"
+      ]
+    }
+  }
+}
