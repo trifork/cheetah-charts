@@ -1,0 +1,4 @@
+# helm template opensearchrole charts/opensearchrole -f charts/opensearchrole/ci/example-values.yaml > output.yaml
+
+roleName: obiscodes
+indexPattern: obiscodes*

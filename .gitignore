@@ -10,3 +10,4 @@ charts/*/Chart.lock
 # End of https://www.toptal.com/developers/gitignore/api/helm
 
 .swp
+output.yaml

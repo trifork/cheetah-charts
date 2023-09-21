@@ -1,0 +1,68 @@
+{{- if .Values.localNetworkConfiguration.enabled -}}
+apiVersion: networking.tcs.trifork.com/v1alpha1
+kind: LocalNetworkConfig
+metadata:
+  name: {{ include "flink-job.fullname" . }}
+spec:
+  components:
+    {{ include "flink-job.fullname" . }}-job:
+      dependsOn:
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 6122
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 6124
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 34101
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 41475
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 6123
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 6124
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 34101
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 41475
+        protocol: TCP
+      podSelector:
+        matchLabels:
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
+          component: jobmanager
+    {{ include "flink-job.fullname" . }}-taskmanager:
+      dependsOn:
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 6123
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 6124
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 34101
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-job
+        port: 41475
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 6122
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 6124
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 34101
+        protocol: TCP
+      - component: {{ include "flink-job.fullname" . }}-taskmanager
+        port: 41475
+        protocol: TCP        
+      podSelector:
+        matchLabels:
+          {{ include "flink-job.selectorLabels" . | nindent 10 }}
+          component: taskmanager
+{{- end -}}

@@ -1,0 +1,3 @@
+# helm template opensearchrole charts/opensearchrole -f charts/opensearchrole/ci/example-truncate.yaml > output.yaml
+
+roleName: obiscodes-with-the-flow-of-the-water-with-the-source

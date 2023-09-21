@@ -18,6 +18,7 @@ spec:
       port: {{ $port }}
       protocol: TCP
       targetPort: {{ .targetPort }}
+      appProtocol: http
   type: ClusterIP
   selector:
     {{- include "flink-job.selectorLabels" $ | nindent 4 }}
