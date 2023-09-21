@@ -1,0 +1,29 @@
+name: Helm Create Release Branch
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart-increment:
+        type: choice
+        description: Which hlem chart to increment
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+
+      main-increment:
+        type: choice
+        description: Increment helm chart main branch
+        default: 'minor'
+        options:
+        - major
+        - minor
+
+jobs:
+  createrelease:
+    uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-release-branch.yml@streamline-release-flow
+    with:
+      main-increment: ${{ github.event.inputs.main-increment }}
+      helm-chart-increment: ${{ github.event.inputs.helm-chart-increment}}
+    secrets:
+      PAT: ${{ secrets.GH_TOKEN }}

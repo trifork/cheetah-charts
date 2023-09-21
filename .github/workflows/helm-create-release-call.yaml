@@ -1,0 +1,22 @@
+name: Helm Create Release Call
+
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart:
+        type: choice
+        description: Which hlem chart to publish
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+
+jobs:
+  create-release:
+    uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@streamline-release-flow
+    with:
+      helm-chart: ${{ inputs.helm-chart}}
+      release-type: release
+    secrets:
+      PAT: ${{ secrets.GH_TOKEN }}
