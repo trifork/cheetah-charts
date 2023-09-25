@@ -29,9 +29,16 @@ imagePullSecrets: []
 # -- Which Flink version to use
 version: v1_16
 
+# If InternalSSL is enabled, a certificate will be provisioned and used between the jobmanager and the taskmanager
 internalSsl:
   # -- Whether to use SSL between the job- and taskmanager
   enabled: true
+  # -- What duration to give the certificates provisioned for the internal SSL.
+  # Value must be specified using a Go time.Duration string format
+  certDuration: 26280h
+  # -- When to renew the certificates provisioned for the internal SSL.
+  # Value must be specified using a Go time.Duration string format
+  certRenewBefore: 2160h
 
 # -- Flink configuration
 # For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
