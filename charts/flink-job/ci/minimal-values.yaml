@@ -1,3 +1,4 @@
+# helm template opensearchrole charts/flink-job -f charts/flink-job/ci/minimal-values.yaml > output.yaml
 image:
   repository: flink
   tag: 1.16

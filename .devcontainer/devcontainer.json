@@ -3,8 +3,6 @@
   "dockerFile": "Dockerfile",
  // "remoteUser": "user",
   "runArgs": ["--init"],
-  "mounts": ["source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind"],
-
   "customizations": {
     "vscode": {
       "extensions": [
@@ -17,5 +15,8 @@
         "terminal.integrated.shell.linux": "/bin/bash"
       }
     }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   }
 }
