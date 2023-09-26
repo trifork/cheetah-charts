@@ -16,5 +16,8 @@
       "type": "string"
     }
   },
-  "required": []
+  "required": [
+    "clusterName",
+    "roleName"
+  ]
 }
