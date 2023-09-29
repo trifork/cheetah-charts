@@ -1,0 +1,22 @@
+name: Helm Create Snapshot Call
+
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart:
+        type: choice
+        description: Which hlem chart to create a snapshot for
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+
+jobs:
+  create-snapshot:
+    uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@main
+    with:
+      helm-chart: ${{ inputs.helm-chart}}
+      release-type: SNAPSHOT
+    secrets:
+      PAT: ${{ secrets.GH_TOKEN }}

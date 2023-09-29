@@ -1,0 +1,23 @@
+name: Helm Release Candidate call
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart:
+        type: choice
+        description: Which hlem chart to create a release candidate for
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+jobs:
+  verify-flow-and-publish-release-candidate:
+      uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@main
+      with:
+        helm-chart: ${{ inputs.helm-chart}}
+        release-type: RC
+      secrets:
+        PAT: ${{ secrets.GH_TOKEN }}
+
+
+
