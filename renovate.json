@@ -1,33 +1,3 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "docker:enableMajor",
-    "helpers:pinGitHubActionDigests"
-  ],
-  "updateNotScheduled": false,
-  "schedule": [
-    "after 10pm every weekday",
-    "before 5am every weekday",
-    "every weekend"
-  ],
-  "addLabels": [
-    "dependencies",
-    "automated-pr"
-  ],
-  "configMigration": true,
-  "packageRules": [
-    {
-      "matchFileNames": [
-        ".devcontainer/**"
-      ],
-      "automerge": true
-    },
-    {
-      "matchFileNames": [
-        ".github/**"
-      ],
-      "automerge": true
-    }
-  ]
+  "extends": ["github>trifork/cheetah-infrastructure-utils:default.json5"]
 }
