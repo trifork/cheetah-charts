@@ -13,6 +13,8 @@ metadata:
 spec:
   secretName: {{ printf "%s-mtls-secret" ( include "flink-job.nameWithimageHash" . ) | quote }}
   commonName: {{ printf "%s-mtls-crt" ( include "flink-job.nameWithimageHash" . ) | quote }}
+  duration: {{ .Values.internalSsl.certDuration | quote }}
+  renewBefore: {{ .Values.internalSsl.certRenewBefore | quote }}
   issuerRef:
     name: {{ printf "%s-mtls-issuer" ( include "flink-job.nameWithimageHash" . ) | quote }}
   keystores:
