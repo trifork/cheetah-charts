@@ -1,0 +1,48 @@
+name: Trivy
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  trivy-repo-scan:
+    name: trivy (repo scan)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          #ignore-unfixed: true
+          format: 'sarif'
+          exit-code: '1'
+          output: 'trivy-repo-results.sarif'
+
+      - name: Publish repo report
+        id: import-repo-scan
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        uses: trifork/cheetah-infrastructure-utils/.github/actions/defectdojo-import-scan@main
+        with:
+          token: ${{ secrets.DEFECTDOJO_TOKEN }}
+          defectdojo_url: 'https://defectdojo.cheetah.trifork.dev'
+          defectdojo_endpoint: '/api/v2/reimport-scan/'
+          file: 'trivy-repo-results.sarif'
+          scan_type: SARIF # Trivy Scan
+          engagement_name: import-repo-scan
+          product_name: ${{ github.repository }}
+          branch_tag: ${{ github.ref_name }}
+          #commit_hash: ${{ github.sha }}
+
+      - name: Show response
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        run: |
+          set -e
+          printf '%s\n' '${{ steps.import-repo-scan.outputs.response }}'
