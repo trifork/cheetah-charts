@@ -130,7 +130,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | imagePullSecrets | list | `[]` | Array of image pull secrets. Each entry follows the `name: <secret-name>` format |
 | version | string | `"v1_16"` | Which Flink version to use |
 | internalSsl.enabled | bool | `true` | Whether to use SSL between the job- and taskmanager |
-| internalSsl.algorithms | string | `"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"` | Set the algorithms alllowed. see also: https://nightlies.apache.org/flink/flink-docs-release-1.13/docs/deployment/security/security-ssl/#cipher-suites |
+| internalSsl.algorithms | string | `"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"` | Set the algorithms allowed. see also: <https://nightlies.apache.org/flink/flink-docs-release-1.13/docs/deployment/security/security-ssl/#cipher-suites> |
 | internalSsl.certDuration | string | `"26280h"` | What duration to give the certificates provisioned for the internal SSL. Value must be specified using a Go time.Duration string format |
 | internalSsl.certRenewBefore | string | `"2160h"` | When to renew the certificates provisioned for the internal SSL. Value must be specified using a Go time.Duration string format |
 | flinkConfiguration | object | (see [values.yaml](values.yaml)) | Flink configuration For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/> For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/> |
