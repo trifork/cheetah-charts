@@ -339,10 +339,8 @@
         }
       },
       "required": [
-        "annotations",
         "automountServiceAccountToken",
-        "create",
-        "name"
+        "create"
       ]
     },
     "rbac": {
