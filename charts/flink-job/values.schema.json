@@ -172,7 +172,9 @@
         },
         "args": {
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "string"
+          }
         },
         "topics": {
           "type": "array",
