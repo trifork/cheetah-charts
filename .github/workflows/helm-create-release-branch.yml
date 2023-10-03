@@ -20,7 +20,6 @@ on:
         - minor
 
 jobs:
-
   create-release-branch-helm:
       uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release-branch.yml@main
       with:
