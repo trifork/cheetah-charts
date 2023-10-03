@@ -198,13 +198,9 @@
         }
       },
       "required": [
-        "allowNonRestoredState",
         "args",
-        "entryClass",
-        "initialSavepointPath",
         "jarURI",
         "parallelism",
-        "savepointTriggerNonce",
         "state",
         "topics",
         "upgradeMode"
