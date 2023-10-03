@@ -432,14 +432,11 @@
         }
       },
       "required": [
-        "annotations",
         "enabled",
         "hostname",
-        "ingressClassName",
         "path",
         "pathType",
         "selfSigned",
-        "tlsSecret",
         "uiPort"
       ],
       "title": "Ingress"
