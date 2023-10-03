@@ -136,21 +136,19 @@
       }
     },
     "volumes": {
+      "description": "Extra volumes added to the pod. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
-        "properties": {
-          "name": { "type": "string" },
-          "emptyDir": {}
-        }
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volume.json"
       }
     },
     "volumeMounts": {
+      "description": "Extra volume mounts added to the primary container. See https://kubernetes.io/docs/concepts/storage/volumes/",
       "type": "array",
       "items": {
-        "properties": {
-          "name": { "type": "string" },
-          "mountPath": { "type": "string" }
-        }
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volumemount.json"
       }
     },
     "podLabels": {
