@@ -77,25 +77,7 @@
       },
       "required": ["enabled"]
     },
-    "flinkConfiguration": {
-      "type": "object",
-      "properties": {
-        "state.backend": { "type": "string" },
-        "execution.checkpointing.interval": { "type": "string" },
-        "execution.checkpointing.min-pause": { "type": "string" },
-        "execution.checkpointing.timeout": { "type": "string" },
-        "rest.flamegraph.enabled": { "type": "string" },
-        "taskmanager.numberOfTaskSlots": { "type": "string" }
-      },
-      "required": [
-        "execution.checkpointing.interval",
-        "execution.checkpointing.min-pause",
-        "execution.checkpointing.timeout",
-        "rest.flamegraph.enabled",
-        "state.backend",
-        "taskmanager.numberOfTaskSlots"
-      ]
-    },
+    "flinkConfiguration": { "type": "object" },
     "restartNonce": {
       "type": ["integer", "string"]
     },
