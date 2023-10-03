@@ -128,18 +128,11 @@
       }
     },
     "envFrom": {
+      "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
       "type": "array",
       "items": {
-        "properties": {
-          "configMapRef": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              }
-            }
-          }
-        }
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envfromsource.json"
       }
     },
     "volumes": {
