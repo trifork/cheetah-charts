@@ -120,16 +120,11 @@
       }
     },
     "env": {
+      "description": "Extra environment variables for the container. See [values.yaml](values.yaml) for formatting",
       "type": "array",
       "items": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "value": {
-            "type": ["string", "number"]
-          }
-        }
+        "type": "object",
+        "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envvar.json"
       }
     },
     "envFrom": {
