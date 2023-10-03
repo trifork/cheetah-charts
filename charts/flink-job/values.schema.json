@@ -207,7 +207,7 @@
         },
         "upgradeMode": {
           "type": "string",
-          "enum": ["stateless", "last_state", "savepoint"]
+          "enum": ["stateless", "last-state", "savepoint"]
         },
         "savepointTriggerNonce": {
           "type": ["integer", "string"]

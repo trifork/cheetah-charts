@@ -19,7 +19,7 @@ storage:
 job:
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   parallelism: 2
-  upgradeMode: last_state
+  upgradeMode: last-state
   topics:
     - arg: input-kafka-topic
       type: input
