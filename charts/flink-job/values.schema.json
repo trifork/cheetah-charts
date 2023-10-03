@@ -492,10 +492,24 @@
           "type": "object",
           "properties": {
             "memory": {
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
             },
             "cpu": {
-              "type": "number"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
             }
           },
           "required": ["cpu", "memory"]
