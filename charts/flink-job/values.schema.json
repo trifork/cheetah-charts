@@ -81,15 +81,7 @@
     "restartNonce": {
       "type": ["integer", "string"]
     },
-    "logConfiguration": {
-      "type": "object",
-      "properties": {
-        "log4j-console.properties": {
-          "type": "string"
-        }
-      },
-      "required": ["log4j-console.properties"]
-    },
+    "logConfiguration": { "type": "object" },
     "mode": {
       "type": "string"
     },
