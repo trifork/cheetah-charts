@@ -547,9 +547,7 @@
       "required": [
         "env",
         "envFrom",
-        "initContainers",
         "podAnnotations",
-        "podLabels",
         "podTemplate",
         "ports",
         "replicas",
