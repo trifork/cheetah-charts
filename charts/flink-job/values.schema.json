@@ -353,19 +353,7 @@
           "type": "array",
           "items": {}
         }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "create": true
-            }
-          },
-          "then": {
-            "required": ["additionalRules"]
-          }
-        }
-      ]
+      }
     },
     "podSecurityContext": {
       "description": "Security context for the entire pod. @default -- (see [values.yaml](values.yaml))",
