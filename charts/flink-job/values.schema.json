@@ -83,7 +83,8 @@
     },
     "logConfiguration": { "type": "object" },
     "mode": {
-      "type": "string"
+      "type": "string",
+      "enum": ["native", "standalone"]
     },
     "storage": {
       "type": "object",
@@ -178,16 +179,35 @@
         },
         "topics": {
           "type": "array",
-          "items": {}
+          "items": {
+            "properties": {
+              "arg": {
+                "type": "string"
+              },
+              "postfix": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["input", "output"]
+              }
+            },
+            "required": ["name", "type"]
+          }
         },
         "parallelism": {
           "type": "integer"
         },
         "state": {
-          "type": "string"
+          "type": "string",
+          "enum": ["running", "suspended"]
         },
         "upgradeMode": {
-          "type": "string"
+          "type": "string",
+          "enum": ["stateless", "last_state", "savepoint"]
         },
         "savepointTriggerNonce": {
           "type": ["integer", "string"]
@@ -295,10 +315,20 @@
               "type": "string"
             }
           },
-          "required": [
-            "enabled",
-            "jobLabel",
-            "targetLabels",
+          "required": ["enabled"],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "required": ["jobLabel", "targetLabels"]
+              }
+            }
           ]
         },
         "service": {
@@ -317,7 +347,21 @@
               "type": "object"
             }
           },
-          "required": ["enabled", "targetPort"]
+          "required": ["enabled"],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "enabled": {
+                    "const": true
+                  }
+                }
+              },
+              "then": {
+                "required": ["targetPort"]
+              }
+            }
+          ]
         }
       },
       "required": ["enabled", "port", "service", "serviceMonitor"]
@@ -338,9 +382,20 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "automountServiceAccountToken",
-        "create"
+      "required": ["create"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "create": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["automountServiceAccountToken"]
+          }
+        }
       ]
     },
     "rbac": {
@@ -396,15 +451,21 @@
           "type": "boolean"
         }
       },
-      "required": [
-        "enabled",
-        "hostname",
-        "path",
-        "pathType",
-        "selfSigned",
-        "uiPort"
-      ],
-      "title": "Ingress"
+      "required": ["enabled"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["hostname", "path", "pathType", "selfSigned", "uiPort"]
+          }
+        }
+      ]
     },
     "image-automation": {
       "type": "object",
@@ -477,23 +538,48 @@
         },
         "ports": {
           "type": "array",
-          "items": {}
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "containerPort": {
+                "type": "integer"
+              }
+            }
+          }
         },
         "env": {
+          "description": "Extra environment variables for the container. See [values.yaml](values.yaml) for formatting",
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envvar.json"
+          }
         },
         "envFrom": {
+          "description": "Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting",
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/envfromsource.json"
+          }
         },
         "volumes": {
+          "description": "Extra volumes added to the pod. See https://kubernetes.io/docs/concepts/storage/volumes/",
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volume.json"
+          }
         },
         "volumeMounts": {
+          "description": "Extra volume mounts added to the primary container. See https://kubernetes.io/docs/concepts/storage/volumes/",
           "type": "array",
-          "items": {}
+          "items": {
+            "type": "object",
+            "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.28.0/volumemount.json"
+          }
         },
         "podLabels": {
           "type": "object"
