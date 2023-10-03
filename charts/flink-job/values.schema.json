@@ -508,8 +508,7 @@
                 }
               ]
             }
-          },
-          "required": ["cpu", "memory"]
+          }
         },
         "ports": {
           "type": "array",
