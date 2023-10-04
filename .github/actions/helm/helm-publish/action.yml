@@ -75,7 +75,7 @@ runs:
       if: ${{inputs.package-suffix != ''}}
       shell: bash
       run: |
-           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}-${{inputs.package-suffix}}.tgz oci://ghcr.io/${{ github.repository_owner }}
+           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}-${{inputs.package-suffix}}.tgz oci://ghcr.io/${GITHUB_REPOSITORY}
       env:
         GH_TOKEN: ${{ inputs.PAT }}
 
@@ -83,6 +83,6 @@ runs:
       if: ${{inputs.package-suffix == ''}}
       shell: bash
       run: |
-           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}.tgz oci://ghcr.io/${{ github.repository_owner }}
+           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}.tgz oci://ghcr.io/${GITHUB_REPOSITORY}
       env:
         GH_TOKEN: ${{ inputs.PAT }}
