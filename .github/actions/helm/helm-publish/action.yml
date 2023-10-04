@@ -68,6 +68,7 @@ runs:
     - name: Package Helm Chart
       shell: bash
       run: |
+        helm dependency update charts/${{ inputs.chart }}
         helm package charts/${{ inputs.chart }}
 
     - name: Publish Helm Chart to GH packages (Snapshot or RC)
