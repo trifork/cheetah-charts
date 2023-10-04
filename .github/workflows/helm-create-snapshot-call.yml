@@ -14,8 +14,14 @@ on:
 
 jobs:
   create-snapshot:
-    uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-snapshot.yml@main
-    with:
-      chart: ${{ inputs.helm-chart}}
-    secrets:
-      PAT: ${{ secrets.GH_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and publish snapshot package
+        uses: ./.github/actions/helm/helm-publish/
+        with:
+          package-suffix: "SNAPSHOT${{github.run_number}}"
+          PAT: ${{ secrets.GH_TOKEN }}
+          chart: ${{inputs.helm-chart}}

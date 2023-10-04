@@ -1,0 +1,76 @@
+name: Bump Version
+description: Bumps the version in the given file between the given prefix and suffix. 
+
+inputs:
+  file-path:
+    description: The path to the file with the version
+    required: true
+  prefix:
+    description: Some text directly before the version in the file
+    required: false
+  suffix:
+    description: Some text directly after the version in the file
+    required: false
+  bump-type:
+    description: The type of bump to do. Must be either minor, major, or patch
+    required: true
+  project-version-suffix:
+    description: The suffix of the project version
+    required: false
+outputs:
+  old-version:
+    description: "The version before the bump"
+    value: ${{ steps.bump-version.outputs.old-version }}
+  new-version:
+    description: "The version after the bump"
+    value: ${{ steps.bump-version.outputs.new-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Validate bump-type input
+      id: validate-input
+      if: ${{ !contains('[major, minor, patch, none]', inputs.bump-type) }}
+      shell: bash
+      run: |
+        echo "::error::Unexpected input bump-type: ${{ inputs.bump-type }}. The bump type must be either 'major', 'minor', 'patch', or 'none'"
+        exit 1
+
+    - name: Bump version
+      id: bump-version
+      shell: bash
+      run: |
+        prefix=$(echo "${{ inputs.prefix }}" | sed 's/\//\\\//g')
+        suffix=$(echo "${{ inputs.suffix }}" | sed 's/\//\\\//g')
+        bump_type="${{ inputs.bump-type }}"
+        file_path="${{ inputs.file-path }}"
+
+        old_version=$(grep -Po "(?<=$prefix)[0-9]+\.[0-9]+\.[0-9]+(?=$suffix)" $file_path)
+
+        IFS='.' read -r -a version_parts <<< $old_version
+
+        if [ $bump_type = "major" ]; then
+          ((++version_parts[0]))
+          version_parts[1]=0
+          version_parts[2]=0
+        elif [ $bump_type = "minor" ]; then
+          ((++version_parts[1]))
+          version_parts[2]=0
+        elif [ $bump_type = "patch" ]; then
+          ((++version_parts[2]))
+        fi
+
+        if [ -n "${{ inputs.project-version-suffix }}" ]; then
+          new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}-${{ inputs.project-version-suffix }}"
+        else
+          new_version="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+        fi
+
+        sed -i "s/$prefix[0-9]\+.[0-9]\+.[0-9]\+$suffix/$prefix$new_version$suffix/" $file_path
+
+        echo "Bump type: $bump_type"
+        echo "Old version: $old_version"
+        echo "New version: $new_version"
+
+        echo "old-version=$old_version" >> $GITHUB_OUTPUT
+        echo "new-version=$new_version" >> $GITHUB_OUTPUT

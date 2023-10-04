@@ -1,0 +1,77 @@
+name: Helm Create Release Branch
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart-increment:
+        type: choice
+        description: Which hlem chart to increment
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+
+      main-increment:
+        type: choice
+        description: Increment helm chart main branch
+        default: 'minor'
+        options:
+        - major
+        - minor
+
+jobs:
+  create-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Read Helm Chart
+        id: chart
+        uses: jacobtomlinson/gha-read-helm-chart@0.1.3
+        with:
+          path: ./charts/${{ inputs.helm-chart-increment}}
+
+      - name: Bump major version
+        if: ${{inputs.main-increment == 'major'}}
+        uses: ./.github/actions/versioning/bump-version/
+        with:
+          file-path: ./charts/${{ inputs.helm-chart-increment}}/Chart.yaml
+          prefix: 'version: '
+          bump-type: "major"
+
+      - name: Print outputs
+        run: |
+          echo "Name - ${{ steps.chart.outputs.name }}"
+          echo "Version - ${{ steps.chart.outputs.version }}"
+          echo "App Version - ${{ steps.chart.outputs.appVersion }}"
+
+      - name: Create release branch
+        uses: ./.github/actions/versioning/create-release-branch/
+        with:
+          release-version: ${{steps.chart.outputs.version}}
+          project-name: ${{steps.chart.outputs.name}}
+
+      - name: Bump version
+        uses: ./.github/actions/versioning/bump-version/
+        with:
+          file-path: ./charts/${{ inputs.helm-chart-increment}}/Chart.yaml
+          prefix: 'version: '
+          bump-type: "minor"
+
+      - name: Commit version bump
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+          git add ./charts/${{ inputs.helm-chart-increment}}
+          git commit -m "Bump minor version to keep snapshot version ahead"
+          git push
+
+
+

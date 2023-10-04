@@ -1,0 +1,87 @@
+name: Publish a Helm package
+description: bla bla
+
+inputs:
+  chart:
+    default: ""
+    required: true
+    description: The helm chart to release
+
+  package-suffix:
+    description: The suffix of the package released to GitHub. Use '' for releases. The only reason this input does not have a default value is to avoid accidental release packages
+    required: true
+
+  PAT:
+    description: Token to publish Helm chart
+    required: true
+    default: ""
+
+outputs:
+  version:
+    description: "The version of the chart"
+    value: ${{ steps.chart.outputs.version }}
+
+  description:
+    description: "The description of the chart"
+    value: ${{ steps.chart.outputs.description }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Read Helm Chart
+      id: chart
+      uses: jacobtomlinson/gha-read-helm-chart@0.1.3
+      with:
+        path: ./charts/${{ inputs.chart}}
+
+    - name: Print outputs
+      shell: bash
+      run: |
+        echo "Name - ${{ steps.chart.outputs.name }}"
+        echo "Version - ${{ steps.chart.outputs.version }}"
+        echo "App Version - ${{ steps.chart.outputs.appVersion }}"
+        echo "description - ${{ steps.chart.outputs.description }}"
+
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+      with:
+        token: ${{ inputs.PAT }}
+
+    - name: Configure Helm
+      shell: bash
+      run: |
+        echo ${{ inputs.PAT }} | docker login ghcr.io -u USERNAME --password-stdin
+      env:
+        USERNAME: ${{ github.repository_owner }}
+
+    - name: Add suffix
+      uses: ./.github/actions/versioning/bump-version/
+      with:
+        file-path: ./charts/${{ inputs.chart}}/Chart.yaml
+        prefix: 'version: '
+        bump-type: 'none'
+        project-version-suffix: ${{ inputs.package-suffix }}
+
+    - name: Package Helm Chart
+      shell: bash
+      run: |
+        helm package charts/${{ inputs.chart }}
+
+    - name: Publish Helm Chart to GH packages (Snapshot or RC)
+      if: ${{inputs.package-suffix != ''}}
+      shell: bash
+      run: |
+           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}-${{inputs.package-suffix}}.tgz oci://ghcr.io/${{ github.repository_owner }}
+      env:
+        GH_TOKEN: ${{ inputs.PAT }}
+
+    - name: Publish Helm Chart to GH packages (Release)
+      if: ${{inputs.package-suffix == ''}}
+      shell: bash
+      run: |
+           helm push ./${{ steps.chart.outputs.name }}-${{steps.chart.outputs.version}}.tgz oci://ghcr.io/${{ github.repository_owner }}
+      env:
+        GH_TOKEN: ${{ inputs.PAT }}
