@@ -16,7 +16,6 @@ jobs:
   create-release:
     uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@main
     with:
-      helm-chart: ${{ inputs.helm-chart}}
-      release-type: release
+      chart: ${{ inputs.helm-chart}}
     secrets:
       PAT: ${{ secrets.GH_TOKEN }}
