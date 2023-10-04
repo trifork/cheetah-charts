@@ -11,11 +11,10 @@ on:
         - flink-job
         - image-automation
 jobs:
-  verify-flow-and-publish-release-candidate:
-      uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@main
+  create-release-candidate:
+      uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release-candidate.yml@main
       with:
-        helm-chart: ${{ inputs.helm-chart}}
-        release-type: RC
+        chart: ${{ inputs.helm-chart}}
       secrets:
         PAT: ${{ secrets.GH_TOKEN }}
 
