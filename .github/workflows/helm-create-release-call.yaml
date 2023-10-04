@@ -13,9 +13,60 @@ on:
         - image-automation
 
 jobs:
-  create-release:
-    uses: trifork/cheetah-infrastructure-utils/.github/workflows/helm-create-release.yml@main
-    with:
-      chart: ${{ inputs.helm-chart}}
-    secrets:
-      PAT: ${{ secrets.GH_TOKEN }}
+  verify-release-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Success"
+        if: ${{ startsWith(github.ref_name, 'release/') }}
+        run: |
+          exit 0
+
+      - name: "Error"
+        if: ${{ !startsWith(github.ref_name, 'release/') }}
+        run: |
+          exit 1
+
+  build-and-release:
+    runs-on: ubuntu-latest
+    needs: verify-release-branch
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: tree
+        run: tree
+
+      - name: Build and release package
+        id: build-and-release
+        uses: ./.github/actions/helm/helm-publish/
+        with:
+          PAT: ${{ secrets.GH_TOKEN }}
+          package-suffix: ''
+          chart: ${{ inputs.helm-chart }}
+
+      - name: Generate Checksum
+        uses: jmgilman/actions-generate-checksum@v1.0.0
+        with:
+          patterns: './${{ inputs.helm-chart }}-${{steps.build-and-release.outputs.version}}.tgz'
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          tag_name: ${{inputs.helm-chart}}-v${{ steps.build-and-release.outputs.version }}
+          files: checksum.txt
+
+      - name: Bump version
+        uses: ./.github/actions/versioning/bump-version/
+        with:
+          file-path: ./charts/${{ inputs.helm-chart}}/Chart.yaml
+          prefix: 'version: '
+          bump-type: "patch"
+
+      - name: Commit release branch bump
+        uses: EndBug/add-and-commit@v9
+        with:
+          commit: -a
+          message: Bump release branch patch version

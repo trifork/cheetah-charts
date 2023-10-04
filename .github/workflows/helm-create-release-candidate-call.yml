@@ -1,0 +1,45 @@
+name: Helm Release Candidate call
+on:
+  workflow_dispatch:
+    inputs:
+      helm-chart:
+        type: choice
+        description: Which hlem chart to create a release candidate for
+        default: ''
+        options:
+        - cheetah-application
+        - flink-job
+        - image-automation
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Success"
+        if: ${{ startsWith(github.ref_name, 'release/') }}
+        run: |
+          echo "Creating a release candidate for branch '${{ github.ref_name }}'"
+          exit 0
+
+      - name: "Error"
+        if: ${{ !startsWith(github.ref_name, 'release/') }}
+        run: |
+          echo "::error::Cannot create release candidate from branch '${{ github.ref_name }}' since it does not start with 'release/'"
+          exit 1
+
+  create-release-candidate:
+    runs-on: ubuntu-latest
+    needs: check-branch
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and publish release candidate package
+        uses: ./.github/actions/helm/helm-publish/
+        with:
+          package-suffix: "RC${{github.run_number}}"
+          PAT: ${{ secrets.GH_TOKEN }}
+          chart: ${{inputs.helm-chart}}
+
+
+

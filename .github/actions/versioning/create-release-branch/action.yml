@@ -1,0 +1,48 @@
+name: Create Release Branch
+description: Creates a new release branch based on the given project name and SemVer, and commits the changes to the new branch and the checked out branch
+
+inputs:
+  project-name:
+    description: The name of the project. If this is non-empty, the release branch will be called 'release/<project-name>-vX.Y>' Leave this empty if you only have a single project in the repository
+    required: false
+  release-version:
+    description: The release version
+    required: true
+outputs:
+  release-branch-name:
+    description: The name of the release branch based on the given SemVer
+    value: ${{ steps.get-release-branch-name.outputs.release-branch-name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get release branch name
+      id: get-release-branch-name
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.project-name }}" ]
+        then
+          project_name_prefix="${{ inputs.project-name }}-"
+        fi
+
+        version="${{ inputs.release-version }}"
+        version_suffix=$(echo $version | grep -o '[0-9]*\.[0-9]*' | head -1)
+
+        release_branch_name="release/${project_name_prefix}v${version_suffix}"
+
+        echo "Release branch name: $release_branch_name"
+        echo "release-branch-name=$release_branch_name" >> $GITHUB_OUTPUT
+
+    - name: Create release branch
+      shell: bash
+      run: |
+        git config user.name "${{ github.actor }}"
+        git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+        git checkout -b ${{ steps.get-release-branch-name.outputs.release-branch-name }}
+        git commit --allow-empty -am "Create new release branch ${{ steps.get-release-branch-name.outputs.release-branch-name }}"
+        git push --set-upstream origin ${{ steps.get-release-branch-name.outputs.release-branch-name }}
+
+        git checkout ${{ github.ref_name }}
+        git merge ${{ steps.get-release-branch-name.outputs.release-branch-name }}
+        git push
