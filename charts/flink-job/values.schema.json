@@ -6,6 +6,68 @@
     {
       "if": {
         "properties": {
+          "job": {
+            "properties": {
+              "upgradeMode": {
+                "const": "savepoint"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "flinkConfiguration": {
+                "required": ["state.savepoints.dir"]
+              }
+            }
+          },
+          {
+            "properties": {
+              "storage": {
+                "required": ["scheme", "baseDir"]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "job": {
+            "properties": {
+              "upgradeMode": {
+                "enum": ["savepoint", "last-state"]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "anyOf": [
+          {
+            "properties": {
+              "flinkConfiguration": {
+                "required": ["state.checkpoints.dir"]
+              }
+            }
+          },
+          {
+            "properties": {
+              "storage": {
+                "required": ["scheme", "baseDir"]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "jobManager": {
             "properties": {
               "replicas": {

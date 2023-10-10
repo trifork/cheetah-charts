@@ -247,15 +247,6 @@ Validate the configuration
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.savepoints.dir" $savepointsDir)) -}}
     {{- end -}}
   {{- end -}}
-  {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
-    {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
-  {{- end -}}
-  {{- if and (has .global.job.upgradeMode (list "last-state" "savepoint")) (not (hasKey $configs "state.checkpoints.dir")) -}}
-    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.checkpoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
-  {{- end -}}
-  {{- if and (eq .global.job.upgradeMode "savepoint") (not (hasKey $configs "state.savepoints.dir")) -}}
-    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.savepoints.dir' is required when using job.upgradeMode=savepoint" -}}
-  {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
 
