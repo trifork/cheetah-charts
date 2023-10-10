@@ -67,15 +67,30 @@
     },
     {
       "if": {
-        "properties": {
-          "jobManager": {
+        "anyOf": [
+          {
             "properties": {
-              "replicas": {
-                "exclusiveMinimum": 1
+              "jobManager": {
+                "properties": {
+                  "replicas": {
+                    "exclusiveMinimum": 1
+                  }
+                }
+              }
+            }
+          },
+          {
+            "properties": {
+              "job": {
+                "properties": {
+                  "upgradeMode": {
+                    "const": "last-state"
+                  }
+                }
               }
             }
           }
-        }
+        ]
       },
       "then": {
         "anyOf": [
@@ -94,57 +109,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "job": {
-            "properties": {
-              "upgradeMode": {
-                "const": "last-state"
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "anyOf": [
-          {
-            "properties": {
-              "flinkConfiguration": {
-                "required": ["high-availability.storageDir"]
-              }
-            }
-          },
-          {
-            "properties": {
-              "storage": {
-                "required": ["scheme", "baseDir"]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "job": {
-            "properties": {
-              "upgradeMode": {
-                "const": "last-state"
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "flinkConfiguration": {
-            "required": ["high-availability.storageDir"]
-          }
-        }
       }
     }
   ],
