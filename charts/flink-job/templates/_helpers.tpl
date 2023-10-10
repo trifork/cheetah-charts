@@ -12,7 +12,7 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "flink-job.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- .Values.fullnameOverride | trimSuffix "-" }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
@@ -142,13 +142,11 @@ Create the name of the service account to use
 {{- $inputs := "" -}}
 {{- $outputs := "" -}}
 {{- range .Values.job.topics -}}
-  {{- $name := required "topics.name is required" .name -}}
+  {{- $name := .name -}}
   {{- if eq .type "input" -}}
     {{- $inputs = printf "%s,%s" $inputs $name -}}
   {{- else if eq .type "output" -}}
     {{- $outputs = printf "%s,%s" $outputs $name -}}
-  {{- else -}}
-    {{- fail (printf "Topic type %s not understood. Allowed values are: input, output" .type) -}}
   {{- end -}}
 {{- end -}}
 {{- with $inputs -}}
@@ -231,9 +229,6 @@ Add necessary configuration for running in HA mode
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
       {{- $haDir := printf "%s://%s/%s/ha" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability.storageDir" $haDir)) -}}
-    {{- end -}}
-    {{- if not (hasKey $configs "high-availability.storageDir") -}}
-      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'high-availability.storageDir' is required when using jobManager.replicas > 1" -}}
     {{- end -}}
   {{- end -}}
   {{- $configs | toJson -}}
