@@ -12,7 +12,7 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "flink-job.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- .Values.fullnameOverride | trimSuffix "-" }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
@@ -142,13 +142,10 @@ Create the name of the service account to use
 {{- $inputs := "" -}}
 {{- $outputs := "" -}}
 {{- range .Values.job.topics -}}
-  {{- $name := required "topics.name is required" .name -}}
   {{- if eq .type "input" -}}
-    {{- $inputs = printf "%s,%s" $inputs $name -}}
+    {{- $inputs = printf "%s,%s" $inputs .name -}}
   {{- else if eq .type "output" -}}
-    {{- $outputs = printf "%s,%s" $outputs $name -}}
-  {{- else -}}
-    {{- fail (printf "Topic type %s not understood. Allowed values are: input, output" .type) -}}
+    {{- $outputs = printf "%s,%s" $outputs .name -}}
   {{- end -}}
 {{- end -}}
 {{- with $inputs -}}
@@ -232,9 +229,6 @@ Add necessary configuration for running in HA mode
       {{- $haDir := printf "%s://%s/%s/ha" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability.storageDir" $haDir)) -}}
     {{- end -}}
-    {{- if not (hasKey $configs "high-availability.storageDir") -}}
-      {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'high-availability.storageDir' is required when using jobManager.replicas > 1" -}}
-    {{- end -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}
@@ -251,15 +245,6 @@ Validate the configuration
       {{- $savepointsDir := printf "%s://%s/%s/savepoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.savepoints.dir" $savepointsDir)) -}}
     {{- end -}}
-  {{- end -}}
-  {{- if not (has .global.job.upgradeMode (list "stateless" "last-state" "savepoint")) -}}
-    {{- fail "job.upgradeMode must be either stateless, last-state, or savepoint" -}}
-  {{- end -}}
-  {{- if and (has .global.job.upgradeMode (list "last-state" "savepoint")) (not (hasKey $configs "state.checkpoints.dir")) -}}
-    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.checkpoints.dir' is required when using job.upgradeMode=savepoint or last-state" -}}
-  {{- end -}}
-  {{- if and (eq .global.job.upgradeMode "savepoint") (not (hasKey $configs "state.savepoints.dir")) -}}
-    {{- fail "storage.scheme and storage.baseDir or flinkConfiguration.'state.savepoints.dir' is required when using job.upgradeMode=savepoint" -}}
   {{- end -}}
   {{- $configs | toJson -}}
 {{- end -}}

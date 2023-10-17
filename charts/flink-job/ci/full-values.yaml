@@ -70,7 +70,7 @@ job:
 
   parallelism: 2
   state: running
-  upgradeMode: "last-state"
+  upgradeMode: last-state
   savepointTriggerNonce: trigger!
   initialSavepointPath: ""
   allowNonRestoredState: false
