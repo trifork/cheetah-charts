@@ -142,11 +142,10 @@ Create the name of the service account to use
 {{- $inputs := "" -}}
 {{- $outputs := "" -}}
 {{- range .Values.job.topics -}}
-  {{- $name := .name -}}
   {{- if eq .type "input" -}}
-    {{- $inputs = printf "%s,%s" $inputs $name -}}
+    {{- $inputs = printf "%s,%s" $inputs .name -}}
   {{- else if eq .type "output" -}}
-    {{- $outputs = printf "%s,%s" $outputs $name -}}
+    {{- $outputs = printf "%s,%s" $outputs .name -}}
   {{- end -}}
 {{- end -}}
 {{- with $inputs -}}
