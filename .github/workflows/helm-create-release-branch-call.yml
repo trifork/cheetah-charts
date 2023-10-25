@@ -25,5 +25,3 @@ jobs:
     with:
       bump-type: ${{ github.event.inputs.bump-type }}
       helm-chart: ${{ github.event.inputs.helm-chart }}
-    secrets:
-      PAT: ${{ secrets.GH_TOKEN }}
