@@ -17,6 +17,5 @@ jobs:
     uses: trifork/cheetah-infrastructure-utils-workflows/.github/workflows/helm-create-snapshot-call.yml@main
     with:
       helm-chart: ${{ inputs.helm-chart}}
-      release-type: SNAPSHOT
     secrets:
       PAT: ${{ secrets.GH_TOKEN }}
