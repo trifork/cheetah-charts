@@ -194,6 +194,7 @@ Add necessary ssl configuration
   {{- $configs := .configs -}}
   {{- $password := sha1sum (nospace (toString .global.image)) | trunc 10 }}
   {{- if .global.internalSsl.enabled -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.protocol" (toString .global.internalSsl.protocol))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.algorithms" (toString .global.internalSsl.algorithms))) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.enabled" "true")) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "security.ssl.internal.keystore" "/flinkkeystore/keystore.jks")) -}}
