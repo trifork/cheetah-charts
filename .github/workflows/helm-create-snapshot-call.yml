@@ -6,22 +6,17 @@ on:
       helm-chart:
         type: choice
         description: Which hlem chart to create a snapshot for
-        default: ''
+        default: ""
         options:
-        - cheetah-application
-        - flink-job
-        - image-automation
+          - cheetah-application
+          - flink-job
+          - image-automation
 
 jobs:
   create-snapshot:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build and publish snapshot package
-        uses: ./.github/actions/helm/helm-publish/
-        with:
-          package-suffix: "SNAPSHOT${{github.run_number}}"
-          PAT: ${{ secrets.GH_TOKEN }}
-          chart: ${{inputs.helm-chart}}
+    uses: trifork/cheetah-infrastructure-utils-workflows/.github/workflows/helm-create-snapshot-call.yml@main
+    with:
+      helm-chart: ${{ inputs.helm-chart}}
+      release-type: SNAPSHOT
+    secrets:
+      PAT: ${{ secrets.GH_TOKEN }}
