@@ -1,5 +1,3 @@
 {
-  "extends": [
-    "github>trifork/cheetah-infrastructure-utils:default.json5"
-  ]
+  "extends": ["github>trifork/cheetah-infrastructure-utils:default.json5"]
 }
