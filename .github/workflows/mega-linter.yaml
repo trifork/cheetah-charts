@@ -47,7 +47,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: true # ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} # Validates all source when push on main, else just the git diff with main. Override with true if you always want to lint all sources
           DISABLE: "COPYPASTE,SPELL"
           DISABLE_LINTERS: ""
-          EXCLUDED_DIRECTORIES: ".git"
+          EXCLUDED_DIRECTORIES: ".git,.devcontainer"
           GO_GOLANGCI_LINT_CLI_LINT_MODE: project
 
       # Upload MegaLinter artifacts
