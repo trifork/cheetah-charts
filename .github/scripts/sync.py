@@ -86,7 +86,7 @@ def helm_login():
 
 def helm_push(chart: str):
     """Push the Helm chart"""
-    cmd = ["helm", "push", chart, f"oci://ghcr.io/{GIT_REPO}/{IMAGE}"]
+    cmd = ["helm", "push", chart, f"oci://ghcr.io/{GIT_REPO}"]
     try:
         subprocess.run(cmd, check=True, timeout=10)
     except subprocess.CalledProcessError as err:
