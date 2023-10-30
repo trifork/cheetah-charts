@@ -3,8 +3,12 @@
 [![Chart linting](https://github.com/trifork/cheetah-charts/actions/workflows/lint.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/lint.yaml)
 [![Release to GHCR](https://github.com/trifork/cheetah-charts/actions/workflows/release-oci.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/release-oci.yaml)
 [![Release to Github releases](https://github.com/trifork/cheetah-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/release.yaml)
+[![Flink operator Sync](https://github.com/trifork/cheetah-charts/actions/workflows/flink-operator-sync.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/flink-operator-sync.yaml)
 
 Repository containing the source code for Helm charts used in the Trifork Data-platform.
+
+Additionally, this repository contains a GitHub action for syncing the [Flink operator](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/).
+The reason for this, is that Apache does not release new versions of the operator to the same Helm repository, making upgrades difficult.
 
 ## Usage
 
@@ -40,8 +44,11 @@ Additionally, pull-requests will also create a pre-release to GitHub releases, w
 After pull-requests has been merged to the main branch, charts that have changed version will be packaged and released.
 
 ## Development
+
 ### Prerequisites
+
 For convenience, this repository uses `make` for linting and generating docs. Most dev-boxes already have `make`, and can easily be installed if you don't. On Windows, using `chocolatey`, simply run:
+
 ```bash
 choco install make
 ```
