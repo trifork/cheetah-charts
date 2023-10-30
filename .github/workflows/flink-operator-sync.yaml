@@ -1,0 +1,37 @@
+name: Flink operator Sync
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight
+
+permissions:
+  packages: write
+
+concurrency:
+  group: flink-operator-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Update Flink operator
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.13.1
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run sync
+        run: python .github/scripts/sync.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
