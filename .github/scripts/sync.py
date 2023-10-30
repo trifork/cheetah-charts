@@ -96,14 +96,14 @@ def helm_push(chart: str):
 
 def main():
     """Main function"""
-    # Log into the Helm registry
+    print("Logging into the Helm registry")
     helm_login()
 
-    # Get existing versions
+    print("Getting existing operator versions")
     existing_versions = get_existing_versions()
     print(f"Found existing versions: {existing_versions}")
 
-    # Collect versions from the Apache archive
+    print(f"Collecting operator versions from {ARCHIVE_URL}")
     resp = requests.get(ARCHIVE_URL, timeout=10)
     try:
         resp.raise_for_status()
@@ -125,8 +125,14 @@ def main():
         tar_url = f"{ARCHIVE_URL}flink-kubernetes-operator-{version}/flink-kubernetes-operator-{version}-helm.tgz"
         chart = f"{IMAGE}-{version}.tgz"
 
+        print(f"Downloading chart from {tar_url}")
         download_chart(url=tar_url, file=chart)
+
+        print(f"Pushing chart {chart}")
         helm_push(chart)
+
+        print(f"Cleaning up {chart}")
+        os.remove(chart)
 
 
 if __name__ == "__main__":
