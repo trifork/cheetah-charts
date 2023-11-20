@@ -33,11 +33,14 @@ version: v1_16
 internalSsl:
   # -- Whether to use SSL between the job- and taskmanager
   enabled: true
-  # -- Set the algorithms allowed.
-  # see also: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/security/security-ssl/#cipher-suites>
-  algorithms: "TLS_CHACHA20_POLY1305_SHA256,TLS_AES_256_GCM_SHA384"
-  # -- Set the protocol allowed.
-  protocol: "TLSv1.3"
+  customCiphers:
+    # -- Whether to enable custom ciphers
+    enabled: false
+    # -- Set the algorithms allowed.
+    # see also: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/security/security-ssl/#cipher-suites>
+    algorithms: "TLS_CHACHA20_POLY1305_SHA256,TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256"
+    # -- Set the protocol allowed.
+    protocol: "TLSv1.3"
   # -- What duration to give the certificates provisioned for the internal SSL.
   # Value must be specified using a Go time.Duration string format
   certDuration: 26280h
