@@ -16,4 +16,4 @@ jobs:
     with:
       helm-chart: ${{ inputs.helm-chart}}
     secrets:
-      PAT: ${{ secrets.GH_TOKEN }}
+      PAT: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
