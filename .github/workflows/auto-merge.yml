@@ -10,6 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: automerge for pull request
+              if: ${{ github.actor == 'cheetahbot' }}
               uses: peter-evans/enable-pull-request-automerge@v3
               with:
                 pull-request-number: ${{ github.event.pull_request.number }}
