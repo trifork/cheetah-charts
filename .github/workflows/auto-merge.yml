@@ -9,12 +9,9 @@ jobs:
     create-release-branch:
         runs-on: ubuntu-latest
         steps:
-          - name: Merge pull requests
-            uses: pascalgn/automerge-action@v0.15.6
-            env:
-                GITHUB_TOKEN: "${{secrets.CHEETAHBOT_READ_PACKAGE}}"
-                MERGE_COMMIT_MESSAGE: "automerge"
-                MERGE_DELETE_BRANCH: "true"
-                MERGE_FILTER_AUTHOR: "cheetahbot"
-
-
+            - name: Create Pull Request
+              uses: peter-evans/enable-pull-request-automerge@v3
+              with:
+                pull-request-number: ${{ github.event.pull_request.number }}
+                merge-method: merge
+                token: ${{secrets.CHEETAHBOT_READ_PACKAGE}}
