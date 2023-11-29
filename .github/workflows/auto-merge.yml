@@ -9,7 +9,7 @@ jobs:
     create-release-branch:
         runs-on: ubuntu-latest
         steps:
-            - name: Create Pull Request
+            - name: automerge for pull request
               uses: peter-evans/enable-pull-request-automerge@v3
               with:
                 pull-request-number: ${{ github.event.pull_request.number }}
