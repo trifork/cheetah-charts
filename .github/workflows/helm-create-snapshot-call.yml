@@ -10,7 +10,7 @@ on:
         options:
           - cheetah-application
           - flink-job
-          - image-automation
+          - opensearchrole
 
 jobs:
   create-snapshot:
