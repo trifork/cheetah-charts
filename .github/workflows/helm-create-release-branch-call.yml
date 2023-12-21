@@ -9,7 +9,7 @@ on:
         options:
           - cheetah-application
           - flink-job
-          - image-automation
+          - opensearchrole
 
       bump-type:
         type: choice

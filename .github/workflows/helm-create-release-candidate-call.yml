@@ -9,7 +9,7 @@ on:
         options:
           - cheetah-application
           - flink-job
-          - image-automation
+          - opensearchrole
 jobs:
   verify-flow-and-publish-release-candidate:
     uses: trifork/cheetah-infrastructure-utils-workflows/.github/workflows/helm-create-release-candidate-call.yml@main
