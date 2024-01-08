@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.1](https://img.shields.io/badge/Version-0.10.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -227,6 +227,7 @@ Read more about Flink and highly available job-managers [here](https://nightlies
 | ingress.annotations | object | `{}` | Extra Ingress annotations |
 | ingress.tlsSecret | string | `""` | Add TLS certificates from an existing secret |
 | ingress.selfSigned | bool | `false` | Create a self-signed TLS secret |
+| dnsForKubernetesHost | bool | `true` | Whether to set KUBERNETES_SERVICE_HOST=kubernetes.default.svc.cluster.local instead of relying on the kubernetes provided value For use in an environment where egress to kubeAPI is managed via DNS rather than IP addresses |
 | localNetworkConfiguration.enabled | bool | `false` | Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager. For use in a deny-all environment |
 | image-automation.enabled | bool | `false` | Whether to enable the image-automation subchart. Image-automation is not possible when using image-sha as a tagging strategy. Any other configuration given here, is passed to it |
 
