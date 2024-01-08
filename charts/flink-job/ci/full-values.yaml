@@ -101,7 +101,7 @@ taskManager:
   podAnnotations:
     task-manager: "true"
 
-kubernetesServiceHost: false
+dnsForKubernetesHost: true
 
 jobManager:
   replicas: 1
