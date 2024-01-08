@@ -253,7 +253,7 @@ taskManager:
           {{- with (concat .Values.ports .Values.taskManager.ports) }}
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with (concat .Values.env .Values.taskManager.env) }}
+          {{- with (compact (concat .Values.env .Values.taskManager.env (list (include "flink-job.dnsForKubernetesHostEnv" . | fromYaml)))) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
@@ -322,7 +322,7 @@ jobManager:
           {{- with (concat .Values.ports .Values.jobManager.ports) }}
             {{- toYaml . | nindent 8 -}}
           {{- end }}
-          {{- with (concat .Values.env .Values.jobManager.env) }}
+          {{- with (compact (concat .Values.env .Values.jobManager.env (list (include "flink-job.dnsForKubernetesHostEnv" . | fromYaml)))) }}
           env:
             {{- toYaml . | nindent 8 -}}
           {{- end }}
@@ -457,6 +457,10 @@ ingress:
   tlsSecret: ""
   # -- Create a self-signed TLS secret
   selfSigned: false
+
+# -- Whether to set KUBERNETES_SERVICE_HOST=kubernetes.default.svc.cluster.local instead of relying on the kubernetes provided value
+# For use in an environment where egress to kubeAPI is managed via DNS rather than IP addresses
+dnsForKubernetesHost: true
 
 localNetworkConfiguration:
   # -- Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager.

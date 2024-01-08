@@ -280,3 +280,10 @@ Set a key=value in a dictionary, if the key is not defined
 {{- define "flink-job.nameWithimageHash" -}}
   {{ include "flink-job.fullname" . }}{{ (sha256sum (nospace (toString .Values.image))) | trunc 10 }}
 {{- end -}}
+
+
+{{- define "flink-job.dnsForKubernetesHostEnv" -}}
+{{- if $.Values.dnsForKubernetesHost -}}
+  {{ (dict "name" "KUBERNETES_SERVICE_HOST" "value" "kubernetes.default.svc.cluster.local" | toYaml) }}
+{{- end }}
+{{- end -}}
