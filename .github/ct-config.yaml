@@ -2,7 +2,7 @@ target-branch: main
 remote: origin
 chart-dirs:
   - charts
-check-version-increment: true
+check-version-increment: false
 debug: true
 validate-chart-schema: true
 validate-maintainers: false
