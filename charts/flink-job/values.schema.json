@@ -682,15 +682,8 @@
       }
     },
     "java17Compatability": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        }
-      },
-      "required": [
-        "enabled"
-      ]
+      "description": "Whether to add Java 17 compatability options. For details see https://nightlies.apache.org/flink/flink-docs-release-1.18/docs/deployment/java_compatibility/#jdk-modularization and https://github.com/apache/flink/blob/release-1.18/flink-dist/src/main/resources/flink-conf.yaml#L19-L21",
+      "type": "boolean"
     },
     "dnsForKubernetesHost": {
       "type": "boolean"
