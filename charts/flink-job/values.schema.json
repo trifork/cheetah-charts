@@ -20,14 +20,19 @@
           {
             "properties": {
               "flinkConfiguration": {
-                "required": ["state.savepoints.dir"]
+                "required": [
+                  "state.savepoints.dir"
+                ]
               }
             }
           },
           {
             "properties": {
               "storage": {
-                "required": ["scheme", "baseDir"]
+                "required": [
+                  "scheme",
+                  "baseDir"
+                ]
               }
             }
           }
@@ -40,7 +45,10 @@
           "job": {
             "properties": {
               "upgradeMode": {
-                "enum": ["savepoint", "last-state"]
+                "enum": [
+                  "savepoint",
+                  "last-state"
+                ]
               }
             }
           }
@@ -51,14 +59,19 @@
           {
             "properties": {
               "flinkConfiguration": {
-                "required": ["state.checkpoints.dir"]
+                "required": [
+                  "state.checkpoints.dir"
+                ]
               }
             }
           },
           {
             "properties": {
               "storage": {
-                "required": ["scheme", "baseDir"]
+                "required": [
+                  "scheme",
+                  "baseDir"
+                ]
               }
             }
           }
@@ -97,14 +110,19 @@
           {
             "properties": {
               "flinkConfiguration": {
-                "required": ["high-availability.storageDir"]
+                "required": [
+                  "high-availability.storageDir"
+                ]
               }
             }
           },
           {
             "properties": {
               "storage": {
-                "required": ["scheme", "baseDir"]
+                "required": [
+                  "scheme",
+                  "baseDir"
+                ]
               }
             }
           }
@@ -113,7 +131,9 @@
     }
   ],
   "properties": {
-    "nameOverride": { "type": "string" },
+    "nameOverride": {
+      "type": "string"
+    },
     "fullnameOverride": {
       "type": "string",
       "maxLength": 63
@@ -128,14 +148,23 @@
         },
         "tag": {
           "description": "Which image tag to use",
-          "type": ["string", "number"]
+          "type": [
+            "string",
+            "number"
+          ]
         },
         "pullPolicy": {
           "description": "Which image pull policy to use",
           "type": "string",
-          "enum": ["IfNotPresent", "Always", "Never"]
+          "enum": [
+            "IfNotPresent",
+            "Always",
+            "Never"
+          ]
         },
-        "sha": { "type": "string" }
+        "sha": {
+          "type": "string"
+        }
       }
     },
     "global": {
@@ -155,7 +184,9 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name"],
+            "required": [
+              "name"
+            ],
             "properties": {
               "name": {
                 "type": "string"
@@ -170,7 +201,9 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
           "name": {
             "type": "string"
@@ -188,18 +221,28 @@
           "type": "boolean"
         }
       },
-      "required": ["enabled"]
+      "required": [
+        "enabled"
+      ]
     },
     "flinkConfiguration": {
       "type": "object"
     },
     "restartNonce": {
-      "type": ["integer", "string"]
+      "type": [
+        "integer",
+        "string"
+      ]
     },
-    "logConfiguration": { "type": "object" },
+    "logConfiguration": {
+      "type": "object"
+    },
     "mode": {
       "type": "string",
-      "enum": ["native", "standalone"]
+      "enum": [
+        "native",
+        "standalone"
+      ]
     },
     "storage": {
       "type": "object",
@@ -211,7 +254,10 @@
           "type": "string"
         }
       },
-      "required": ["baseDir", "scheme"]
+      "required": [
+        "baseDir",
+        "scheme"
+      ]
     },
     "istio": {
       "type": "object",
@@ -220,7 +266,9 @@
           "type": "boolean"
         }
       },
-      "required": ["enabled"]
+      "required": [
+        "enabled"
+      ]
     },
     "ports": {
       "type": "array",
@@ -307,10 +355,16 @@
               },
               "type": {
                 "type": "string",
-                "enum": ["input", "output"]
+                "enum": [
+                  "input",
+                  "output"
+                ]
               }
             },
-            "required": ["name", "type"]
+            "required": [
+              "name",
+              "type"
+            ]
           }
         },
         "parallelism": {
@@ -318,14 +372,24 @@
         },
         "state": {
           "type": "string",
-          "enum": ["running", "suspended"]
+          "enum": [
+            "running",
+            "suspended"
+          ]
         },
         "upgradeMode": {
           "type": "string",
-          "enum": ["stateless", "last-state", "savepoint"]
+          "enum": [
+            "stateless",
+            "last-state",
+            "savepoint"
+          ]
         },
         "savepointTriggerNonce": {
-          "type": ["integer", "string"]
+          "type": [
+            "integer",
+            "string"
+          ]
         },
         "initialSavepointPath": {
           "type": "string"
@@ -430,7 +494,9 @@
               "type": "string"
             }
           },
-          "required": ["enabled"],
+          "required": [
+            "enabled"
+          ],
           "allOf": [
             {
               "if": {
@@ -441,7 +507,10 @@
                 }
               },
               "then": {
-                "required": ["jobLabel", "targetLabels"]
+                "required": [
+                  "jobLabel",
+                  "targetLabels"
+                ]
               }
             }
           ]
@@ -462,7 +531,9 @@
               "type": "object"
             }
           },
-          "required": ["enabled"],
+          "required": [
+            "enabled"
+          ],
           "allOf": [
             {
               "if": {
@@ -473,13 +544,20 @@
                 }
               },
               "then": {
-                "required": ["targetPort"]
+                "required": [
+                  "targetPort"
+                ]
               }
             }
           ]
         }
       },
-      "required": ["enabled", "port", "service", "serviceMonitor"]
+      "required": [
+        "enabled",
+        "port",
+        "service",
+        "serviceMonitor"
+      ]
     },
     "serviceAccount": {
       "type": "object",
@@ -497,7 +575,9 @@
           "type": "boolean"
         }
       },
-      "required": ["create"],
+      "required": [
+        "create"
+      ],
       "allOf": [
         {
           "if": {
@@ -508,7 +588,9 @@
             }
           },
           "then": {
-            "required": ["automountServiceAccountToken"]
+            "required": [
+              "automountServiceAccountToken"
+            ]
           }
         }
       ]
@@ -566,7 +648,9 @@
           "type": "boolean"
         }
       },
-      "required": ["enabled"],
+      "required": [
+        "enabled"
+      ],
       "allOf": [
         {
           "if": {
@@ -577,7 +661,13 @@
             }
           },
           "then": {
-            "required": ["hostname", "path", "pathType", "selfSigned", "uiPort"]
+            "required": [
+              "hostname",
+              "path",
+              "pathType",
+              "selfSigned",
+              "uiPort"
+            ]
           }
         }
       ]
@@ -590,6 +680,20 @@
           "type": "boolean"
         }
       }
+    },
+    "java17Compatability": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ]
+    },
+    "dnsForKubernetesHost": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -604,6 +708,7 @@
     "ingress",
     "internalSsl",
     "istio",
+    "java17Compatability",
     "job",
     "jobManager",
     "metrics",
