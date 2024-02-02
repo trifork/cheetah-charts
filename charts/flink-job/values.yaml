@@ -472,3 +472,7 @@ image-automation:
   # Image-automation is not possible when using image-sha as a tagging strategy.
   # Any other configuration given here, is passed to it
   enabled: false
+
+java17Compatability:
+  # -- Whether to enable Java 17 compatibility
+  enabled: false
