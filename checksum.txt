@@ -1,0 +1,1 @@
+76e77f7e815baccdd323c7c20392f817f3f651f410b431d87ec7be7e864eb1ae ./opensearchrole-0.2.0.tgz
