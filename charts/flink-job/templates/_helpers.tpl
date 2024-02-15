@@ -181,7 +181,7 @@ Add necessary metrics configuration
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.port" (toString .global.metrics.port))) -}}
     {{- if eq "v1_15" .global.version -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.class" "org.apache.flink.metrics.prometheus.PrometheusReporter")) -}}
-    {{- else if eq "v1_16" .global.version -}}
+    {{- else if has .global.version (list "v1_16" "v1_17" "v1_18") -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.reporter.prom.factory.class" "org.apache.flink.metrics.prometheus.PrometheusReporterFactory")) -}}
     {{- end -}}
   {{- end -}}
