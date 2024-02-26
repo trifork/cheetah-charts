@@ -74,8 +74,46 @@ logConfiguration:
     # Log all infos to the console
     appender.console.name = ConsoleAppender
     appender.console.type = CONSOLE
-    appender.console.layout.type = PatternLayout
-    appender.console.layout.pattern = %d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n
+
+    appender.console.layout.type = JsonTemplateLayout
+
+    # Adapted from https://github.com/apache/logging-log4j2/blob/main/log4j-layout-template-json/src/main/resources/GelfLayout.json
+    appender.console.layout.eventTemplate = {\
+      "Host": "${hostName}",\
+      "Message": {\
+        "$resolver": "message",\
+        "stringified": true\
+      },\
+      "Exception": {\
+        "$resolver": "exception",\
+        "field": "stackTrace",\
+        "stackTrace": {\
+          "stringified": true\
+        }\
+      },\
+      "Timestamp": {\
+        "$resolver": "timestamp"\
+      },\
+      "Level": {\
+        "$resolver": "pattern",\
+        "pattern": "%level{INFO=Information, DEBUG=Debug, ERROR=Error, WARN=Warning, TRACE=Trace}"\
+      },\
+      "_logger": {\
+        "$resolver": "logger",\
+        "field": "name"\
+      },\
+      "_thread": {\
+        "$resolver": "thread",\
+        "field": "name"\
+      },\
+      "_mdc": {\
+        "$resolver": "mdc",\
+        "flatten": {\
+          "prefix": "_"\
+        },\
+        "stringified": true\
+      }\
+    }
 
     # Suppress the irrelevant (wrong) warnings from the Netty channel handler
     logger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline
