@@ -7,6 +7,9 @@
         "image"
     ],
     "properties": {
+        "enabled": {
+            "type": "boolean"
+        },
         "filter": {
             "type": "object",
             "properties": {
