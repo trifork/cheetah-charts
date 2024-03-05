@@ -64,14 +64,16 @@ cd charts/flink-job
 helm lint . --values ci/example-values.yaml
 ```
 
-To lint the charts on the cluster, you can use the `lintchart.sh` script in the root of this repository.
-e.g.:
-```bash
-./lintchart.sh flink-job 20
-```
 
 To run linting on your local machine, use `make lint` at the root of this repository.
 This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.
+
+Alternatively, if you require more fine-grained local linting, you can check the script `lintchart.sh`
+It is setup to lint the charts on the cluster but can be edited to suit local development.
+Example usage (identical to `make lint` but for 1 directory only):
+```bash
+./lintchart.sh flink-job 20
+```
 
 ### Docs
 
