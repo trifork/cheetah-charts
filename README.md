@@ -55,10 +55,25 @@ choco install make
 
 If you have docker installed on your system, the make commands will run inside docker, if you do not, they will require [`ct`](https://github.com/helm/chart-testing) and [`helm-docs`](https://github.com/norwoodj/helm-docs) for linting and docs generation, respectively.
 
-### Linting and Docs
+### Linting
+
+To lint a single chart you enter the directory of the chart and run `helm lint`.
+You can provide a file with values to test against. e.g.:
+```bash
+cd charts/flink-job
+helm lint . --values ci/example-values.yaml
+```
+
+To lint the charts on the cluster, you can use the `lintchart.sh` script in the root of this repository.
+e.g.:
+```bash
+./lintchart.sh flink-job 20
+```
 
 To run linting on your local machine, use `make lint` at the root of this repository.
 This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.
+
+### Docs
 
 To update documentation from your local machine, use `make docs` at the root of this repository.
 This will make use of [`helm-docs`](https://github.com/norwoodj/helm-docs) to generate documentation based in the `values.yaml` file in each chart.
