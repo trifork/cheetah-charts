@@ -19,9 +19,9 @@ job:
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
   parallelism: 2
   topics:
-  - name: test
-    type: input
-    postfix: postfix
+    - name: test
+      type: input
+      postfix: postfix
 taskManager:
   replicas: 2
   resource:
@@ -29,6 +29,10 @@ taskManager:
     cpu: 0.5
 jobManager:
   replicas: 2
+
+flinkConfiguration:
+  state.backend: "rocksdb"
+  restart-strategy.failure-rate.failure-rate-interval: "6 min"
 
 metrics:
   enabled: true
