@@ -96,7 +96,7 @@ logConfiguration:
       },\
       "Level": {\
         "$resolver": "pattern",\
-        "pattern": "%level{INFO=Information, DEBUG=Debug, ERROR=Error, WARN=Warning, TRACE=Trace}"\
+        "pattern": "%level{INFO=Information, DEBUG=Debug, ERROR=Error, WARN=Warning, TRACE=Trace}%ex{0}"\
       },\
       "_logger": {\
         "$resolver": "logger",\
