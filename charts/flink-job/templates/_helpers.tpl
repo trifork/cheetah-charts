@@ -168,6 +168,7 @@ Calculate the flinkConfiguration
   {{- $configs = fromJson (include "flink-job.istioConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.sslConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{- $configs = fromJson (include "flink-job.java17CompatibilityConfiguration" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
+  {{- $configs = fromJson (include "flink-job.restartStrategy" (dict "configs" $configs "global" $.Values "fullname" $fullname)) -}}
   {{ toYaml $configs }}
 {{- end -}}
 
@@ -219,6 +220,21 @@ Add necessary istio configuration
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "metrics.internal.query-service.port" "34101")) -}}
       {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "taskmanager.data.port" "41475")) -}}
   {{- end -}}
+  {{- $configs | toJson -}}
+{{- end -}}
+
+{{/*
+Add necessary restart-strategy
+*/}}
+{{- define "flink-job.restartStrategy" -}}
+  {{- $configs := .configs -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "restart-strategy" "failure-rate")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "jobmanager.execution.failover-strategy" "full")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "failover-strategy" "full")) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "restart-strategy.failure-rate.max-failures-per-interval" (toString "5"))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "restart-strategy.failure-rate.failure-rate-interval" (toString "5 min"))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "restart-strategy.failure-rate.delay" (toString "10 s"))) -}}
+    {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "restart-strategy.failure-rate.max-failures-per-interval" (toString "5"))) -}}
   {{- $configs | toJson -}}
 {{- end -}}
 
