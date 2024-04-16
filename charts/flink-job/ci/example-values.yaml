@@ -9,13 +9,12 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   tlsSecret: letsencrypt
 
-# storage:
-#   scheme: s3
-#   baseDir: /flink-data
+storage:
+  scheme: s3
+  baseDir: /flink-data
 
 version: v1_16
 job:
-  upgradeMode: savepoint
   jarURI: local:///opt/flink/examples/streaming/StateMachineExample.jar
   entryClass: org.apache.flink.streaming.examples.statemachine.StateMachineExample
   parallelism: 2
@@ -29,13 +28,11 @@ taskManager:
     memory: 2Gb
     cpu: 0.5
 jobManager:
-  replicas: 1
+  replicas: 2
 
 flinkConfiguration:
   state.backend: "rocksdb"
   restart-strategy.failure-rate.failure-rate-interval: "6 min"
-  # state.savepoints.dir: "twest"
-  # state.checkpoints.dir: "tewtre"
 
 metrics:
   enabled: true
