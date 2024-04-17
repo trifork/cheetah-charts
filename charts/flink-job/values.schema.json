@@ -30,10 +30,17 @@
           {
             "properties": {
               "storage": {
-                "required": [
-                  "scheme",
-                  "baseDir"
-                ]
+                "type": "object",
+                "properties": {
+                  "scheme": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "baseDir": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               }
             }
           }
@@ -46,10 +53,7 @@
           "job": {
             "properties": {
               "upgradeMode": {
-                "enum": [
-                  "savepoint",
-                  "last-state"
-                ]
+                "const": "last-state"
               }
             }
           }
@@ -61,7 +65,8 @@
             "properties": {
               "flinkConfiguration": {
                 "required": [
-                  "state.checkpoints.dir"
+                  "state.checkpoints.dir",
+                  "high-availability.storageDir"
                 ]
               }
             }
@@ -69,10 +74,17 @@
           {
             "properties": {
               "storage": {
-                "required": [
-                  "scheme",
-                  "baseDir"
-                ]
+                "type": "object",
+                "properties": {
+                  "scheme": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "baseDir": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               }
             }
           }
@@ -80,31 +92,17 @@
       }
     },
     {
-      "if": {
-        "anyOf": [
-          {
+      "if": 
+      {
+        "properties": {
+          "jobManager": {
             "properties": {
-              "jobManager": {
-                "properties": {
-                  "replicas": {
-                    "exclusiveMinimum": 1
-                  }
-                }
-              }
-            }
-          },
-          {
-            "properties": {
-              "job": {
-                "properties": {
-                  "upgradeMode": {
-                    "const": "last-state"
-                  }
-                }
+              "replicas": {
+                "exclusiveMinimum": 1
               }
             }
           }
-        ]
+        }
       },
       "then": {
         "anyOf": [
@@ -120,10 +118,17 @@
           {
             "properties": {
               "storage": {
-                "required": [
-                  "scheme",
-                  "baseDir"
-                ]
+                "type": "object",
+                "properties": {
+                  "scheme": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "baseDir": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               }
             }
           }
