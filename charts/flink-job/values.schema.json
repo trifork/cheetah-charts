@@ -68,7 +68,6 @@
               "flinkConfiguration": {
                 "required": [
                   "state.checkpoints.dir",
-                  "high-availability.storageDir"
                 ]
               }
             }
