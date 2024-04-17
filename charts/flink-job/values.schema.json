@@ -24,7 +24,6 @@
                 "required": [
                   "state.savepoints.dir",
                   "state.checkpoints.dir",
-                  "high-availability.storageDir"
                 ]
               }
             }
