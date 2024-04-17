@@ -243,7 +243,7 @@ Add necessary configuration for running in HA mode
 */}}
 {{- define "flink-job.haConfiguration" -}}
   {{- $configs := .configs -}}
-  {{- if or (gt (int .global.jobManager.replicas) 1) (or (eq .global.job.upgradeMode "last-state") (eq .global.job.upgradeMode "savepoint")) -}}
+  {{- if or (gt (int .global.jobManager.replicas) 1) (or (eq .global.job.upgradeMode "last-state") (and .global.storage.scheme .global.storage.baseDir)) -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "high-availability" "kubernetes")) -}}
     {{- if and .global.storage.scheme .global.storage.baseDir -}}
       {{- $haDir := printf "%s://%s/%s/ha" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
