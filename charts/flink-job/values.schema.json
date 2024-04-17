@@ -22,8 +22,7 @@
             "properties": {
               "flinkConfiguration": {
                 "required": [
-                  "state.savepoints.dir",
-                  "state.checkpoints.dir"
+                  "state.savepoints.dir"
                 ]
               }
             }
