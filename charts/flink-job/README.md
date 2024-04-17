@@ -113,6 +113,9 @@ However, for guarenteed availability, it is possible to run the job-manager in m
 
 Whenever `jobManager.replicas > 1` is set, a helper function will set the needed configuration in `flinkConfiguration`.
 
+Job-manager HA mode can also help with [recovery of missing job deployments](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#recovery-of-missing-job-deployments), and is required for [upgradeMode: last-state](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades).
+Whenever storage.scheme and storage.baseDir is set, Job-manager HA is therefore enabled when using this helm chart.
+
 Read more about Flink and highly available job-managers [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/ha/overview/).
 
 ## Values
