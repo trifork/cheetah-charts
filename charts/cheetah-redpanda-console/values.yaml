@@ -58,8 +58,10 @@ podSecurityContext:
     type: RuntimeDefault
   runAsUser: 99
   fsGroup: 99
+  
 
 securityContext:
+  runAsNonRoot: true
   capabilities:
     drop:
       - ALL
@@ -93,7 +95,9 @@ oauth2Proxy:
   cookieSecretSecretKey: cookie_secret
   clientIdSecretKey: client_id
   clientSecretSecretKey: client_secret
-  issuerUrlSecretKey: issuer_url
+  issuerUrl: ""
+
+  
 
 # The following settings are empty settings from the original values.yaml file
 
