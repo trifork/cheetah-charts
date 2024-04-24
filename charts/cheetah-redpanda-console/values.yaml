@@ -145,6 +145,8 @@ autoscaling:
 
 nodeSelector: []
 
+extraContainers: []
+
 tolerations: []
 
 affinity: {}

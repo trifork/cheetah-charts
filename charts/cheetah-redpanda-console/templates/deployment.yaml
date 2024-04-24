@@ -320,6 +320,7 @@ spec:
               protocol: TCP
               name: http-proxy
           env:
+          #TODO # I'm in doubt if this is the right way to pass the secret to the container
             - name: oauth2Proxy_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
