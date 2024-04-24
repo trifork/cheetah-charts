@@ -291,9 +291,9 @@ spec:
           args:
             - --upstream=http://127.0.0.1:8080
             - --reverse-proxy=true
-            - --email-domain= {{.Values.OAUTH2_PROXY.emailDomain}}
+            - --email-domain= {{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
-            - --cookie-name= {{.Values.OAUTH2_PROXY.COOKIE_NAME}}
+            - --cookie-name= {{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
             - --http-address=0.0.0.0:4180
             - --exclude-logging-path="/ping"
@@ -320,26 +320,26 @@ spec:
               protocol: TCP
               name: http-proxy
           env:
-            - name: OAUTH2_PROXY_COOKIE_SECRET
+            - name: oauth2Proxy_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.OAUTH2_PROXY.SECRET_NAME}}
-                  key: {{ .Values.OAUTH2_PROXY.COOKIE_SECRET_SECRET_KEY}}
-            - name: OAUTH2_PROXY_CLIENT_ID
+                  name: {{ .Values.oauth2Proxy.secretName}}
+                  key: {{ .Values.oauth2Proxy.cookieSecretSecretKey}}
+            - name: oauth2Proxy_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.OAUTH2_PROXY.SECRET_NAME}}
-                  key: {{ .Values.OAUTH2_PROXY.CLIENT_ID_SECRET_KEY}}
-            - name: OAUTH2_PROXY_CLIENT_SECRET
+                  name: {{ .Values.oauth2Proxy.secretName}}
+                  key: {{ .Values.oauth2Proxy.clientIdSecretKey}}
+            - name: oauth2Proxy_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.OAUTH2_PROXY.SECRET_NAME}}
-                  key: {{ .Values.OAUTH2_PROXY.CLIENT_SECRET_SECRET_KEY}}
-            - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+                  name: {{ .Values.oauth2Proxy.secretName}}
+                  key: {{ .Values.oauth2Proxy.clientSecretSecretKey}}
+            - name: oauth2Proxy_OIDC_ISSUER_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.OAUTH2_PROXY.SECRET_NAME}}
-                  key: {{ .Values.OAUTH2_PROXY.issuer_url_SECRET_KEY}}
+                  name: {{ .Values.oauth2Proxy.secretName}}
+                  key: {{ .Values.oauth2Proxy.issuerUrlSecretKey}}
         {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

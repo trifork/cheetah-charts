@@ -14,12 +14,9 @@
 # limitations under the License.
 
 apiVersion: v2
-name: console
-description: Helm chart to deploy Redpanda Console.
+name: cheetah-redpanda-console
+description: Helm chart to deploy Cheetah Redpanda Console.
 
-maintainers:
-  - name: redpanda-data
-    url: https://github.com/orgs/redpanda-data/people
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
