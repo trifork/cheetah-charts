@@ -11,6 +11,7 @@ on:
           - cheetah-application
           - flink-job
           - opensearchrole
+          - cheetah-redpanda-console
 
 jobs:
   lint:
