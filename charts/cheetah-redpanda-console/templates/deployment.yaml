@@ -320,23 +320,22 @@ spec:
               protocol: TCP
               name: http-proxy
           env:
-          #TODO # I'm in doubt if this is the right way to pass the secret to the container
-            - name: oauth2Proxy_COOKIE_SECRET
+            - name: OAUTH2_PROXY_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.oauth2Proxy.secretName}}
                   key: {{ .Values.oauth2Proxy.cookieSecretSecretKey}}
-            - name: oauth2Proxy_CLIENT_ID
+            - name: OAUTH2_PROXY_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.oauth2Proxy.secretName}}
                   key: {{ .Values.oauth2Proxy.clientIdSecretKey}}
-            - name: oauth2Proxy_CLIENT_SECRET
+            - name: OAUTH2_PROXY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.oauth2Proxy.secretName}}
                   key: {{ .Values.oauth2Proxy.clientSecretSecretKey}}
-            - name: oauth2Proxy_OIDC_ISSUER_URL
+            - name: OAUTH2_PROXY_OIDC_ISSUER_URL
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.oauth2Proxy.secretName}}
