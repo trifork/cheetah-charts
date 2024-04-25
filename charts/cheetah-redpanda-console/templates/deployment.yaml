@@ -292,9 +292,9 @@ spec:
             - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
             - --upstream=http://127.0.0.1:8080
             - --reverse-proxy=true
-            - --email-domain= {{.Values.oauth2Proxy.emailDomain}}
+            - --email-domain={{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
-            - --cookie-name= {{.Values.oauth2Proxy.cookieName}}
+            - --cookie-name={{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
             - --http-address=0.0.0.0:4180
             - --exclude-logging-path="/ping"

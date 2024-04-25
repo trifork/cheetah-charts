@@ -30,14 +30,13 @@ podLabels:
 
 service:
   type: ClusterIP
-  port: 8080
   # nodePort: 30001
   # -- Override the value in `console.config.server.listenPort` if not `nil`
-  targetPort:
+
   annotations: {}
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
