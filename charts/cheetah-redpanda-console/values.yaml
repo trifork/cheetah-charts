@@ -56,7 +56,6 @@ podSecurityContext:
     type: RuntimeDefault
   runAsUser: 99
   fsGroup: 99
-  
 
 securityContext:
   runAsNonRoot: true
@@ -87,26 +86,25 @@ console:
   roleBindings: {}
 
 oauth2Proxy:
-  issuerUrl: ''
+  issuerUrl: ""
   cookieName: __Host{-}_oauth2Proxy
   emailDomain: "*"
   env:
-  - name: OAUTH2_PROXY_COOKIE_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: redpanda-oauth2-proxy
-        key: cookie-secret
-  - name: OAUTH2_PROXY_CLIENT_ID
-    valueFrom:
-      secretKeyRef:
-        name: redpanda-oauth2-proxy
-        key: clientId
-  - name: OAUTH2_PROXY_CLIENT_SECRET
-    valueFrom:
-      secretKeyRef:
-        name: redpanda-oauth2-proxy
-        key: client_secret
-  
+    - name: OAUTH2_PROXY_COOKIE_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: cookie-secret
+    - name: OAUTH2_PROXY_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: client-Id
+    - name: OAUTH2_PROXY_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: client_secret
 
 # The following settings are empty settings from the original values.yaml file
 
