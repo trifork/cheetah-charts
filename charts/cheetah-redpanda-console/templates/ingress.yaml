@@ -16,7 +16,6 @@ limitations under the License.
 */}}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "console.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -53,7 +52,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $svcPort }}
+                  number: 4180
           {{- end }}
     {{- end }}
 {{- end }}

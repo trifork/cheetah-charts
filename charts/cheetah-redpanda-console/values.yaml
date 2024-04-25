@@ -32,7 +32,6 @@ service:
   type: ClusterIP
   # nodePort: 30001
   # -- Override the value in `console.config.server.listenPort` if not `nil`
-
   annotations: {}
 
 ingress:
@@ -146,7 +145,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: []
+nodeSelector: {}
 
 extraContainers: []
 
