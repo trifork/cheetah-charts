@@ -269,6 +269,9 @@ Validate the configuration
 */}}
 {{- define "flink-job.storageConfiguration" -}}
   {{- $configs := .configs -}}
+  {{- if and (not (eq .global.job.upgradeMode "stateless")) (not (and .global.storage.scheme .global.storage.baseDir)) -}}
+    {{- fail "storage.scheme and storage.baseDir must be set when upgradeMode is not stateless" -}}
+  {{- end -}}
   {{- if and .global.storage.scheme .global.storage.baseDir (has .global.job.upgradeMode (list "last-state" "savepoint")) -}}
     {{- $checkpointsDir := printf "%s://%s/%s/checkpoints" (trimSuffix "://" .global.storage.scheme) .global.storage.baseDir .fullname -}}
     {{- $configs = fromJson (include "flink-job._dictSet" (list $configs "state.checkpoints.dir" $checkpointsDir)) -}}
