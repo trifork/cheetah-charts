@@ -185,7 +185,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.cookieName](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.cookieName)
 
-**Default:** `"__Host{-}_oauth2Proxy"`
+**Default:** `"__Host-_oauth2Proxy"`
 
 ### [oauth2Proxy.emailDomain](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.emailDomain)
 

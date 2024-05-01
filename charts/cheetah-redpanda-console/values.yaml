@@ -87,7 +87,7 @@ console:
 
 oauth2Proxy:
   issuerUrl: ""
-  cookieName: __Host{-}_oauth2Proxy
+  cookieName: __Host-_oauth2Proxy
   emailDomain: "*"
   env:
     - name: OAUTH2_PROXY_COOKIE_SECRET
