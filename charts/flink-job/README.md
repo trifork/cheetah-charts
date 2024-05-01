@@ -1,6 +1,6 @@
 # flink-job
 
-![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 1.5.0](https://img.shields.io/badge/Version-1.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for handling Cheetah Data Platform Flink jobs
 
@@ -112,6 +112,9 @@ This is normally not a problem with the Flink operator, as the job-manager is ow
 However, for guarenteed availability, it is possible to run the job-manager in multi-replica mode, using a leader election system.
 
 Whenever `jobManager.replicas > 1` is set, a helper function will set the needed configuration in `flinkConfiguration`.
+
+Job-manager HA mode can also help with [recovery of missing job deployments](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#recovery-of-missing-job-deployments), and is required for [upgradeMode: last-state](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades).
+Whenever storage.scheme and storage.baseDir is set, Job-manager HA is therefore enabled when using this helm chart.
 
 Read more about Flink and highly available job-managers [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/ha/overview/).
 
