@@ -225,7 +225,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.env[2].valueFrom.secretKeyRef.key](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.env[2].valueFrom.secretKeyRef.key)
 
-**Default:** `"client_secret"`
+**Default:** `"OAUTH2_PROXY_CLIENT_SECRET"`
 
 ### [imagePullSecrets](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=imagePullSecrets)
 

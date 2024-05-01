@@ -104,7 +104,7 @@ oauth2Proxy:
       valueFrom:
         secretKeyRef:
           name: redpanda-oauth2-proxy
-          key: client-secret
+          key: OAUTH2_PROXY_CLIENT_SECRET
 
 # The following settings are empty settings from the original values.yaml file
 
