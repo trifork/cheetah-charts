@@ -213,7 +213,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.env[1].valueFrom.secretKeyRef.key](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.env[1].valueFrom.secretKeyRef.key)
 
-**Default:** `"client-Id"`
+**Default:** `"client-id"`
 
 ### [oauth2Proxy.env[2].name](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.env[2].name)
 
