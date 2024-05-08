@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-This is helm chart is an extention of the console chart from the official helm chart repository.
+This is helm chart is an extension of the console chart from the official helm chart repository.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console
-The extention is used by Cheetah to meet their requirments for the chart.
+The extension is used by Cheetah to meet their requirements for the chart.
 
 
 */}}

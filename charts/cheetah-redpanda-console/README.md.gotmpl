@@ -6,10 +6,14 @@ description: Find the default values and descriptions of settings in the Redpand
 {{- end -}}
 
 {{ define "chart.description" -}}
-This page describes the official Redpanda Console Helm Chart. In particular, this page describes the contents of the chart’s [`values.yaml` file](https://github.com/redpanda-data/helm-charts/blob/main/charts/console/values.yaml).
+
+Disclaimer - This chart is an extension of the official Redpanda Console Helm Chart.
+The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console
+The extension is used by Cheetah to meet their requirements for the chart.
+
+In particular, this page describes the contents of the chart’s [`values.yaml` file](https://github.com/redpanda-data/helm-charts/blob/main/charts/console/values.yaml).
 Each of the settings is listed and described on this page, along with any default values.
 
-The Redpanda Console Helm chart is included as a subchart in the Redpanda Helm chart so that you can deploy and configure Redpanda and Redpanda Console together.
 For instructions on how to install and use the chart, refer to the [deployment documentation](https://docs.redpanda.com/docs/deploy/deployment-option/self-hosted/kubernetes/kubernetes-deploy/).
 For instructions on how to override and customize the chart’s values, see [Configure Redpanda Console](https://docs.redpanda.com/docs/manage/kubernetes/configure-helm-chart/#configure-redpanda-console).
 {{ end -}}
