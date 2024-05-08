@@ -97,7 +97,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ include "console.containerPort" . }}
+              containerPort: 8080
               protocol: TCP
           volumeMounts:
             - name: configs
@@ -290,13 +290,13 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
-            - --upstream=http://127.0.0.1:{{ .Values.container.port}}
+            - --upstream=http://127.0.0.1:8080
             - --reverse-proxy=true
             - --email-domain={{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
             - --cookie-name={{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
-            - --http-address=0.0.0.0:{{ .Values.service.port }}
+            - --http-address=0.0.0.0:{{.Values.service.port}}
             - --exclude-logging-path="/ping"
           readinessProbe:
             httpGet:
@@ -318,9 +318,9 @@ spec:
               drop:
                 - ALL
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-              name: {{.Values.service.targetPort}}
+              name: http-proxy
           env:
         {{- with .Values.oauth2Proxy.env }}
         {{- toYaml . | nindent 12 }}

@@ -68,11 +68,6 @@ securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
 
-ports:
-  - containerPort: 4180
-    protocol: TCP
-    name: http-proxy
-
 console:
   config:
     kafka:
