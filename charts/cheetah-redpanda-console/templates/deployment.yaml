@@ -290,13 +290,13 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
-            - --upstream=http://127.0.0.1:8080
+            - --upstream=http://127.0.0.1:{{ .Values.container.port}}
             - --reverse-proxy=true
             - --email-domain={{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
             - --cookie-name={{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
-            - --http-address=0.0.0.0:4180
+            - --http-address=0.0.0.0:{{ .Values.service.port }}
             - --exclude-logging-path="/ping"
           readinessProbe:
             httpGet:
@@ -318,9 +318,9 @@ spec:
               drop:
                 - ALL
           ports:
-            - containerPort: 4180
+            - containerPort: {{ .Values.service.port }}
               protocol: TCP
-              name: http-proxy
+              name: {{.Values.service.targetPort}}
           env:
         {{- with .Values.oauth2Proxy.env }}
         {{- toYaml . | nindent 12 }}

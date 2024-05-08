@@ -30,7 +30,10 @@ podLabels:
 
 service:
   type: ClusterIP
-  # nodePort: 30001
+  port: 4180
+  targetPort: http-proxy
+  appProtocol: http
+  nodePort:
   # -- Override the value in `console.config.server.listenPort` if not `nil`
   annotations: {}
 

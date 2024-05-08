@@ -26,11 +26,11 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: 4180
-      targetPort: http-proxy
-      appProtocol: http
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      appProtocol: {{ .Values.service.appProtocol }}
       protocol: TCP
-      name: proxy
+      name: http
       {{- if and (contains "NodePort" .Values.service.type) .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}

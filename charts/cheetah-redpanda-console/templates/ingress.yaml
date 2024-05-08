@@ -52,7 +52,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: 4180
+                  number: {{ .Values.service.port }}
           {{- end }}
     {{- end }}
 {{- end }}
