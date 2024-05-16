@@ -1,23 +1,54 @@
+// This file contains the specification for the Cheetah Redpanda Console Helm Chart.
+// It provides information about the default values and descriptions of settings in the chart.
+
 {{- define "chart.header" -}}
-# Redpanda Console Helm Chart Specification
+# Cheetah Redpanda Console Helm Chart Specification
 ---
-description: Find the default values and descriptions of settings in the Redpanda Console Helm chart.
+description: Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 ---
 {{- end -}}
 
 {{ define "chart.description" -}}
 
-Disclaimer - This chart is an extension of the official Redpanda Console Helm Chart.
-The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console
+Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
+The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
 The extension is used by Cheetah to meet their requirements for the chart.
 
 In particular, this page describes the contents of the chart’s [`values.yaml` file](https://github.com/redpanda-data/helm-charts/blob/main/charts/console/values.yaml).
 Each of the settings is listed and described on this page, along with any default values.
 
 For instructions on how to install and use the chart, refer to the [deployment documentation](https://docs.redpanda.com/docs/deploy/deployment-option/self-hosted/kubernetes/kubernetes-deploy/).
-For instructions on how to override and customize the chart’s values, see [Configure Redpanda Console](https://docs.redpanda.com/docs/manage/kubernetes/configure-helm-chart/#configure-redpanda-console).
+For instructions on how to override and customize the chart’s values, see [Configure Cheetah Redpanda Console](https://docs.redpanda.com/docs/manage/kubernetes/configure-helm-chart/#configure-redpanda-console).
+
+## Settings sepcific for Cheetah Redpanda Console
+This chart uses the following settings that are specific to Cheetah Redpanda Console and must be set thoguh values:
+
+- values for oauth2Proxy
+  - issuerUrl: [Your issuer URL]
+  - OAUTH2_PROXY_COOKIE_SECRET: [Your cookie secret]
+  - OAUTH2_PROXY_CLIENT_ID: [Your client ID]
+  - OAUTH2_PROXY_CLIENT_SECRET: [Your client secret]
+
+- extraEnv
+  - extraEnv variables to set up kafka
+    - KAFKA_SASL_OAUTH_CLIENTID: [Your client ID]
+    - KAFKA_SASL_OAUTH_CLIENTSECRET: [Your client secret]
+    - KAFKA_SASL_OAUTH_SCOPE: [Your scope]
+
+- kafka:
+  - brokers: [Your brokers]
+  - sasl:
+    - oauth:
+      - tokenEndpoint: [Your token endpoint]
+  - schemaRegistry:
+    - urls: [Your URLs]
+  - tls: [Your TLS settings]
+
+See an example of how the vaules can be set through a release at the bottom of this readme
 {{ end -}}
 
+// The "chart.valuesTable" template generates a table of settings and their descriptions.
+// It also includes the default values for each setting.
 {{ define "chart.valuesTable" }}
 
 ## Settings
@@ -59,3 +90,106 @@ For instructions on how to override and customize the chart’s values, see [Con
 {{ template "chart.requirementsSection" . }}
 
 {{ template "chart.valuesTable" . }}
+
+
+
+# An example of how to set these values and use the helm chart through a release is shown below:
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cheetah-redpanda-console-example
+  namespace: cheetah-redpanda-console-example
+spec:
+  chart:
+    spec:
+      chart: cheetah-redpanda-console
+      version: 1.0.0
+      sourceRef:
+        name: cheetah-charts
+        kind: HelmRepository
+        namespace: default
+  interval: 30m
+  timeout: 10m0s
+  values:
+    image:
+      repository: redpandadata/console
+      registry: docker.io
+      tag: v2.5.2
+    podLabels:
+      netic.dk/network-component: redpanda
+      netic.dk/network-egress: istio
+      netic.dk/kafka-client: "true"
+      # netic.dk/schema-registry-egress: "true"
+      netic.dk/network-rules-egress: redpanda
+      netic.dk/schema-registry-egress: redpanda
+
+    service:
+      targetPort: example # This is the port that the service will route to
+
+    console:
+      config:
+        kafka:
+          brokers:
+            - <broker-url>
+          sasl:
+            oauth:
+              tokenEndpoint: <token-endpoint> # Could be Keycloak URL
+          schemaRegistry:
+            urls:
+              - <schema-registry-url>
+          tls:
+            enabled: true
+            caFilepath: /tmp/kafka/ca.crt
+            insecureSkipTlsVerify: false
+
+    oauth2Proxy:
+      issuerUrl: https://keycloak.cheetah.example/realms/<realm> # Keycloak URL
+      env:
+      - name: OAUTH2_PROXY_COOKIE_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: redpanda-oauth2-proxy
+            key: cookie-secret
+      - name: OAUTH2_PROXY_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: redpanda-oauth2-proxy
+            key: client-id
+      - name: OAUTH2_PROXY_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: redpanda-oauth2-proxy
+            key: OAUTH2_PROXY_CLIENT_SECRET
+
+    extraEnv:
+      - name: KAFKA_SASL_OAUTH_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: redpanda-credentials
+            key: client-id
+      - name: KAFKA_SASL_OAUTH_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: redpanda-credentials
+            key: client-secret
+      - name: KAFKA_SASL_OAUTH_SCOPE
+        value: kafka
+    secretMounts:
+      - name: kafka-ca
+        secretName: kafka-ca
+        path: /tmp/kafka/
+
+    ingress:
+      enabled: true
+      hosts:
+        - host: example.redpanda.cheetah.trifork.dev
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - example.redpanda.cheetah.trifork.dev
+          secretName: redpanda-cheetah-cert
+```
