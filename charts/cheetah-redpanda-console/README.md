@@ -6,7 +6,7 @@
 description: Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 ---
 
-![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.5.2](https://img.shields.io/badge/AppVersion-v2.5.2-informational?style=flat-square)
+![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.5.2](https://img.shields.io/badge/AppVersion-v2.5.2-informational?style=flat-square)
 
 Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
@@ -210,6 +210,14 @@ Override the value in `console.config.server.listenPort` if not `nil`
 ### [console.roleBindings](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.roleBindings)
 
 **Default:** `{}`
+
+### [oauth2Proxy.image](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image)
+
+**Default:**
+
+```
+"quay.io/oauth2-proxy/oauth2-proxy:v7.5.1"
+```
 
 ### [oauth2Proxy.issuerUrl](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.issuerUrl)
 

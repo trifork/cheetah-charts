@@ -286,7 +286,7 @@ spec:
               {{- toYaml . | nindent 12 }}
           {{- end }}
         - name: oauth2-proxy
-          image: quay.io/oauth2-proxy/oauth2-proxy:v7.5.1
+          image: {{.Values.oauth2Proxy.image}}
           imagePullPolicy: IfNotPresent
           args:
             - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
