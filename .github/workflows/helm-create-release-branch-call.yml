@@ -27,4 +27,4 @@ jobs:
       bump-type: ${{ github.event.inputs.bump-type }}
       helm-chart: ${{ github.event.inputs.helm-chart }}
     secrets:
-      PAT: ${{ secrets.PAT}}
+      PAT: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE}}
