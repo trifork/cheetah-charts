@@ -22,6 +22,7 @@ For instructions on how to override and customize the chart’s values, see [Con
 This chart uses the following settings that are specific to Cheetah Redpanda Console and must be set thoguh values:
 
 - values for oauth2Proxy
+  - image: [Your chosen image of oauth2Proxy]
   - issuerUrl: [Your issuer URL]
   - OAUTH2_PROXY_COOKIE_SECRET: [Your cookie secret]
   - OAUTH2_PROXY_CLIENT_ID: [Your client ID]
@@ -521,7 +522,7 @@ spec:
   chart:
     spec:
       chart: cheetah-redpanda-console
-      version: 1.0.0
+      version: 1.2.0
       sourceRef:
         name: cheetah-charts
         kind: HelmRepository
