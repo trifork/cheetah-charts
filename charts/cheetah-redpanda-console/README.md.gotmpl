@@ -118,13 +118,6 @@ spec:
       repository: redpandadata/console
       registry: docker.io
       tag: v2.5.2
-    podLabels:
-      netic.dk/network-component: redpanda
-      netic.dk/network-egress: istio
-      netic.dk/kafka-client: "true"
-      # netic.dk/schema-registry-egress: "true"
-      netic.dk/network-rules-egress: redpanda
-      netic.dk/schema-registry-egress: redpanda
 
     service:
       targetPort: example # This is the port that the service will route to
