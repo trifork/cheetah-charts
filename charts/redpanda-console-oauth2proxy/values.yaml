@@ -86,6 +86,8 @@ console:
         enabled: true
         urls: []
   roles: {}
+  analytics:
+    enabled: false
   roleBindings: {}
 
 # Configuration for the oauth2proxy sidecar container.
