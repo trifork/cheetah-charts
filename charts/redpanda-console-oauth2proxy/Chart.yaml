@@ -14,8 +14,8 @@
 # limitations under the License.
 
 apiVersion: v2
-name: cheetah-redpanda-console
-description: Helm chart to deploy Cheetah Redpanda Console.
+name: redpanda-console-oauth2proxy
+description: Helm chart to deploy redpanda console oauth2proxy by Cheetah.
 
 type: application
 

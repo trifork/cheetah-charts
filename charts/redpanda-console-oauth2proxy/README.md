@@ -500,12 +500,12 @@ Grant time to test connectivity to upstream services such as Kafka and Schema Re
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: cheetah-redpanda-console-example
-  namespace: cheetah-redpanda-console-example
+  name: redpanda-console-oauth2proxy-example
+  namespace: redpanda-console-oauth2proxy-example
 spec:
   chart:
     spec:
-      chart: cheetah-redpanda-console
+      chart: redpanda-console-oauth2proxy
       version: 1.2.0
       sourceRef:
         name: cheetah-charts

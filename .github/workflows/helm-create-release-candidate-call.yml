@@ -10,7 +10,7 @@ on:
           - cheetah-application
           - flink-job
           - opensearchrole
-          - cheetah-redpanda-console
+          - redpanda-console-oauth2proxy
 jobs:
   verify-flow-and-publish-release-candidate:
     uses: trifork/cheetah-infrastructure-utils-workflows/.github/workflows/helm-create-release-candidate-call.yml@main
