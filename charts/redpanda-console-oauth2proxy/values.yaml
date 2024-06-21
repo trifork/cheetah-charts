@@ -27,11 +27,6 @@ image:
 
 # Labels to be applied to the Cheetah Redpanda Console pods.
 podLabels:
-  netic.dk/network-component: redpanda
-  netic.dk/network-egress: istio
-  netic.dk/kafka-client: "true"
-  netic.dk/network-rules-egress: redpanda
-  netic.dk/schema-registry-egress: redpanda
 
 # Service configuration for the Cheetah Redpanda Console.
 service:
@@ -91,6 +86,8 @@ console:
         enabled: true
         urls: []
   roles: {}
+  analytics:
+    enabled: false
   roleBindings: {}
 
 # Configuration for the oauth2proxy sidecar container.

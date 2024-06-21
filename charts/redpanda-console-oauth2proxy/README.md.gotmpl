@@ -100,12 +100,12 @@ See an example of how the vaules can be set through a release at the bottom of t
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: cheetah-redpanda-console-example
-  namespace: cheetah-redpanda-console-example
+  name: redpanda-console-oauth2proxy-example
+  namespace: redpanda-console-oauth2proxy-example
 spec:
   chart:
     spec:
-      chart: cheetah-redpanda-console
+      chart: redpanda-console-oauth2proxy
       version: 1.2.0
       sourceRef:
         name: cheetah-charts
@@ -118,13 +118,6 @@ spec:
       repository: redpandadata/console
       registry: docker.io
       tag: v2.5.2
-    podLabels:
-      netic.dk/network-component: redpanda
-      netic.dk/network-egress: istio
-      netic.dk/kafka-client: "true"
-      # netic.dk/schema-registry-egress: "true"
-      netic.dk/network-rules-egress: redpanda
-      netic.dk/schema-registry-egress: redpanda
 
     service:
       targetPort: example # This is the port that the service will route to

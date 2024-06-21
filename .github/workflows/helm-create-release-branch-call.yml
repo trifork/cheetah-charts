@@ -10,7 +10,7 @@ on:
           - cheetah-application
           - flink-job
           - opensearchrole
-          - cheetah-redpanda-console
+          - redpanda-console-oauth2proxy
 
       bump-type:
         type: choice
