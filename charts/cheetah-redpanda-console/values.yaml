@@ -84,6 +84,7 @@ console:
   roleBindings: {}
 
 oauth2Proxy:
+  image: quay.io/oauth2-proxy/oauth2-proxy:v7.5.1
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
   emailDomain: "*"
