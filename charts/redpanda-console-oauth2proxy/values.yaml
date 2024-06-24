@@ -94,7 +94,7 @@ console:
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
   image:
-    registry: quay.io/
+    registry: quay.io
     repository: oauth2-proxy/oauth2-proxy
     pullPolicy: IfNotPresent
     tag: v7.5.1
