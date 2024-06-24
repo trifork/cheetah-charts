@@ -115,5 +115,5 @@ variable or return the imageRegistry as specified via the values.
 Expand the template to get the complete oauth2proxy image path.
 */}}
 {{- define "oauth2proxy.image" -}}
-{{- printf "%s/%s:%s" .Values.oauth2Proxy.image.registry / .Values.oauth2Proxy.image.repository : .Values.oauth2Proxy.image.tag -}}
+{{- printf "%s/%s:%s" .Values.oauth2Proxy.image.registry .Values.oauth2Proxy.image.repository .Values.oauth2Proxy.image.tag }}
 {{- end -}}

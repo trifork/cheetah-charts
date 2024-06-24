@@ -202,7 +202,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry)
 
-**Default:** `"quay.io/"`
+**Default:** `"quay.io"`
 
 ### [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository)
 
