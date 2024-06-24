@@ -286,8 +286,8 @@ spec:
               {{- toYaml . | nindent 12 }}
           {{- end }}
         - name: oauth2-proxy
-          image: {{.Values.oauth2Proxy.image}}
-          imagePullPolicy: IfNotPresent
+          image: {{ include "oauth2proxy.image" . }}
+          imagePullPolicy: {{.Values.oauth2Proxy.image.pullPolicy}}
           args:
             - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
             - --upstream=http://127.0.0.1:8080

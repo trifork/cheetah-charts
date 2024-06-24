@@ -19,6 +19,7 @@
 
 replicaCount: 1
 
+# The image repository and tag for the Cheetah Redpanda Console.
 image:
   registry: docker.redpanda.com
   repository: redpandadata/console
@@ -92,7 +93,11 @@ console:
 
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
-  image: quay.io/oauth2-proxy/oauth2-proxy:v7.5.1
+  image:
+    registry: quay.io
+    repository: oauth2-proxy/oauth2-proxy
+    pullPolicy: IfNotPresent
+    tag: v7.5.1
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
   emailDomain: "*"

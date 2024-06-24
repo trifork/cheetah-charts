@@ -6,7 +6,7 @@
 description: Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 ---
 
-![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.5.2](https://img.shields.io/badge/AppVersion-v2.5.2-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.5.2](https://img.shields.io/badge/AppVersion-v2.5.2-informational?style=flat-square)
 
 Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
@@ -200,13 +200,21 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 **Default:** `{}`
 
-### [oauth2Proxy.image](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image)
+### [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry)
 
-**Default:**
+**Default:** `"quay.io"`
 
-```
-"quay.io/oauth2-proxy/oauth2-proxy:v7.5.1"
-```
+### [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository)
+
+**Default:** `"oauth2-proxy/oauth2-proxy"`
+
+### [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy)
+
+**Default:** `"IfNotPresent"`
+
+### [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag)
+
+**Default:** `"v7.5.1"`
 
 ### [oauth2Proxy.issuerUrl](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.issuerUrl)
 
