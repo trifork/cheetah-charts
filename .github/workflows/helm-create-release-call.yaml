@@ -5,7 +5,7 @@ on:
     inputs:
       helm-chart:
         type: choice
-        description: Which hlem chart to publish
+        description: Which helm chart to publish
         default: ""
         options:
           - cheetah-application
@@ -24,4 +24,3 @@ jobs:
       helm-chart: ${{ inputs.helm-chart}}
     secrets:
       PAT: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE}}
-  

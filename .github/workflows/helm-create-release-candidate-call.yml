@@ -4,7 +4,7 @@ on:
     inputs:
       helm-chart:
         type: choice
-        description: Which hlem chart to create a release candidate for
+        description: Which helm chart to create a release candidate for
         default: ""
         options:
           - cheetah-application
