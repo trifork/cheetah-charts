@@ -5,7 +5,7 @@ on:
     inputs:
       helm-chart:
         type: choice
-        description: Which hlem chart to create a snapshot for
+        description: Which helm chart to create a snapshot for
         default: ""
         options:
           - cheetah-application

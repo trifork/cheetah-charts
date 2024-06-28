@@ -4,7 +4,7 @@ on:
     inputs:
       helm-chart:
         type: choice
-        description: Which hlem chart to increment
+        description: Which helm chart to increment
         default: ""
         options:
           - cheetah-application

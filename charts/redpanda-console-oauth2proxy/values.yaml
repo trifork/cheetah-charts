@@ -94,10 +94,10 @@ console:
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
   image:
-    registry: quay.io
-    repository: oauth2-proxy/oauth2-proxy
+    registry: bitnami
+    repository: oauth2-proxy
     pullPolicy: IfNotPresent
-    tag: v7.5.1
+    tag: 7.6.0
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
   emailDomain: "*"
