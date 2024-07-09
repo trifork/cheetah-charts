@@ -12,13 +12,27 @@ rules:
       - pods
       - configmaps
     verbs:
-      - '*'
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
   - apiGroups:
       - apps
     resources:
       - deployments
     verbs:
-      - '*'
+      - create
+      - delete
+      - deletecollection
+      - get
+      - list
+      - patch
+      - update
+      - watch
 {{- with .Values.rbac.additionalRules }}
   {{- toYaml . | nindent 2 }}
 {{- end }}
