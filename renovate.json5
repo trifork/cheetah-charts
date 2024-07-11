@@ -1,3 +1,21 @@
 {
   "extends": ["github>trifork/cheetah-infrastructure-utils-workflows:default.json5"]
+
+   "packageRules": [
+    {
+       "prTitle": "fix(deps): minor update {{depName}} from {{currentVersion}} to {{newVersion}}",
+      //Match every dependency
+      "matchPackagePatterns": [
+        "*"
+      ],
+      //Specify which kind of update
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "addLabels": [
+        "minor-update",
+        "e2e-test"
+      ]
+    }
+   ]
 }
