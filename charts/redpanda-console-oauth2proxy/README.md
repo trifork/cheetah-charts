@@ -202,11 +202,11 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry)
 
-**Default:** `"bitnami"`
+**Default:** `"docker.io"`
 
 ### [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository)
 
-**Default:** `"oauth2-proxy"`
+**Default:** `"bitnami/oauth2-proxy"`
 
 ### [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy)
 
