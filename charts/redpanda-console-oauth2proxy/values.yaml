@@ -94,8 +94,8 @@ console:
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
   image:
-    registry: bitnami
-    repository: oauth2-proxy
+    registry: docker.io
+    repository: bitnami/oauth2-proxy
     pullPolicy: IfNotPresent
     tag: 7.6.0
   issuerUrl: ""
