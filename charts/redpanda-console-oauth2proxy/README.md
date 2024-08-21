@@ -210,7 +210,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy)
 
-**Default:** `"IfNotPresent"`
+**Default:** `"Always"`
 
 ### [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag)
 
