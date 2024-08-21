@@ -96,7 +96,8 @@ oauth2Proxy:
   image:
     registry: docker.io
     repository: bitnami/oauth2-proxy
-    pullPolicy: IfNotPresent
+    # Bitnami container images are released on a regular basis with the latest distribution packages available
+    pullPolicy: Always
     tag: 7.6.0
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
