@@ -294,6 +294,8 @@ spec:
             - --reverse-proxy=true
             - --email-domain={{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
+            # remove Username from audit log, to prevent PII in logs: https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/#auth-log-format
+            - --auth-logging-format="{{.Client}} - {{.RequestID}} - [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
             - --cookie-name={{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
             - --http-address=0.0.0.0:{{.Values.service.port}}
