@@ -294,6 +294,7 @@ spec:
             - --reverse-proxy=true
             - --email-domain={{.Values.oauth2Proxy.emailDomain}}
             - --cookie-secure=true
+            - --auth-logging-format="{{.Client}} - {{.RequestID}} - [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
             - --cookie-name={{.Values.oauth2Proxy.cookieName}}
             - --provider=oidc
             - --http-address=0.0.0.0:{{.Values.service.port}}
