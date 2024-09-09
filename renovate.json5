@@ -19,7 +19,7 @@
            "docker"
          ],
          matchUpdateTypes: [
-            "patch",
+            "patch"
          ],
          additionalBranchPrefix: '{{depName}}-',
       },
