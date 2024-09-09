@@ -13,5 +13,15 @@
             '*',
          ],
       },
+      {
+         prTitle: 'fix(deps): minor update {{depName}} from {{currentVersion}} to {{newVersion}}',
+         "matchDatasources": [
+           "docker"
+         ],
+         matchUpdateTypes: [
+            "patch"
+         ],
+         additionalBranchPrefix: '{{depName}}-',
+      },
    ],
 }
