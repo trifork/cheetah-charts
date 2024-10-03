@@ -202,11 +202,11 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry)
 
-**Default:** `"docker.io"`
+**Default:** `"quay.io"`
 
 ### [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository)
 
-**Default:** `"bitnami/oauth2-proxy"`
+**Default:** `"oauth2-proxy/oauth2-proxy"`
 
 ### [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy)
 
@@ -214,7 +214,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag)
 
-**Default:** `"7.6.0"`
+**Default:** `"v7.7.0"`
 
 ### [oauth2Proxy.issuerUrl](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.issuerUrl)
 
