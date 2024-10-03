@@ -94,11 +94,10 @@ console:
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
   image:
-    registry: docker.io
-    repository: bitnami/oauth2-proxy
-    # Bitnami container images are released on a regular basis with the latest distribution packages available
+    registry: quay.io
+    repository: oauth2-proxy/oauth2-proxy
     pullPolicy: Always
-    tag: 7.6.0
+    tag: v7.7.0
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
   emailDomain: "*"
