@@ -188,13 +188,13 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 **Default:** `[]`
 
+### [console.config.analytics.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.analytics.enabled)
+
+**Default:** `false`
+
 ### [console.roles](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.roles)
 
 **Default:** `{}`
-
-### [console.analytics.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.analytics.enabled)
-
-**Default:** `false`
 
 ### [console.roleBindings](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.roleBindings)
 
