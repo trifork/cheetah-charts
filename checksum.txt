@@ -1,0 +1,1 @@
+a545eced27afb64c77c25b513e13d8bd62924bac132bbfbb8a62d3635f871d3d ./redpanda-console-oauth2proxy-0.7.0.tgz
