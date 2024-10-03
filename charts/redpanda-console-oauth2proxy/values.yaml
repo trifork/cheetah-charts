@@ -86,9 +86,9 @@ console:
       schemaRegistry:
         enabled: true
         urls: []
+    analytics:
+      enabled: false
   roles: {}
-  analytics:
-    enabled: false
   roleBindings: {}
 
 # Configuration for the oauth2proxy sidecar container.
