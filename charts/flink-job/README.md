@@ -30,6 +30,7 @@ flinkConfiguration:
 ```
 
 This makes the CPU limit 5 times the CPU requests for both managers, and the memory limit 2 times the memory requests.
+Increasing CPU limit factor drastically reduces startup times and can be helpful when developing your job.
 
 ### Keeping state
 
