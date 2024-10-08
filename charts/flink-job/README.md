@@ -6,9 +6,9 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 
 ## Requirements
 
-| Repository                 | Name             | Version |
-| -------------------------- | ---------------- | ------- |
-| file://../image-automation | image-automation | \*      |
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../image-automation | image-automation | * |
 
 ## Usage
 
@@ -29,7 +29,8 @@ flinkConfiguration:
   kubernetes.taskmanager.memory.limit-factor: "2.0"
 ```
 
-This makes the CPU limit 5 times the CPU requests for both managers, and the memory limit 2 times the memory requests. Increasing CPU limit factor drastically reduces startup times and can be helpful when developing your job.
+This makes the CPU limit 5 times the CPU requests for both managers, and the memory limit 2 times the memory requests.
+Increasing CPU limit factor drastically reduces startup times and can be helpful when developing your job.
 
 ### Keeping state
 
