@@ -12,6 +12,10 @@ A Helm chart for handling Cheetah Data Platform Flink jobs
 
 ## Usage
 
+### Default config
+
+These jobs use the default Flink configuration. A list of those defaults can be found [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/)
+
 ### Changing CPU limits
 
 By default, the Flink operator sets CPU/Memory resource limits equal to the requests.
