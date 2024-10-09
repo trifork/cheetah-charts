@@ -214,7 +214,7 @@ Override the value in `console.config.server.listenPort` if not `nil`
 
 ### [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag)
 
-**Default:** `"v7.7.0"`
+**Default:** `"v7.7.1"`
 
 ### [oauth2Proxy.issuerUrl](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.issuerUrl)
 
