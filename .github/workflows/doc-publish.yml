@@ -6,6 +6,9 @@ on:
       chart:
         required: true
         type: string
+    secrets:
+      token:
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -75,7 +78,7 @@ jobs:
           sign-commits: true
           title: "Update toc file with new version v${{ steps.chart.outputs.version }} for ${{ inputs.chart }}"
           labels: "automated"
-          token: test${{ secrets.CHEETAH_TEST }}
+          token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE  || secrets.token}}
           add-paths: toc.yml
           signoff: true
           branch-token: ${{ secrets.GITHUB_TOKEN }}
@@ -86,7 +89,7 @@ jobs:
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
+          token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE  || secrets.token}}
           merge-method: squash
 
       - name: create public/
@@ -117,6 +120,6 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.CHEETAHBOT_READ_PACKAGE }}
+          token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE  || secrets.token}}
           repository: trifork/cheetah-artifact-documentation
           event-type: docs-update

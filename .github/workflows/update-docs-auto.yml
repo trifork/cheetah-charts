@@ -35,6 +35,8 @@ jobs:
     uses: ./.github/workflows/doc-publish.yml
     with:
       chart: cheetah-application
+    secrets:
+      token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
 
   flink-job:
     runs-on: ubuntu-latest
@@ -64,6 +66,8 @@ jobs:
     uses: ./.github/workflows/doc-publish.yml
     with:
       chart: flink-job
+    secrets:
+      token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
 
   image-automation:
     runs-on: ubuntu-latest
@@ -93,6 +97,8 @@ jobs:
     uses: ./.github/workflows/doc-publish.yml
     with:
       chart: image-automation
+    secrets:
+      token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
 
   opensearchrole:
     runs-on: ubuntu-latest
@@ -122,6 +128,8 @@ jobs:
     uses: ./.github/workflows/doc-publish.yml
     with:
       chart: opensearchrole
+    secrets:
+      token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
 
   redpanda-console-oauth2proxy:
     runs-on: ubuntu-latest
@@ -151,4 +159,6 @@ jobs:
     uses: ./.github/workflows/doc-publish.yml
     with:
       chart: redpanda-console-oauth2proxy
+    secrets:
+      token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE }}
 
