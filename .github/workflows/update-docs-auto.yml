@@ -23,14 +23,14 @@ jobs:
             charts/cheetah-application/*.yaml
 
       - name: Set output variable
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-cheetah-application:
-    if: ${{ needs.cheetah-application.outputs.changed == 'true' }}
+    #if: ${{ needs.cheetah-application.outputs.changed == 'true' }}
     needs: cheetah-application
     uses: ./.github/workflows/doc-publish.yml
     with:
@@ -52,14 +52,14 @@ jobs:
             charts/flink-job/*.yaml
 
       - name: Set output variable
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-flink-job:
-    if: ${{ needs.flink-job.outputs.changed == 'true' }}
+    #if: ${{ needs.flink-job.outputs.changed == 'true' }}
     needs: flink-job
     uses: ./.github/workflows/doc-publish.yml
     with:
@@ -81,14 +81,14 @@ jobs:
             charts/image-automation/*.yaml
 
       - name: Set output variable
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-image-automation:
-    if: ${{ needs.image-automation.outputs.changed == 'true' }}
+    #if: ${{ needs.image-automation.outputs.changed == 'true' }}
     needs: image-automation
     uses: ./.github/workflows/doc-publish.yml
     with:
@@ -110,14 +110,14 @@ jobs:
             charts/opensearchrole/*.yaml
 
       - name: Set output variable
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-opensearchrole:
-    if: ${{ needs.opensearchrole.outputs.changed == 'true' }}
+    #if: ${{ needs.opensearchrole.outputs.changed == 'true' }}
     needs: opensearchrole
     uses: ./.github/workflows/doc-publish.yml
     with:
@@ -139,14 +139,14 @@ jobs:
             charts/redpanda-console-oauth2proxy/*.yaml
 
       - name: Set output variable
-        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-redpanda-console-oauth2proxy:
-    if: ${{ needs.redpanda-console-oauth2proxy.outputs.changed == 'true' }}
+    #if: ${{ needs.redpanda-console-oauth2proxy.outputs.changed == 'true' }}
     needs: redpanda-console-oauth2proxy
     uses: ./.github/workflows/doc-publish.yml
     with:
