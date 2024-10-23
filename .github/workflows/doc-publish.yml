@@ -75,7 +75,7 @@ jobs:
           sign-commits: true
           title: "Update toc file with new version v${{ steps.chart.outputs.version }} for ${{ inputs.chart }}"
           labels: "automated"
-          token: ${{ secrets.CHEETAH_TEST}}
+          token: test${{ secrets.CHEETAH_TEST }}
           add-paths: toc.yml
           signoff: true
           branch-token: ${{ secrets.GITHUB_TOKEN }}
