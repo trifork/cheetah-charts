@@ -95,25 +95,27 @@ jobs:
       - name: create public/
         run: |
           mkdir -p public/
-          cp charts/${{ inputs.chart}}/README.md public/${{inputs.chart}}
+          cp charts/${{ inputs.chart}}/README.md public/docs/${{inputs.chart}}
+          cp . public/
+          cp README.md public/docs
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public/${{inputs.chart}}
+          publish_dir: ./public/docs/${{inputs.chart}}
           exclude_assets: ""
-          destination_dir: charts/${{ inputs.chart }}/v${{ steps.chart.outputs.version }}
-          commit_message: "Deploy ${{ steps.chart.outputs.version }}"
+          destination_dir: docs/${{ inputs.chart }}/v${{ steps.chart.outputs.version }}
+          commit_message: "Deploy docs for version v${{ steps.chart.outputs.version }}"
           keep_files: true
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public/README.md
-          exclude_assets: ""
+          publish_dir: ./public/
+          exclude_assets: "./public/docs"
           commit_message: "Deploy README.md for repository"
           keep_files: true
 
