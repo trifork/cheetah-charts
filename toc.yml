@@ -1,1 +1,10 @@
-[]
+- cheetah-application:
+  items:
+- flink-job:
+  items:
+- image-automation:
+  items:
+- opensearchrole:
+  items:
+- redpanda-console-oauth2proxy:
+  items:
