@@ -66,7 +66,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./toc-folder/
-          commit_message: "Update toc file with new version v$${{ steps.chart.outputs.version }}"
+          commit_message: "Update toc file with new version v${{ steps.chart.outputs.version }}"
           keep_files: true
 
       - name: Create Pull Request
@@ -79,7 +79,7 @@ jobs:
           title: "Update toc file with new version v${{ steps.chart.outputs.version }} for ${{ inputs.chart }}"
           labels: "automated"
           token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE  || secrets.token}}
-          add-paths: toc.yml
+          add-paths: .github/toc.yml
           signoff: true
           branch-token: ${{ secrets.GITHUB_TOKEN }}
           branch: Update-toc-file-${{ inputs.chart }}-${{ steps.chart.outputs.version }}
