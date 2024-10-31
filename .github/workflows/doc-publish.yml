@@ -66,7 +66,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./toc-folder/
-          commit_message: "Update toc file with new version v${{ steps.chart.outputs.version }}"
+          destination_dir: docs/
+          commit_message: "Update toc file with new version v${{ env.version }}"
           keep_files: true
 
       - name: Create Pull Request
@@ -74,15 +75,15 @@ jobs:
         if: ${{steps.update-toc.outputs.updated == 'true'}}
         uses: peter-evans/create-pull-request@v7.0.5
         with:
-          commit-message: "Update toc file with new version v${{ steps.chart.outputs.version }} for ${{ inputs.chart}}"
+          commit-message: "Update toc file with new version v${{ env.version }} for ${{ inputs.chart}}"
           sign-commits: true
-          title: "Update toc file with new version v${{ steps.chart.outputs.version }} for ${{ inputs.chart }}"
+          title: "Update toc file with new version v${{ env.version }} for ${{ inputs.chart }}"
           labels: "automated"
           token: ${{ secrets.CHEETAHBOT_WRITE_PACKAGE  || secrets.token}}
           add-paths: .github/toc.yml
           signoff: true
           branch-token: ${{ secrets.GITHUB_TOKEN }}
-          branch: Update-toc-file-${{ inputs.chart }}-${{ steps.chart.outputs.version }}
+          branch: Update-toc-file-${{ inputs.chart }}-${{ env.version }}
 
       - name: Enable Pull Request Automerge
         if: ${{steps.update-toc.outputs.updated == 'true'}}
@@ -96,17 +97,32 @@ jobs:
         run: |
           mkdir -p public/docs/${{ inputs.chart }}/
           cp charts/${{ inputs.chart }}/README.md public/docs/${{ inputs.chart }}
+          cp charts/${{ inputs.chart }}/values.yaml public/docs/${{ inputs.chart }}
           cp README.md public/docs
+
+      - name: Add YamlMine to values.yaml
+        run: |
+          # Add YamlMine to vlalues.yaml
+          yaml_mime="### YamlMime:ManagedReference"
+          file="public/docs/${{ inputs.chart }}/values.yaml"
+
+          # Check if the file already contains "YamlMime" in the first line
+          if ! grep -q "YamlMime" "$file"; then
+            sed -i "1s/^/$yaml_mime\n/" "$file"
+            echo "Added YamlMime to $file"
+          else
+            echo "YamlMime already present in $file, skipping."
+          fi
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public/docs/
+          publish_dir: ./public/docs/${{ inputs.chart }}
           exclude_assets: ""
-          destination_dir: docs/${{ inputs.chart }}/v${{ steps.chart.outputs.version }}
-          commit_message: "Deploy docs for version v${{ steps.chart.outputs.version }}"
+          destination_dir: docs/${{ inputs.chart }}/v${{ env.version }}
+          commit_message: "Deploy docs for version v${{ env.version }}"
           keep_files: true
 
       - name: Deploy to GitHub Pages
@@ -114,7 +130,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
-          exclude_assets: './public/docs, ./toc-folder'
+          exclude_assets: './public, ./toc-folder'
           commit_message: "Deploy repo to gh pages"
           keep_files: true
 
