@@ -23,14 +23,14 @@ jobs:
             charts/cheetah-application/*.yaml
 
       - name: Set output variable
-        #if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
         run: |
           echo "changed=true" >> $GITHUB_ENV
     outputs:
       changed: ${{ steps.changed-files.outputs.any_changed }}
 
   update-doc-cheetah-application:
-    #if: ${{ needs.cheetah-application.outputs.changed == 'true' }}
+    if: ${{ needs.cheetah-application.outputs.changed == 'true' }}
     needs: cheetah-application
     uses: ./.github/workflows/doc-publish.yml
     with:
