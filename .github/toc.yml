@@ -6,6 +6,8 @@
   items:
 - name: image-automation
   items:
+    - name: v0.2
+      href: image-automation/v0.2/README.md
 - name: opensearchrole
   items:
 - name: redpanda-console-oauth2proxy
