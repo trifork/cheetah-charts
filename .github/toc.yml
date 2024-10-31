@@ -12,3 +12,5 @@
   items:
 - name: redpanda-console-oauth2proxy
   items:
+    - name: v1.1
+      href: redpanda-console-oauth2proxy/v1.1/README.md
