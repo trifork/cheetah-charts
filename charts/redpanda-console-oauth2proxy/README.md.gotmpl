@@ -3,10 +3,12 @@
 
 {{- define "chart.header" -}}
 # Cheetah Redpanda Console Helm Chart Specification
----
-description: Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
----
+
+### Description: 
+Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart. 
+{{ "\n" -}}
 {{- end -}}
+
 
 {{ define "chart.description" -}}
 
@@ -50,6 +52,7 @@ See an example of how the values can be set through a release at the bottom of t
 
 // The "chart.valuesTable" template generates a table of settings and their descriptions.
 // It also includes the default values for each setting.
+
 {{ define "chart.valuesTable" }}
 
 ## Settings
@@ -64,22 +67,13 @@ See an example of how the values can be set through a release at the bottom of t
 
 {{- template "chart.header" . -}}
 
-{{ template "chart.deprecationWarning" . }}
-
-{{ template "chart.badgesSection" . }}
+{{ "\n" }}{{ template "chart.badgesSection" . }}{{ "\n" }}
 
 {{ template "chart.description" . }}
 
-{{ template "helm-docs.versionFooter" . }}
-
-{{ template "chart.homepageLine" . }}
-
-{{ template "chart.sourcesSection" . }}
-
-{{ template "chart.requirementsSection" . }}
-
 {{ template "chart.valuesTable" . }}
 
+{{ template "helm-docs.versionFooter" . }}
 
 
 # An example of how to set these values and use the helm chart through a release is shown below:
