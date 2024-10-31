@@ -1,0 +1,517 @@
+# Default values for flink-job.
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  # -- Which image repository to use
+  repository: flink
+  # -- Which image tag to use
+  tag: main
+  # -- Which image sha to use. If used, the `image.tag` is ignored
+  sha: ""
+  # -- Which image pull policy to use
+  pullPolicy: Always
+
+global:
+  image:
+    # -- Set the global image repository
+    # If image automation is enabled, this is useful to reduce configuration duplication
+    repository: ""
+  # -- Set the global image pull secrets
+  # If image automation is enabled, this is useful to reduce configuration duplication
+  imagePullSecrets: []
+
+# -- Array of image pull secrets.
+# Each entry follows the `name: <secret-name>` format
+imagePullSecrets: []
+
+# -- Which Flink version to use
+version: v1_16
+
+# If InternalSSL is enabled, a certificate will be provisioned and used between the jobmanager and the taskmanager
+internalSsl:
+  # -- Whether to use SSL between the job- and taskmanager
+  enabled: true
+  customCiphers:
+    # -- Whether to enable custom ciphers
+    enabled: false
+    # -- Set the algorithms allowed.
+    # see also: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/security/security-ssl/#cipher-suites>
+    algorithms: "TLS_CHACHA20_POLY1305_SHA256,TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256"
+    # -- Set the protocol allowed.
+    protocol: "TLSv1.3"
+  # -- What duration to give the certificates provisioned for the internal SSL.
+  # Value must be specified using a Go time.Duration string format
+  certDuration: 26280h
+  # -- When to renew the certificates provisioned for the internal SSL.
+  # Value must be specified using a Go time.Duration string format
+  certRenewBefore: 2160h
+
+# -- Flink configuration
+# For more configuration options, see here: <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/config/>
+# For specific metrics configuration, see here:  <https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/metric_reporters/>
+# @default -- (see [values.yaml](values.yaml))
+flinkConfiguration:
+  state.backend: "hashmap"
+  execution.checkpointing.interval: "10 minutes"
+  execution.checkpointing.min-pause: "10 minutes"
+  execution.checkpointing.timeout: "5 minutes"
+  rest.flamegraph.enabled: "true"
+  taskmanager.numberOfTaskSlots: "1"
+
+# -- change this to force a restart of the job,
+# see <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/> for more info
+restartNonce: 0
+
+# -- Custom logging configuration
+# @default -- (see [values.yaml](values.yaml))
+logConfiguration:
+  log4j-console.properties: |+
+    rootLogger.level = INFO
+    rootLogger.appenderRef.console.ref = ConsoleAppender
+
+    # Log all infos to the console
+    appender.console.name = ConsoleAppender
+    appender.console.type = CONSOLE
+
+    appender.console.layout.type = JsonTemplateLayout
+
+    # Adapted from https://github.com/apache/logging-log4j2/blob/main/log4j-layout-template-json/src/main/resources/GelfLayout.json
+    appender.console.layout.eventTemplate = {\
+      "Host": "${hostName}",\
+      "Message": {\
+        "$resolver": "message",\
+        "stringified": true\
+      },\
+      "Exception": {\
+        "$resolver": "exception",\
+        "field": "stackTrace",\
+        "stackTrace": {\
+          "stringified": true\
+        }\
+      },\
+      "Timestamp": {\
+        "$resolver": "timestamp"\
+      },\
+      "Level": {\
+        "$resolver": "pattern",\
+        "pattern": "%level{INFO=Information, DEBUG=Debug, ERROR=Error, WARN=Warning, TRACE=Trace}%ex{0}"\
+      },\
+      "_logger": {\
+        "$resolver": "logger",\
+        "field": "name"\
+      },\
+      "_thread": {\
+        "$resolver": "thread",\
+        "field": "name"\
+      },\
+      "_mdc": {\
+        "$resolver": "mdc",\
+        "flatten": {\
+          "prefix": "_"\
+        },\
+        "stringified": true\
+      }\
+    }
+
+    # Suppress the irrelevant (wrong) warnings from the Netty channel handler
+    logger.netty.name = org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline
+    logger.netty.level = OFF
+
+    # Ensure we get failure logs on startup
+    logger.bootstrap.name = org.apache.flink.client.deployment.application.ApplicationDispatcherBootstrap
+    logger.bootstrap.level = INFO
+
+# -- Cluster deployment mode. Support values are `native` and `standalone`
+# `native` is the recommended mode, as this makes Flink aware of it running on Kubernetes
+mode: native
+
+storage:
+  # -- File storage scheme.
+  # Allowed values follows supported URI schemes, as explained [here](https://nightlies.apache.org/flink/flink-docs-master/docs/deployment/filesystems/overview/)
+  # To use S3 storage set `scheme=s3`, to use local file-system use `scheme=file`, etc.
+  scheme: ""
+  # -- Set the base directory for the HA, savepoints, and checkpoints storage.
+  # Generates a directory tree, based on the file system scheme, base directory, release name, and storage type (savepoint, checkpoint, or HA metadata)
+  baseDir: ""
+
+istio:
+  # -- Whether istio is enabled on the cluster or not
+  enabled: true
+
+# -- Extra ports to open on both job- and task-manager
+ports: []
+# -- Extra environment variables to set on both job- and task-manager
+env: []
+# -- List of ConfigMap/Secrets where environment variables can be loaded from
+envFrom: []
+# -- List of additional volumes for the both job- and task-manager
+volumes: []
+# -- List of additional volume mounts for the both job- and task-manager
+volumeMounts: []
+# -- Additional labels attached to the pods
+podLabels: {}
+# -- Additional annotations attached to the pods
+podAnnotations: {}
+# -- InitContainers for the pods
+initContainers: []
+
+job:
+  # -- The path of the job jar
+  jarURI: ""
+  # -- The name of the job class
+  entryClass: ""
+  # -- Arguments for the job
+  args: []
+  # -- Define which topics this job will consume.
+  # Used for data-discovery in Cheetah Backstage.
+  # If the `arg` variable is set, adds `--<arg> <name>` to the arguments passed to the job
+  # If `arg` is not set, adds `--<type>-kafka-topic <name>` or `--<type>-kafka-topic-<postfix> <name>`
+  # See [values.yaml](values.yaml) for the format
+  topics: []
+  # must be defined as follows
+  # - arg: <optional name of argument>
+  #   postfix: <optional postfix for topic argument>
+  #   type: <type of topic (input/output)>
+  #   name: <name of topic>
+  # ie:
+  # - type: input
+  #   name: defaultIngest
+  # - arg: input-kafka-topic
+  #   type: input
+  #   name: sourceTopic
+  # - arg: output-kafka-topic
+  #   type: output
+  #   name: sinkTopic
+  # - postfix: special
+  #   type: output
+  #   name: specialSinkTopic
+
+  # -- How many jobs to run in parallel,
+  # see more here: <https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/execution/parallel/>
+  parallelism: 1
+
+  # -- Desired state of the job.
+  # Must be either: `running` or `suspended`
+  state: running
+
+  # -- Application upgrade mode. Must be either: stateless, last-state, savepoint
+  # `stateless` upgrades is done from an empty state
+  # `last-state` does a quick upgrade. Does not require the job to be in a healthy state, as it makes use of the HA metadata
+  # `savepoint` makes use of savepoints when upgrading and requires the job to be running.
+  # This provides maximal safety
+  # Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades>
+  upgradeMode: "savepoint"
+
+  # -- change this to trigger a savepoint manually,
+  # see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/>
+  savepointTriggerNonce: 0
+
+  # -- change this to force a manual recovery checkpoint,
+  # see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/>
+  initialSavepointPath: ""
+
+  # -- If this is true, it will ignore the past checkpoints and start anew. Usefull if the job schema has changed.
+  allowNonRestoredState: false
+
+# -- Shared job-/task-manager pod template.
+# Overridden by `(job/task)Manager.podTemplate`.
+# The main flink-container must be called "flink-main-container"
+# @default -- (see [values.yaml](values.yaml))
+podTemplate: |-
+  metadata:
+    labels:
+      {{- include "flink-job.podLabels" . | nindent 4 }}
+    annotations:
+      {{- include "flink-job.podAnnotations" . | nindent 4 }}
+  spec:
+    securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 4 }}
+    containers:
+      - name: flink-main-container
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 8 }}
+    {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
+    imagePullSecrets:
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.initContainers }}
+    initContainers:
+      {{- toYaml .  | nindent 4 }}
+    {{- end }}
+
+taskManager:
+  # -- Number of replicas
+  replicas: 1
+  resource:
+    # -- Memory to reserve for each Task Manager. The amount needed depends on the amount of data to be processed by each Task Manager, and how much state it should store in memory.
+    memory: 1Gb
+    # -- CPU requests.
+    # CPU limits is CPU requests multiplied by flinkConfiguration."kubernetes.jobmanager.cpu.limit-factor"
+    cpu: 0.1
+  # -- Extra ports to open
+  ports: []
+  # -- Extra environment variables
+  env: []
+  # -- List of ConfigMap/Secrets where environment variables can be loaded from
+  envFrom: []
+  # -- List of additional volumes
+  volumes: []
+  # -- List of additional volume mounts
+  volumeMounts: []
+  # -- Additional labels attached to the pods
+  podLabels: {}
+  # -- Additional annotations attached to the pods
+  podAnnotations:
+    # As the task-manager is a raw pod with no controller, the cluster-autoscaler is not able to evict it
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+  # -- InitContainers for the pods
+  initContainers: []
+
+  # -- Pod template. Overrides the main `podTemplate`.
+  # The main flink-container must be called "flink-main-container"
+  # @default -- (see [values.yaml](values.yaml))
+  podTemplate: |-
+    metadata:
+      {{- with .Values.taskManager.podLabels }}
+      labels:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+      annotations:
+        {{- include "flink-job.taskManagerPodAnnotations" . | nindent 4 }}
+    spec:
+      containers:
+        - name: flink-main-container
+          ports:
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.taskManager.ports) }}
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (compact (concat .Values.env .Values.taskManager.env (list (include "flink-job.dnsForKubernetesHostEnv" . | fromYaml)))) }}
+          env:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (concat .Values.envFrom .Values.taskManager.envFrom) }}
+          envFrom:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with (compact (concat .Values.volumeMounts .Values.taskManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml)))) }}
+          volumeMounts:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+      {{- with (compact (concat .Values.volumes .Values.taskManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml)))) }}
+      volumes:
+        {{- toYaml . | nindent 4 -}}
+      {{- end }}
+      {{- with .Values.taskManager.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+
+jobManager:
+  # -- Number of replicas
+  replicas: 1
+  resource:
+    # -- Memory to reserve for the Job Manager. The default value should be ok for most jobs.
+    memory: 1Gb
+    # -- CPU requests.
+    # CPU limits is CPU requests multiplied by flinkConfiguration."kubernetes.jobmanager.cpu.limit-factor"
+    cpu: 0.1
+  # -- Extra ports to open
+  ports: []
+  # -- Extra environment variables
+  env: []
+  # -- List of ConfigMap/Secrets where environment variables can be loaded from
+  envFrom: []
+  # -- List of additional volumes
+  volumes: []
+  # -- List of additional volume mounts
+  volumeMounts: []
+  # -- Additional labels attached to the pods
+  podLabels: {}
+  # -- Additional annotations attached to the pods
+  podAnnotations: {}
+  # -- InitContainers for the pods
+  initContainers: []
+
+  # -- Pod template. Overrides the main `podTemplate`.
+  # The main flink-container must be called "flink-main-container"
+  # @default -- (see [values.yaml](values.yaml))
+  podTemplate: |-
+    metadata:
+      {{- with .Values.jobManager.podLabels }}
+      labels:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+      annotations:
+        {{- include "flink-job.jobManagerPodAnnotations" . | nindent 4 }}
+    spec:
+      containers:
+        - name: flink-main-container
+          ports:
+          {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.metrics.port }}
+          {{- end }}
+          {{- with (concat .Values.ports .Values.jobManager.ports) }}
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (compact (concat .Values.env .Values.jobManager.env (list (include "flink-job.dnsForKubernetesHostEnv" . | fromYaml)))) }}
+          env:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+          {{- with (concat .Values.envFrom .Values.jobManager.envFrom) }}
+          envFrom:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with (compact (concat .Values.volumeMounts .Values.jobManager.volumeMounts (list (include "flink-job.sslVolumeMounts" . | fromYaml)))) }}
+          volumeMounts:
+            {{- toYaml . | nindent 8 -}}
+          {{- end }}
+      {{- with (compact (concat .Values.volumes .Values.jobManager.volumes  (list (include "flink-job.sslVolumes" . | fromYaml)))) }}
+      volumes:
+        {{- toYaml . | nindent 4 -}}
+      {{- end }}
+
+      {{- with .Values.jobManager.initContainers }}
+      initContainers:
+        {{- toYaml . | nindent 4 }}
+      {{- end }}
+
+metrics:
+  # -- Enable metrics scraping. Define flinkProperties to define the monitoring properties
+  enabled: true
+
+  # -- Port on both job- and task-manager where metrics are exposed
+  port: 9249
+
+  serviceMonitor:
+    # -- Whether to create a ServiceMonitor for easy configuration of scrape targets
+    enabled: true
+    # -- The http scheme to use for the default metrics endpoint (http/https)
+    scheme: ""
+    # -- TLS config applied when using the 'https' scheme.
+    # @default -- (see [values.yaml](values.yaml))
+    tlsConfig:
+      insecureSkipVerify: true
+      caFile: /etc/prom-certs/root-cert.pem
+      certFile: /etc/prom-certs/cert-chain.pem
+      keyFile: /etc/prom-certs/key.pem
+    # -- Override the metrics scrape path
+    path: ""
+    # -- Override the default scrape interval
+    interval: ""
+    # -- Override the default scrape timeout
+    scrapeTimeout: ""
+    # -- MetricRelabelConfigs to apply to samples before ingestion
+    metricRelabelings: []
+    # -- RelabelConfigs to apply to samples before scraping
+    relabelings: []
+    # -- Extra service selector labels
+    selectors: {}
+    # -- Extra ServiceMonitor labels
+    labels: {}
+    # -- Extra ServiceMonitor metrics endpoints
+    extraMetricsEndpoints: []
+    # -- Copy pod labels onto the metrics targets
+    targetLabels:
+      - component
+      - cluster
+    # -- JobLabel selects the label from the associated Kubernetes Service resource which will be used as the job label for all metrics
+    jobLabel: app
+
+  service:
+    # -- Whether to create a Kubernetes Service
+    enabled: true
+    # -- Override the target port for metrics
+    targetPort: metrics
+    # -- Extra pod selector labels
+    selectors: {}
+    # -- Extra Service labels
+    labels: {}
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # -- Auto-mount service account tokens
+  automountServiceAccountToken: true
+
+rbac:
+  # -- Specifies whether a Role and RoleBinding should be created
+  create: true
+  # -- Additional rules to add to the role
+  additionalRules: []
+
+# Default pod security context
+podSecurityContext:
+  # -- Whether to run the pod without root capabilities
+  runAsNonRoot: true
+  # -- Add a supplimentary group ID to all processes in the container. Set the owner of all volumes to this group
+  fsGroup: 9999
+  seccompProfile:
+    # -- Which secure computing mode (seccomp) profile to use
+    type: RuntimeDefault
+
+# Default container security context
+securityContext:
+  # -- Allow privilege escalation
+  allowPrivilegeEscalation: false
+  # -- User to run the container as
+  runAsGroup: 9999
+  # -- Group to add the user to
+  runAsUser: 9999
+  capabilities:
+    # -- Linux capabilities to drop
+    drop:
+      - ALL
+    # -- Linux capabilities to add
+    add: []
+
+ingress:
+  # -- Whether to expose the Flink UI, on the job-manager
+  enabled: false
+  # -- Flink UI port. Ingress will hit the service on this port
+  uiPort: 8081
+  # -- Ingress controller name
+  ingressClassName: ""
+  # -- Which host name to use for the Flink UI
+  hostname: flink.cheetah.trifork.dev
+  # -- Which subpath to expose the Flink UI under
+  path: /
+  # -- Which path type to use
+  pathType: ImplementationSpecific
+  # -- Extra Ingress annotations
+  annotations: {}
+  # -- Add TLS certificates from an existing secret
+  tlsSecret: ""
+  # -- Create a self-signed TLS secret
+  selfSigned: false
+
+# -- Whether to set KUBERNETES_SERVICE_HOST=kubernetes.default.svc.cluster.local instead of relying on the kubernetes provided value
+# For use in an environment where egress to kubeAPI is managed via DNS rather than IP addresses
+dnsForKubernetesHost: true
+
+localNetworkConfiguration:
+  # -- Whether to generate Netic LocalNetworkConfig allowing traffic between job and taskmanager.
+  # For use in a deny-all environment
+  enabled: false
+
+image-automation:
+  # -- Whether to enable the image-automation subchart.
+  # Image-automation is not possible when using image-sha as a tagging strategy.
+  # Any other configuration given here, is passed to it
+  enabled: false
+
+# -- Whether to add Java 17 compatability options.
+# For details see https://nightlies.apache.org/flink/flink-docs-release-1.18/docs/deployment/java_compatibility/#jdk-modularization
+# and https://github.com/apache/flink/blob/release-1.18/flink-dist/src/main/resources/flink-conf.yaml#L19-L21
+java17Compatability: true

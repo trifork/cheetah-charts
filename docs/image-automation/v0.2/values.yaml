@@ -1,0 +1,55 @@
+# Default values for image-automation.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: ""
+
+# -- Name of a secret containing image pull secrets (only the first in the array is used)
+imagePullSecrets: []
+
+# -- Which interval to check for new image versions
+interval: 1m0s
+
+filter:
+  # -- regex to use.
+  # "[a-z0-9]+-(?P<ts>[0-9]+)" is useful for a tagging strategy using 'gitSha-timestamp'
+  # where timestamp is extracted and sorted
+  pattern: "[a-zA-Z0-9]+-(?P<ts>[0-9]+)"
+  # -- which field is extracted and sorted
+  tag: $ts
+
+policy:
+  # -- name of the imagePolicy resource
+  name: ""
+  # -- mode must be numerical, alphabetical, or semver
+  mode: numerical
+  # -- if mode=numerical or alphabetical, determines whether tags are sorted using ascend(asc) or descend(desc).
+  order: asc
+  # -- if mode=semver, find the lastest image tag in this range
+  range: ">=0.0.0"
+
+imageUpdateAutomation:
+  # -- whether to add an ImageUpdateAutomation resource. Only one should be deployed per namespace
+  create: false
+  # -- author information for commits
+  author:
+    email: fluxcdbot@users.noreply.github.com
+    name: fluxcdbot
+  # -- commit message template using Go template
+  messageTemplate: "{{ range .Updated.Images }}{{ println . }}{{ end }}"
+  # -- gitRepository to look in
+  sourceRef:
+    name: cheetah-example-gitops
+    # -- (optional) namespace of the GitRepository
+    namespace: flux-system
+  # -- which path in the sourceRef to look for markers
+  path: ""
+  interval: 5m0s
+  # -- which branch to check out. Defaults to the branch of the GitRepository
+  checkoutBranch: ""
+  # -- which branch to push to
+  pushBranch: main
