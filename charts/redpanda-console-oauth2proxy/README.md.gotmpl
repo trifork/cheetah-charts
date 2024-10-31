@@ -20,8 +20,8 @@ Each of the settings is listed and described on this page, along with any defaul
 For instructions on how to install and use the chart, refer to the [deployment documentation](https://docs.redpanda.com/docs/deploy/deployment-option/self-hosted/kubernetes/kubernetes-deploy/).
 For instructions on how to override and customize the chart’s values, see [Configure Cheetah Redpanda Console](https://docs.redpanda.com/docs/manage/kubernetes/configure-helm-chart/#configure-redpanda-console).
 
-## Settings sepcific for Cheetah Redpanda Console
-This chart uses the following settings that are specific to Cheetah Redpanda Console and must be set thoguh values:
+## Settings specific for Cheetah Redpanda Console
+This chart uses the following settings that are specific to Cheetah Redpanda Console and must be set through values:
 
 - values for oauth2Proxy
   - image: [Your chosen image of oauth2Proxy]
@@ -45,7 +45,7 @@ This chart uses the following settings that are specific to Cheetah Redpanda Con
     - urls: [Your URLs]
   - tls: [Your TLS settings]
 
-See an example of how the vaules can be set through a release at the bottom of this readme
+See an example of how the values can be set through a release at the bottom of this readme
 {{ end -}}
 
 // The "chart.valuesTable" template generates a table of settings and their descriptions.
@@ -54,24 +54,12 @@ See an example of how the vaules can be set through a release at the bottom of t
 
 ## Settings
 
+| Key | Description | Default |
+|-----|-------------|---------|
 {{- range .Values }}
-
-### [{{ .Key }}](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path={{ .Key }})
-
-{{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }}
-
-{{ $defaultValue := (default .Default .AutoDefault) }}
-{{ if gt (len $defaultValue) 30 -}}
-**Default:**
-
-```
-{{ $defaultValue | replace "`" "" }}
-```
-{{- else -}}
-**Default:** {{ $defaultValue }}
+| [{{ .Key }}](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path={{ .Key }}) | {{ if .Description }}{{ .Description }}{{ else }}{{ .AutoDescription }}{{ end }} | {{ $defaultValue := (default .Default .AutoDefault) }}{{ if gt (len $defaultValue) 30 }}<pre>{{ $defaultValue | replace "`" "" }}</pre>{{ else }}{{ $defaultValue }}{{ end }} |
 {{- end }}
 
-{{- end }}
 {{ end }}
 
 {{- template "chart.header" . -}}
@@ -95,7 +83,6 @@ See an example of how the vaules can be set through a release at the bottom of t
 
 
 # An example of how to set these values and use the helm chart through a release is shown below:
-
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
