@@ -1,3 +1,4 @@
+### YamlMime:ManagedReference
 # Default values for flink-job.
 
 nameOverride: ""
