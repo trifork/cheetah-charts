@@ -1,10 +1,12 @@
-- cheetah-application:
+- name: cheetah-application
   items:
-- flink-job:
+    - name: v0.8
+      href: cheetah-application/v0.8/README.md
+- name: flink-job
   items:
-- image-automation:
+- name: image-automation
   items:
-- opensearchrole:
+- name: opensearchrole
   items:
-- redpanda-console-oauth2proxy:
+- name: redpanda-console-oauth2proxy
   items:
