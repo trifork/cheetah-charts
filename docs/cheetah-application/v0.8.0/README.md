@@ -1,104 +1,125 @@
-# cheetah-application
+# Cheetah Charts
 
-![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+[![Chart linting](https://github.com/trifork/cheetah-charts/actions/workflows/lint.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/lint.yaml)
+[![Release to GHCR](https://github.com/trifork/cheetah-charts/actions/workflows/release-oci.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/release-oci.yaml)
+[![Release to Github releases](https://github.com/trifork/cheetah-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/release.yaml)
+[![Flink operator Sync](https://github.com/trifork/cheetah-charts/actions/workflows/flink-operator-sync.yaml/badge.svg)](https://github.com/trifork/cheetah-charts/actions/workflows/flink-operator-sync.yaml)
 
-A Helm chart for Cheetah Data Platform applications
+Repository containing the source code for Helm charts used in the Trifork Data-platform.
+
+Additionally, this repository contains a GitHub action for syncing the [Flink operator](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/).
+The reason for this, is that Apache does not release new versions of the operator to the same Helm repository, making upgrades difficult.
 
 ## Usage
 
-As pods are not allowed to run as root by default with this chart, installing/upgrading this chart might give an error similar to:
+These helm charts are released to both GHCR (GitHub Container Registry) as OCI packages, and to GitHub releases as tar-ball assets.
 
-```log
-Error: container has runAsNonRoot and image will run as root ...
+### Install OCI Packages
+
+For using the OCI packages, you need to log into the GHCR registry:
+
+```bash
+helm registry login ghcr.io/trifork/cheetah-charts
 ```
 
-This happens when a user has not been defined in your `Dockerfile`.
+Log in using a GitHub account username and a PAT (Personal Access Token) that at least has the "read packages" permission.
+Once you are logged in, you can start using the charts:
 
-To get around the issue, you can set the user to a non-zero (integer) in your `Dockerfile`.
-Alternatively, if you know that the container should be able to run with user `1000`, set `securityContext.runAsUser=1000`.
-You might also need to set `securityContext.runAsGroup` and `securityContext.fsGroup`.
-If the container must run as root, you can set `podSecurityContext.runAsNonRoot=false` (if [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) are not enforced)
+```bash
+helm template releaseName oci://ghcr.io/trifork/cheetah-charts/<chartName> [--version x.x.x]
+```
 
-## Requirements
+You can find the available versions under [packages](https://github.com/orgs/trifork/packages?repo_name=cheetah-charts).
+Helm does not currently support searching for versions in OCI repositories.
 
-| Repository | Name | Version |
-|------------|------|---------|
-| file://../image-automation | image-automation | * |
+### Install from GitHub releases
 
-## Values
+Currently, this is not possible as it requires a publicly hosted `index.yaml`.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| replicaCount | int | `1` | Number of pod replicas. For high availability, 3 or more is recommended |
-| image.repository | string | `""` | Which image repository to use. Such as ghcr.io/trifork/cheetah-webapi |
-| image.tag | string | `""` | Which image tag to use |
-| image.pullPolicy | string | `"IfNotPresent"` | Which image pull policy to use |
-| global.image.repository | string | `""` | Set the global image repository If image automation is enabled, this is useful to reduce configuration duplication |
-| global.imagePullSecrets | list | `[]` | Set the global image pull secrets If image automation is enabled, this is useful to reduce configuration duplication |
-| imagePullSecrets | list | `[]` | Array of image pull secrets. Each entry follows the `name: <secret-name>` format |
-| nameOverride | string | `""` |  |
-| fullnameOverride | string | `""` |  |
-| command | list | `[]` | Override the default command |
-| args | list | `[]` | Override the arguments to the command |
-| serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
-| serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
-| serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| podLabels | object | `{}` | Extra pod labels |
-| podAnnotations | object | `{}` | Extra pod annotations |
-| containerPort | int | `8000` | Which container port to use for primary traffic |
-| volumes | list | `[]` | Extra volumes added to the pod See https://kubernetes.io/docs/concepts/storage/volumes/ |
-| volumeMounts | list | `[]` | Extra volume mounts added to the primary container See https://kubernetes.io/docs/concepts/storage/volumes/ |
-| service.type | string | `"ClusterIP"` | Which type of service to expose the pods with |
-| service.port | int | `8000` | Which service port to use |
-| ingress.enabled | bool | `false` | Whether to expose the service or not |
-| ingress.className | string | `"nginx"` | Which ingressClass to use |
-| ingress.annotations | object | (see [values.yaml](values.yaml)) | Extra ingress annotations. |
-| ingress.hosts | list | `[]` | Host configuration. See [values.yaml](values.yaml) for formatting |
-| ingress.tls.enabled | bool | `true` | Enable TLS in the ingress resource |
-| ingress.tls.secretName | string | `""` | Secret containing TLS certificates |
-| env | list | `[]` | Extra environment variables for the container. See [values.yaml](values.yaml) for formatting |
-| envFrom | list | `[]` | Extra sources of environment variables, such as ConfigMap/Secret. See [values.yaml](values.yaml) for formatting |
-| startupProbe.enabled | bool | `false` | Whether to enable a startup probe for the application. This generally not recommended, but can be used for slow-starting applications. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
-| startupProbe.httpGet.path | string | `"/"` | Which path to look for liveness |
-| startupProbe.httpGet.port | string | `"http"` | Which port to use |
-| startupProbe.initialDelaySeconds | int | `30` |  |
-| startupProbe.failureThreshold | int | `3` |  |
-| startupProbe.periodSeconds | int | `10` |  |
-| startupProbe.timeoutSeconds | int | `1` |  |
-| livenessProbe.enabled | bool | `true` | Whether to enable a liveness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
-| livenessProbe.httpGet.path | string | `"/"` | Which path to look for liveness |
-| livenessProbe.httpGet.port | string | `"http"` | Which port to use |
-| livenessProbe.initialDelaySeconds | int | `30` |  |
-| livenessProbe.failureThreshold | int | `3` |  |
-| livenessProbe.periodSeconds | int | `10` |  |
-| livenessProbe.timeoutSeconds | int | `1` |  |
-| readinessProbe.enabled | bool | `true` | Whether to enable a readiness probe for the application. See https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/ |
-| readinessProbe.httpGet.path | string | `"/"` | Which path to look for readiness |
-| readinessProbe.httpGet.port | string | `"http"` | Which port to use |
-| readinessProbe.initialDelaySeconds | int | `30` |  |
-| readinessProbe.failureThreshold | int | `3` |  |
-| readinessProbe.periodSeconds | int | `10` |  |
-| readinessProbe.timeoutSeconds | int | `1` |  |
-| resources | object | `{}` | Resource limits. See [values.yaml](values.yaml) for formatting |
-| podSecurityContext | object | (see [values.yaml](values.yaml)) | Security context for the entire pod. |
-| securityContext | object | (see [values.yaml](values.yaml)) | Security context for the primary container. |
-| monitoring.enabled | bool | `false` | Whether to enable Prometheus scraping by creating a ServiceMonitor resource |
-| monitoring.port | int | `1854` | Which port to look for Prometheus metrics |
-| monitoring.path | string | `"/metrics"` | Which path to look for Prometheus metrics |
-| pdb.create | bool | `false` | Whether to create a PodDisruptionBudget for ensuring that an application is always available |
-| pdb.labels | object | `{}` | Extra labels for the PodDisruptionBudget |
-| pdb.annotations | object | `{}` | Extra annotations for the PodDisruptionBudget |
-| pdb.minAvailable | int | `1` | How many pod replicas must always be available after eviction. Ignored if 0 |
-| pdb.maxUnavailable | int | `0` | How many pod replicas are allowed to to be unavailable during eviction. Ignored if 0 |
-| autoscaling.enabled | bool | `false` | Whether to enable horizontal pod autoscaling |
-| autoscaling.minReplicas | int | `1` | Minimum number of replicas |
-| autoscaling.maxReplicas | int | `5` | Maximum number of replicas |
-| autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU requests percentage utilization. Ignored if 0 |
-| autoscaling.targetMemoryUtilizationPercentage | int | `0` | Target RAM requests percentage utilization. Ignored if 0 |
-| nodeSelector | object | `{}` |  |
-| tolerations | list | `[]` |  |
-| affinity | object | `{}` |  |
-| image-automation.enabled | bool | `false` | Whether to enable the image-automation subchart. Any other configuration given here, is passed to it |
+## Contributing
 
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.0](https://github.com/norwoodj/helm-docs/releases/v1.11.0)
+Linting will run on pull-requests to the main branch, which also tests that documentation is up to date.
+Additionally, pull-requests will also create a pre-release to GitHub releases, which can be tested on a live cluster.
+
+After pull-requests has been merged to the main branch, charts that have changed version will be packaged and released.
+
+## Development
+
+### Prerequisites
+
+For convenience, this repository uses `make` for linting and generating docs. Most dev-boxes already have `make`, and can easily be installed if you don't. On Windows, using `chocolatey`, simply run:
+
+```bash
+choco install make
+```
+
+If you have docker installed on your system, the make commands will run inside docker, if you do not, they will require [`ct`](https://github.com/helm/chart-testing) and [`helm-docs`](https://github.com/norwoodj/helm-docs) for linting and docs generation, respectively.
+
+### Linting
+
+To lint a single chart you enter the directory of the chart and run `helm lint`.
+You can provide a file with values to test against. e.g.:
+```bash
+cd charts/flink-job
+helm lint . --values ci/example-values.yaml
+```
+
+
+To run linting on your local machine, use `make lint` at the root of this repository.
+This will make use of [`ct`](https://github.com/helm/chart-testing) - a CLI for linting and testing on a running Kubernetes cluster.
+
+Alternatively, if you require more fine-grained local linting, you can check the script `lintchart.sh`
+It is setup to lint the charts on the cluster but can be edited to suit local development.
+Example usage (identical to `make lint` but for 1 directory only):
+```bash
+./lintchart.sh flink-job 20
+```
+
+### Docs
+
+To update documentation from your local machine, use `make docs` at the root of this repository.
+This will make use of [`helm-docs`](https://github.com/norwoodj/helm-docs) to generate documentation based in the `values.yaml` file in each chart.
+
+### Local testing
+
+It is possible to open an interactive shell with some pre-installed useful tools, by running:
+
+```bash
+docker run -it --network host --workdir=/data --rm --volume $(pwd):/data quay.io/helmpack/chart-testing:v3.5.0
+```
+
+Unfortunately, this Docker container does not include `make`, so it is not possible to run the `make` commands mentioned above.
+
+However, the other tools which are included in this shell, is very useful.
+This includes tools such as `helm`, `ct`, and `kubectl`.
+
+For example, to render out the full manifest from the `flink-job` Helm chart, run something like:
+
+```bash
+helm template my-test charts/flink-job -f charts/flink-job/ci/example-values.yaml --dependency-update > output.yaml
+```
+
+This will render the templates in `charts/flink-job` using values in `charts/flink-job/ci/example-values.yaml` and outputting them to `output.yaml` as a release called `my-test`.
+The `--dependency-update` flag makes sure that local chart dependencies are up to date.
+It is not required after having run it once.
+
+If you get errors using `helm template`, often times it is because the generated manifests does not create valid YAML (most likely from indentation errors).
+To make helm generate the template anyway, add `--debug` to the `helm template` command.
+
+Sometimes Helm is not able to generate the template even with `--debug`.
+When this happens, it is most likely due to a nil pointer exception.
+One of these errors might look like the following:
+
+> `Error: template: flink-job/templates/servicemonitor.yaml:1:14: executing "flink-job/templates/servicemonitor.yaml" at <.Values.metrics.servicemonitor.enabled>: nil pointer evaluating interface {}.enabled`
+
+In this case it is caused by a spelling mistake in line `1` in `servicemonitor.yaml`.
+I am trying to access `.Values.metrics.servicemonitor.enabled` instead of `.Values.metrics.servicemonitor.enabled`.
+As I haven't defined the `servicemonitor` object in the values file, Helm (or rather, Go) errors out when I am trying to access the `enabled` key in the object.
+
+Changing the reference from `.Values.metrics.servicemonitor.enabled` to `.Values.metrics.servicemonitor.enabled`, the `helm template` is successful again.
+
+To run the linting command (the same included in `Makefile`), run:
+
+```bash
+ct lint --config .github/ct-config.yaml
+```
