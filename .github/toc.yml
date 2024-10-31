@@ -8,5 +8,7 @@
   items:
 - name: opensearchrole
   items:
+    - name: v0.3
+      href: opensearchrole/v0.3/README.md
 - name: redpanda-console-oauth2proxy
   items:
