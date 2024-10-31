@@ -94,9 +94,8 @@ jobs:
 
       - name: create public/
         run: |
-          mkdir -p public/
-          cp charts/${{ inputs.chart}}/README.md public/docs/${{inputs.chart}}
-          cp . public/
+          mkdir -p public/docs/${{ inputs.chart }}/
+          cp charts/${{ inputs.chart }}/README.md public/docs/${{ inputs.chart }}
           cp README.md public/docs
 
       - name: Deploy to GitHub Pages
@@ -114,7 +113,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public/
+          publish_dir: .
           exclude_assets: "./public/docs"
           commit_message: "Deploy README.md for repository"
           keep_files: true
