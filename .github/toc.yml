@@ -1,5 +1,7 @@
 - name: cheetah-application
   items:
+    - name: v0.8
+      href: cheetah-application/v0.8/README.md
 - name: flink-job
   items:
 - name: image-automation
