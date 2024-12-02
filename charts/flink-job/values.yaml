@@ -204,12 +204,12 @@ job:
   # Read more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/#stateful-and-stateless-application-upgrades>
   upgradeMode: "savepoint"
 
-  # -- DEPRECATED: Use `FlinkStateSnapshot` crd instead.
+  # -- DEPRECATED -
   # Change this to trigger a savepoint manually,
   # see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/>
   savepointTriggerNonce: 0
 
-  # -- DEPRECATED: Use `FlinkStateSnapshot` crd instead.
+  # -- DEPRECATED -
   # Change this to force a manual recovery checkpoint,
   # see more here: <https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-main/docs/custom-resource/job-management/>
   initialSavepointPath: ""
