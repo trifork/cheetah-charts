@@ -89,7 +89,7 @@ See an example of how the values can be set through a release at the bottom of t
 | [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry) |  | `"quay.io"` |
 | [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository) |  | `"oauth2-proxy/oauth2-proxy"` |
 | [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy) |  | `"Always"` |
-| [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag) |  | `"v7.7.1"` |
+| [oauth2Proxy.image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.tag) |  | `"v7.8.2"` |
 | [oauth2Proxy.issuerUrl](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.issuerUrl) |  | `""` |
 | [oauth2Proxy.cookieName](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.cookieName) |  | `"__Host-_oauth2Proxy"` |
 | [oauth2Proxy.emailDomain](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.emailDomain) |  | `"*"` |
