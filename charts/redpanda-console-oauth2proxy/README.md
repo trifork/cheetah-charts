@@ -7,7 +7,7 @@
 ### Description:
 Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 
-![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.6.1](https://img.shields.io/badge/AppVersion-v2.6.1-informational?style=flat-square)
+![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.8.5](https://img.shields.io/badge/AppVersion-v2.8.5-informational?style=flat-square)
 
 Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
@@ -54,7 +54,7 @@ See an example of how the values can be set through a release at the bottom of t
 | [image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.registry) |  | `"docker.redpanda.com"` |
 | [image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.repository) |  | `"redpandadata/console"` |
 | [image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.pullPolicy) |  | `"IfNotPresent"` |
-| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v2.8.1"` |
+| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v2.8.5"` |
 | [podLabels](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=podLabels) |  | `nil` |
 | [service.type](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.type) |  | `"ClusterIP"` |
 | [service.port](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.port) |  | `4180` |
