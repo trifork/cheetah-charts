@@ -18,5 +18,7 @@
       href: opensearchrole/v0.3/README.md
 - name: redpanda-console-oauth2proxy
   items:
+    - name: v1.2
+      href: redpanda-console-oauth2proxy/v1.2/README.md
     - name: v1.1
       href: redpanda-console-oauth2proxy/v1.1/README.md
