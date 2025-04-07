@@ -187,6 +187,8 @@ monitoring:
   port: 1854
   # -- Which path to look for Prometheus metrics
   path: "/metrics"
+  # -- Should the metric's labels be preserved in case of conflict with the target's labels
+  honorLabels: false
 
 pdb:
   # -- Whether to create a PodDisruptionBudget for ensuring that an application is always available
