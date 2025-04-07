@@ -2,6 +2,8 @@
   href: README.md
 - name: cheetah-application
   items:
+    - name: v0.9
+      href: cheetah-application/v0.9/README.md
     - name: v0.8
       href: cheetah-application/v0.8/README.md
 - name: flink-job
