@@ -1,4 +1,4 @@
-FROM  --platform=arm64 ghcr.io/containerbase/base:13.8.48@sha256:5a9fc85a657efb45bf77656a2ab641fa3b507dda62d2e648e5ade2d555ba4d23
+FROM  --platform=arm64 ghcr.io/containerbase/base:13.8.55@sha256:c8d51a4b326193f1e210e30880fd482ff24b3a6f15c9b16c1f1a964d8aa70968
 
 COPY tools/*.sh /usr/local/containerbase/tools/
 
