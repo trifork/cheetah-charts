@@ -1,4 +1,4 @@
-{{/*
+{{- /*
 Licensed to the Apache Software Foundation (ASF) under one or more
 contributor license agreements.  See the NOTICE file distributed with
 this work for additional information regarding copyright ownership.
@@ -14,23 +14,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "console.fullname" . }}
-  labels: {{- include "console.labels" . | nindent 4 }}
-  {{- with .Values.service.annotations }}
-  annotations: {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
-      name: http
-      {{- if and (contains "NodePort" .Values.service.type) .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
-      {{- end }}
-  selector: {{- include "console.selectorLabels" . | nindent 4 }}
+{{- include "_shims.render-manifest" (list "chart.Render" .) -}}

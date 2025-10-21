@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Default values for console.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# This file contains the configuration values for the Cheetah Redpanda Console Helm chart.
+# The chart deploys the Cheetah Redpanda Console, a modified version of the original Redpanda Console Helm chart.
+# The modifications include adding an auth2proxy to the original Helm chart as a sidecar.
 
 replicaCount: 1
 
-# -- Redpanda Console Docker image settings.
+# The image repository and tag for the Cheetah Redpanda Console.
 image:
   registry: docker.redpanda.com
   # -- Docker repository from which to pull the Redpanda Docker image.
@@ -31,7 +31,103 @@ image:
   # [All stable versions](https://hub.docker.com/r/redpandadata/console/tags)
   # and [all unstable versions](https://hub.docker.com/r/redpandadata/console-unstable/tags).
   # @default -- `Chart.appVersion`
-  tag: ""
+  tag: "3.2.2"
+
+# Labels to be applied to the Cheetah Redpanda Console pods.
+podLabels:
+
+# Service configuration for the Cheetah Redpanda Console.
+service:
+  type: ClusterIP
+  port: 4180
+  targetPort: 4180
+  appProtocol: http
+  # nodePort:
+  # -- Override the value in `console.config.server.listenPort` if not `nil`
+  annotations: {}
+
+# Ingress configuration for the Cheetah Redpanda Console.
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# Pod security context for the Cheetah Redpanda Console pods.
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+  runAsUser: 99
+  fsGroup: 99
+
+# Security context for the Cheetah Redpanda Console container.
+securityContext:
+  runAsNonRoot: true
+  capabilities:
+    drop:
+      - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+
+# Configuration for the Cheetah Redpanda Console.
+# -- Settings for the `Config.yaml` (required).
+# For a reference of configuration settings,
+# see the [Redpanda Console documentation](https://docs.redpanda.com/docs/reference/console/config/).
+config:
+  kafka:
+    brokers: []
+    sasl:
+      enabled: true
+      mechanism: OAUTHBEARER
+      oauth:
+        tokenEndpoint:
+    schemaRegistry:
+      enabled: true
+      urls: []
+  analytics:
+    enabled: false
+roles: {}
+roleBindings: {}
+
+# Configuration for the oauth2proxy sidecar container.
+oauth2Proxy:
+  image:
+    registry: quay.io
+    repository: oauth2-proxy/oauth2-proxy
+    pullPolicy: Always
+    tag: v7.12.0
+  issuerUrl: ""
+  cookieName: __Host-_oauth2Proxy
+  emailDomain: "*"
+  env:
+    - name: OAUTH2_PROXY_COOKIE_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: cookie-secret
+    - name: OAUTH2_PROXY_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: client-id
+    - name: OAUTH2_PROXY_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: redpanda-oauth2-proxy
+          key: OAUTH2_PROXY_CLIENT_SECRET
+
+# The following settings are empty settings from the original values.yaml file
 
 # -- Pull secrets may be used to provide credentials to image repositories
 # See https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -42,14 +138,16 @@ nameOverride: ""
 # -- Override `console.fullname` template.
 fullnameOverride: ""
 
-# -- Automount API credentials for the Service Account into the pod.
-automountServiceAccountToken: true
+# -- Automount API credentials for the Service Account into the pod. Console does not communicate with
+# Kubernetes API.
+automountServiceAccountToken: false
 
 serviceAccount:
   # -- Specifies whether a service account should be created.
   create: true
-  # -- Specifies whether a service account should automount API-Credentials
-  automountServiceAccountToken: true
+  # -- Specifies whether a service account should automount API-Credentials. Console does not
+  # communicate with Kubernetes API. The ServiceAccount could be used for workload identity.
+  automountServiceAccountToken: false
   # -- Annotations to add to the service account.
   annotations: {}
   # -- The name of the service account to use.
@@ -65,56 +163,12 @@ annotations: {}
 
 podAnnotations: {}
 
-podLabels: {}
-
-podSecurityContext:
-  runAsUser: 99
-  fsGroup: 99
-
-securityContext:
-  runAsNonRoot: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 8080
-  # nodePort: 30001
-  # -- Override the value in `console.config.server.listenPort` if not `nil`
-  targetPort:
-  annotations: {}
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as minikube. If you want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  limits:
+    memory: 64Mi
+  requests:
+    cpu: 5m
+    memory: 16Mi
 
 autoscaling:
   enabled: false
@@ -125,24 +179,19 @@ autoscaling:
 
 nodeSelector: {}
 
+# -- Add additional containers, such as for oauth2-proxy.
+extraContainers: []
+
 tolerations: []
 
 affinity: {}
 
-topologySpreadConstraints: {}
+topologySpreadConstraints: []
 
 # -- PriorityClassName given to Pods.
 # For details,
 # see the [Kubernetes documentation](https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass).
 priorityClassName: ""
-
-console:
-  # -- Settings for the `Config.yaml` (required).
-  # For a reference of configuration settings,
-  # see the [Redpanda Console documentation](https://docs.redpanda.com/docs/reference/console/config/).
-  config: {}
-  # roles:
-  # roleBindings:
 
 # -- Additional environment variables for the Redpanda Console Deployment.
 extraEnv: []
@@ -152,7 +201,7 @@ extraEnv: []
 # -- Additional environment variables for Redpanda Console mapped from Secret or ConfigMap.
 extraEnvFrom: []
 # - secretRef:
-#     name: kowl-config-secret
+#     name: console-config-secret
 
 # -- Add additional volumes, such as for TLS keys.
 extraVolumes: []
@@ -169,8 +218,12 @@ extraVolumeMounts: []
 #   mountPath: /etc/kafka/certs
 #   readOnly: true
 
-# -- Add additional containers, such as for oauth2-proxy.
-extraContainers: []
+# -- Add additional container ports to the console container.
+# Useful when using multi-listener configuration.
+extraContainerPorts: []
+# - name: private
+#   containerPort: 8081
+#   protocol: TCP
 
 # -- Any initContainers defined should be written here
 initContainers:
@@ -211,30 +264,25 @@ secret:
     # tlsCert:
     # tlsKey:
     # tlsPassphrase:
-    # schemaRegistryPassword:
-    # schemaRegistryTlsCa:
-    # schemaRegistryTlsCert:
-    # schemaRegistryTlsKey:
-    # protobufGitBasicAuthPassword
+   
+  schemaRegistry: {}
+    # password:
+    # tlsCa:
+    # tlsCert:
+    # tlsKey:
+
   # Enterprise version secrets
   # - SSO secrets (Enterprise version).
-  login:
+  authentication:
     # Configurable JWT value
-    jwtSecret: ""
-    google: {}
-      # clientSecret:
-      # groupsServiceAccount:
-    github: {}
-      # clientSecret:
-      # personalAccessToken:
-    okta: {}
-      # clientSecret:
-      # directoryApiToken:
+    jwtSigningKey: ""
     oidc: {}
       # clientSecret:
 
-  enterprise: {}
-    # license:
+  serde: {}
+    # protobufGitBasicAuthPassword
+
+  license: ""
 
   redpanda:
     adminApi: {}
@@ -245,35 +293,39 @@ secret:
 
 # -- Settings for license key, as an alternative to secret.enterprise when
 # a license secret is available
-enterprise:
-  licenseSecretRef:
-    name: ""
-    key: ""
+# licenseSecretRef:
+#   name: my-secret
+#   key: key-where-license-is-stored
 
 # -- Settings for liveness and readiness probes.
 # For details,
 # see the [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes).
 livenessProbe:
-  initialDelaySeconds: 0
-  periodSeconds: 10
+  initialDelaySeconds: 5
+  periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
   failureThreshold: 3
+  httpGet:
+    path: /ping
+    port: http-proxy
 
 readinessProbe:
   # -- Grant time to test connectivity to upstream services such as Kafka and Schema Registry.
-  initialDelaySeconds: 10
-  periodSeconds: 10
+  initialDelaySeconds: 5
+  periodSeconds: 5
   timeoutSeconds: 1
   successThreshold: 1
   failureThreshold: 3
+  httpGet:
+    path: /ping
+    port: http-proxy
 
 configmap:
   create: true
 deployment:
   create: true
+  command: []
+  extraArgs: []
 
 strategy: {}
-
-tests:
-  enabled: true

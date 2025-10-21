@@ -8,26 +8,6 @@
     "affinity": {
       "type": "object"
     },
-    "oauth2Proxy": {
-      "type": "object",
-      "properties": {
-        "issuerUrl": {
-          "type": "string"
-        },
-        "emailDomain": {
-          "type": "string"
-        },
-        "cookieName": {
-          "type": "string"
-        },
-        "port": {
-          "type": "integer"
-        },
-        "env": {
-          "type": "array"
-        }
-      }
-    },
     "autoscaling": {
       "type": "object",
       "properties": {
@@ -296,7 +276,6 @@
           "type": "string"
         }
       }
-
     },
     "automountServiceAccountToken": {
       "type": "boolean"

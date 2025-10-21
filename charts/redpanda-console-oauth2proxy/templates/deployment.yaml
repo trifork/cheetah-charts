@@ -97,7 +97,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ include "console.containerPort" . }}
               protocol: TCP
           volumeMounts:
             - name: configs
@@ -285,48 +285,6 @@ spec:
           envFrom:
               {{- toYaml . | nindent 12 }}
           {{- end }}
-        - name: oauth2-proxy
-          image: {{ include "oauth2proxy.image" . }}
-          imagePullPolicy: {{.Values.oauth2Proxy.image.pullPolicy}}
-          args:
-            - --oidc-issuer-url={{.Values.oauth2Proxy.issuerUrl}}
-            - --upstream=http://127.0.0.1:8080
-            - --reverse-proxy=true
-            - --email-domain={{.Values.oauth2Proxy.emailDomain}}
-            - --cookie-secure=true
-            # remove Username from audit log, to prevent PII in logs: https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/#auth-log-format
-            - --auth-logging-format="{{.Client}} - {{.RequestID}} - [{{.Timestamp}}] [{{.Status}}] {{.Message}}"
-            - --cookie-name={{.Values.oauth2Proxy.cookieName}}
-            - --provider=oidc
-            - --http-address=0.0.0.0:{{.Values.service.port}}
-            - --exclude-logging-path="/ping"
-          readinessProbe:
-            httpGet:
-              path: /ping
-              port: http-proxy
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: http-proxy
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          securityContext:
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
-          ports:
-            - containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
-              name: http-proxy
-          env:
-        {{- with .Values.oauth2Proxy.env }}
-        {{- toYaml . | nindent 12 }}
-        {{- end }}
         {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

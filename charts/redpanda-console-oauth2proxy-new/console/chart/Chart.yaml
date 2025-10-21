@@ -14,12 +14,12 @@
 # limitations under the License.
 
 apiVersion: v2
-name: console
-description: Helm chart to deploy Redpanda Console.
+name: redpanda-console-oauth2proxy
+description: Helm chart to deploy redpanda console oauth2proxy by Cheetah.
 
 maintainers:
-  - name: redpanda-data
-    url: https://github.com/orgs/redpanda-data/people
+  - name: cheetah-core-team
+    url: https://github.com/orgs/trifork/teams/cheetah-core-team
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -27,14 +27,16 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 
 # Chart versions do not track appVersion
-version: 0.7.26
+version: 3.2.0
 
 # The app version is the version of the Chart application
-appVersion: v2.4.6
+appVersion: v3.2.2
 
-icon: https://images.ctfassets.net/paqvtpyf8rwu/3cYHw5UzhXCbKuR24GDFGO/73fb682e6157d11c10d5b2b5da1d5af0/skate-stand-panda.svg
+kubeVersion: ">= 1.25.0-0"
+
+icon: https://go.redpanda.com/hubfs/Redpandas/skate-stand-panda.svg
 sources:
-  - https://github.com/redpanda-data/helm-charts
+  - https://github.com/redpanda-data/redpanda-operator/tree/main/charts/console
 annotations:
   artifacthub.io/license: Apache-2.0
   artifacthub.io/links: |
@@ -43,5 +45,5 @@ annotations:
     - name: "Helm (>= 3.6.0)"
       url: https://helm.sh/docs/intro/install/
   artifacthub.io/images: |
-    - name: redpanda
-      image: docker.redpanda.com/redpandadata/console:v2.4.6
+    - name: console
+      image: docker.redpanda.com/redpandadata/console:v3.2.2
