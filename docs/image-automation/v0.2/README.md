@@ -21,7 +21,7 @@ A Helm chart for automatic image updates
 | policy.range | string | `">=0.0.0"` | if mode=semver, find the lastest image tag in this range |
 | imageUpdateAutomation.create | bool | `false` | whether to add an ImageUpdateAutomation resource. Only one should be deployed per namespace |
 | imageUpdateAutomation.author | object | `{"email":"fluxcdbot@users.noreply.github.com","name":"fluxcdbot"}` | author information for commits |
-| imageUpdateAutomation.messageTemplate | string | `"{{ range .Updated.Images }}{{ println . }}{{ end }}"` | commit message template using Go template |
+| imageUpdateAutomation.messageTemplate | string | `"{{ range .Changed.Changes }}{{ println . }}{{ end }}"` | commit message template using Go template |
 | imageUpdateAutomation.sourceRef | object | `{"name":"cheetah-example-gitops","namespace":"flux-system"}` | gitRepository to look in |
 | imageUpdateAutomation.sourceRef.namespace | optional | `"flux-system"` | namespace of the GitRepository |
 | imageUpdateAutomation.path | string | `""` | which path in the sourceRef to look for markers |
