@@ -195,11 +195,6 @@ spec:
                   name: {{ include "console.fullname" . }}
                   key: kafka-schema-registry-password
             {{- end }}
-            - name: LOGIN_JWTSECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "console.fullname" . }}
-                  key: login-jwt-secret
             {{- if .Values.secret.login.google.clientSecret }}
             - name: LOGIN_GOOGLE_CLIENTSECRET
               valueFrom:
