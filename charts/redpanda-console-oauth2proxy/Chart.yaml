@@ -41,4 +41,4 @@ annotations:
       url: https://helm.sh/docs/intro/install/
   artifacthub.io/images: |
     - name: redpanda
-      image: docker.redpanda.com/redpandadata/console:v3.1.0
+      image: docker.redpanda.com/redpandadata/console:v3.2.2
