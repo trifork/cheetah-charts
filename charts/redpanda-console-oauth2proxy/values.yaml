@@ -82,9 +82,9 @@ config:
       mechanism: OAUTHBEARER
       oauth:
         tokenEndpoint:
-    schemaRegistry:
-      enabled: true
-      urls: []
+  schemaRegistry:
+    enabled: true
+    urls: []
   analytics:
     enabled: false
 roles: {}
