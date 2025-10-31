@@ -1,0 +1,279 @@
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  annotations: {}
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+stringData:
+  authentication-jwt-signingkey: N6u8mwtTyjEyOvVh5epuX5GUUdENGVO7
+  authentication-oidc-client-secret: ""
+  kafka-sasl-aws-msk-iam-secret-key: ""
+  kafka-sasl-password: ""
+  kafka-tls-ca: ""
+  kafka-tls-cert: ""
+  kafka-tls-key: ""
+  license: ""
+  redpanda-admin-api-password: ""
+  redpanda-admin-api-tls-ca: ""
+  redpanda-admin-api-tls-cert: ""
+  redpanda-admin-api-tls-key: ""
+  schema-registry-bearertoken: ""
+  schema-registry-password: ""
+  schemaregistry-tls-ca: ""
+  schemaregistry-tls-cert: ""
+  schemaregistry-tls-key: ""
+  serde-protobuf-git-basicauth-password: ""
+type: Opaque
+---
+apiVersion: v1
+data:
+  config.yaml: |
+    # from .Values.config
+    analytics:
+      enabled: false
+    kafka:
+      brokers:
+      - cheetah-kafka-kafka-brokers.kafka:9092
+      sasl:
+        enabled: true
+        mechanism: OAUTHBEARER
+        oauth:
+          tokenEndpoint: http://keycloak.keycloak.svc.cluster.local:8080/realms/cheetah/protocol/openid-connect/token
+      tls:
+        caFilepath: /tmp/kafka/ca.crt
+        enabled: true
+        insecureSkipTlsVerify: false
+    schemaRegistry:
+      enabled: true
+      tls:
+        enabled: false
+      urls:
+      - http://registry.schema-registry.svc:8080/apis/ccompat/v7
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 0
+  selector:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/name: console
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {}
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: redpanda
+      app.kubernetes.io/name: console
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        checksum/config: dac3982233ca12922e59c19c91f85a435176c4cd05a41f864c8f299dc978367b
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: redpanda
+        app.kubernetes.io/name: console
+    spec:
+      affinity: {}
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --config.filepath=/etc/console/configs/config.yaml
+        command: null
+        env:
+        - name: KAFKA_SASL_OAUTH_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              key: client-id
+              name: redpanda-credentials
+        - name: KAFKA_SASL_OAUTH_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              key: client-secret
+              name: redpanda-credentials
+        - name: KAFKA_SASL_OAUTH_SCOPE
+          value: kafka
+        envFrom: []
+        image: docker.redpanda.com/redpandadata/console:v3.2.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /admin/health
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: console
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /admin/health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 16Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+        volumeMounts:
+        - mountPath: /etc/console/configs
+          name: configs
+          readOnly: true
+        - mountPath: /etc/console/secrets
+          name: secrets
+          readOnly: true
+        - mountPath: /tmp/kafka/
+          name: kafka-ca
+          subPath: ""
+      imagePullSecrets: []
+      initContainers: null
+      nodeSelector:
+        tcs.trifork.dev/node-pool: infrastructure
+      priorityClassName: ""
+      securityContext:
+        fsGroup: 99
+        fsGroupChangePolicy: Always
+        runAsUser: 99
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: redpanda-console
+      tolerations:
+      - key: tcs.trifork.dev/node-pool
+        operator: Equal
+        value: infrastructure
+      topologySpreadConstraints: []
+      volumes:
+      - configMap:
+          name: redpanda-console
+        name: configs
+      - name: secrets
+        secret:
+          secretName: redpanda-console
+      - name: kafka-ca
+        secret:
+          defaultMode: null
+          secretName: kafka-ca
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: redpanda
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: console
+    app.kubernetes.io/version: v3.1.0
+    helm.sh/chart: console-3.1.0
+    helm.toolkit.fluxcd.io/name: redpanda
+    helm.toolkit.fluxcd.io/namespace: kafka
+  name: redpanda-console
+  namespace: kafka
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: redpanda.cheetah.trifork.dev
+    http:
+      paths:
+      - backend:
+          service:
+            name: redpanda-console
+            port:
+              number: 8080
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - redpanda.cheetah.trifork.dev
+    secretName: redpanda-cheetah-cert
