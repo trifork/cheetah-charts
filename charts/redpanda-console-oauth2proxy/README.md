@@ -7,7 +7,7 @@
 ### Description:
 Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 
-![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v2.8.5](https://img.shields.io/badge/AppVersion-v2.8.5-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v3.1.0](https://img.shields.io/badge/AppVersion-v3.1.0-informational?style=flat-square)
 
 Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
@@ -54,7 +54,7 @@ See an example of how the values can be set through a release at the bottom of t
 | [image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.registry) |  | `"docker.redpanda.com"` |
 | [image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.repository) |  | `"redpandadata/console"` |
 | [image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.pullPolicy) |  | `"IfNotPresent"` |
-| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v2.8.10"` |
+| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v3.2.2"` |
 | [podLabels](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=podLabels) |  | `nil` |
 | [service.type](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.type) |  | `"ClusterIP"` |
 | [service.port](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.port) |  | `4180` |
@@ -77,15 +77,15 @@ See an example of how the values can be set through a release at the bottom of t
 | [securityContext.capabilities.drop[0]](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=securityContext.capabilities.drop[0]) |  | `"ALL"` |
 | [securityContext.allowPrivilegeEscalation](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=securityContext.allowPrivilegeEscalation) |  | `false` |
 | [securityContext.readOnlyRootFilesystem](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=securityContext.readOnlyRootFilesystem) |  | `true` |
-| [console.config.kafka.brokers](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.brokers) |  | `[]` |
-| [console.config.kafka.sasl.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.sasl.enabled) |  | `true` |
-| [console.config.kafka.sasl.mechanism](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.sasl.mechanism) |  | `"OAUTHBEARER"` |
-| [console.config.kafka.sasl.oauth.tokenEndpoint](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.sasl.oauth.tokenEndpoint) |  | `nil` |
-| [console.config.kafka.schemaRegistry.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.schemaRegistry.enabled) |  | `true` |
-| [console.config.kafka.schemaRegistry.urls](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.kafka.schemaRegistry.urls) |  | `[]` |
-| [console.config.analytics.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.config.analytics.enabled) |  | `false` |
-| [console.roles](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.roles) |  | `{}` |
-| [console.roleBindings](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=console.roleBindings) |  | `{}` |
+| [config.kafka.brokers](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.kafka.brokers) |  | `[]` |
+| [config.kafka.sasl.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.kafka.sasl.enabled) |  | `true` |
+| [config.kafka.sasl.mechanism](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.kafka.sasl.mechanism) |  | `"OAUTHBEARER"` |
+| [config.kafka.sasl.oauth.tokenEndpoint](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.kafka.sasl.oauth.tokenEndpoint) |  | `nil` |
+| [config.schemaRegistry.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.schemaRegistry.enabled) |  | `true` |
+| [config.schemaRegistry.urls](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.schemaRegistry.urls) |  | `[]` |
+| [config.analytics.enabled](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=config.analytics.enabled) |  | `false` |
+| [roles](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=roles) |  | `{}` |
+| [roleBindings](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=roleBindings) |  | `{}` |
 | [oauth2Proxy.image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.registry) |  | `"quay.io"` |
 | [oauth2Proxy.image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.repository) |  | `"oauth2-proxy/oauth2-proxy"` |
 | [oauth2Proxy.image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=oauth2Proxy.image.pullPolicy) |  | `"Always"` |
