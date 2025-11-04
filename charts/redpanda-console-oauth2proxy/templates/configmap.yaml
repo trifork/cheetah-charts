@@ -24,17 +24,17 @@ metadata:
     {{- include "console.labels" . | nindent 4 }}
 data:
   config.yaml: |
-    # from .Values.console.config
-    {{- tpl (toYaml .Values.console.config) $ | nindent 4 }}
-  {{- if .Values.console.roles }}
+    # from .Values.config
+    {{- tpl (toYaml .Values.config) $ | nindent 4 }}
+  {{- if .Values.roles }}
   roles.yaml: |
     roles:
-      {{- tpl (toYaml .Values.console.roles) $ | nindent 6 }}
+      {{- tpl (toYaml .Values.roles) $ | nindent 6 }}
   {{- end }}
 
-  {{- if .Values.console.roleBindings }}
+  {{- if .Values.roleBindings }}
   role-bindings.yaml: |
     roleBindings:
-      {{- tpl (toYaml .Values.console.roleBindings) $ | nindent 6 }}
+      {{- tpl (toYaml .Values.roleBindings) $ | nindent 6 }}
   {{- end }}
 {{- end }}
