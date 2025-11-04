@@ -24,6 +24,8 @@
   items:
     - name: v3.1
       href: redpanda-console-oauth2proxy/v3.1/README.md
+    - name: v2.1
+      href: redpanda-console-oauth2proxy/v2.1/README.md
     - name: v2.0
       href: redpanda-console-oauth2proxy/v2.0/README.md
     - name: v1.4
