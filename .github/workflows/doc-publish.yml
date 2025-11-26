@@ -73,7 +73,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         if: ${{steps.update-toc.outputs.updated == 'true'}}
-        uses: peter-evans/create-pull-request@v7.0.8
+        uses: peter-evans/create-pull-request@v7.0.9
         with:
           commit-message: "Update toc file with new version v${{ env.version }} for ${{ inputs.chart}}"
           sign-commits: true
