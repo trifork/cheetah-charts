@@ -13,7 +13,7 @@ spec:
       type: RuntimeDefault
   containers:
     - name: curl
-      image: curlimages/curl:8.16.0
+      image: curlimages/curl:8.17.0
       args:
         - curl
         - "{{ include "cheetah-application.fullname" . }}:{{ .Values.service.port }}"
