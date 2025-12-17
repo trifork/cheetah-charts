@@ -54,7 +54,7 @@ See an example of how the values can be set through a release at the bottom of t
 | [image.registry](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.registry) |  | `"docker.redpanda.com"` |
 | [image.repository](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.repository) |  | `"redpandadata/console"` |
 | [image.pullPolicy](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.pullPolicy) |  | `"IfNotPresent"` |
-| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v3.2.2"` |
+| [image.tag](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=image.tag) |  | `"v3.3.1"` |
 | [podLabels](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=podLabels) |  | `nil` |
 | [service.type](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.type) |  | `"ClusterIP"` |
 | [service.port](https://artifacthub.io/packages/helm/redpanda-data/console?modal=values&path=service.port) |  | `4180` |
