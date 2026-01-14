@@ -1,6 +1,6 @@
 # cheetah-application
 
-![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 A Helm chart for Cheetah Data Platform applications
 
@@ -85,6 +85,7 @@ If the container must run as root, you can set `podSecurityContext.runAsNonRoot=
 | monitoring.enabled | bool | `false` | Whether to enable Prometheus scraping by creating a ServiceMonitor resource |
 | monitoring.port | int | `1854` | Which port to look for Prometheus metrics |
 | monitoring.path | string | `"/metrics"` | Which path to look for Prometheus metrics |
+| monitoring.honorLabels | bool | `false` | Should the metric's labels be preserved in case of conflict with the target's labels |
 | pdb.create | bool | `false` | Whether to create a PodDisruptionBudget for ensuring that an application is always available |
 | pdb.labels | object | `{}` | Extra labels for the PodDisruptionBudget |
 | pdb.annotations | object | `{}` | Extra annotations for the PodDisruptionBudget |

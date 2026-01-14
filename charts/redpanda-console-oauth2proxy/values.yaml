@@ -24,7 +24,7 @@ image:
   registry: docker.redpanda.com
   repository: redpandadata/console
   pullPolicy: IfNotPresent
-  tag: v2.7.2
+  tag: v3.3.1
 
 # Labels to be applied to the Cheetah Redpanda Console pods.
 podLabels:
@@ -74,22 +74,21 @@ securityContext:
   readOnlyRootFilesystem: true
 
 # Configuration for the Cheetah Redpanda Console.
-console:
-  config:
-    kafka:
-      brokers: []
-      sasl:
-        enabled: true
-        mechanism: OAUTHBEARER
-        oauth:
-          tokenEndpoint:
-      schemaRegistry:
-        enabled: true
-        urls: []
-    analytics:
-      enabled: false
-  roles: {}
-  roleBindings: {}
+config:
+  kafka:
+    brokers: []
+    sasl:
+      enabled: true
+      mechanism: OAUTHBEARER
+      oauth:
+        tokenEndpoint:
+  schemaRegistry:
+    enabled: true
+    urls: []
+  analytics:
+    enabled: false
+roles: {}
+roleBindings: {}
 
 # Configuration for the oauth2proxy sidecar container.
 oauth2Proxy:
@@ -97,7 +96,7 @@ oauth2Proxy:
     registry: quay.io
     repository: oauth2-proxy/oauth2-proxy
     pullPolicy: Always
-    tag: v7.7.1
+    tag: v7.13.0
   issuerUrl: ""
   cookieName: __Host-_oauth2Proxy
   emailDomain: "*"
@@ -238,6 +237,7 @@ secret:
     # tlsCert:
     # tlsKey:
     # tlsPassphrase:
+    # schemaRegistryBearerToken:
     # schemaRegistryPassword:
     # schemaRegistryTlsCa:
     # schemaRegistryTlsCert:

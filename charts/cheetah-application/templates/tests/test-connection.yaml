@@ -12,8 +12,8 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   containers:
-    - name: wget
-      image: bitnami/bitnami-shell:latest
+    - name: curl
+      image: curlimages/curl:8.18.0
       args:
         - curl
         - "{{ include "cheetah-application.fullname" . }}:{{ .Values.service.port }}"

@@ -40,7 +40,7 @@ imageUpdateAutomation:
     email: fluxcdbot@users.noreply.github.com
     name: fluxcdbot
   # -- commit message template using Go template
-  messageTemplate: "{{ range .Updated.Images }}{{ println . }}{{ end }}"
+  messageTemplate: "{{ range .Changed.Changes }}{{ println . }}{{ end }}"
   # -- gitRepository to look in
   sourceRef:
     name: cheetah-example-gitops

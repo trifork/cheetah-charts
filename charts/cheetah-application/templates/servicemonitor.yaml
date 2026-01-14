@@ -12,4 +12,5 @@ spec:
   endpoints:
     - port: metrics
       path: {{ .Values.monitoring.path }}
+      honorLabels: {{ .Values.monitoring.honorLabels }}
 {{- end }}
