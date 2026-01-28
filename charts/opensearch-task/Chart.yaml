@@ -1,0 +1,7 @@
+apiVersion: v2
+name: opensearch-task
+description: A Helm chart for deploying an kubernetes job which can call OpenSearch API via OAuth2.
+
+type: application
+
+version: 0.1.0
