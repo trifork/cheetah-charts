@@ -7,7 +7,7 @@
 ### Description:
 Find the default values and descriptions of settings in the Cheetah Redpanda Console Helm chart.
 
-![Version: 2.1.0](https://img.shields.io/badge/Version-2.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v3.5.2](https://img.shields.io/badge/AppVersion-v3.5.2-informational?style=flat-square)
+![Version: 2.2.0](https://img.shields.io/badge/Version-2.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v3.5.2](https://img.shields.io/badge/AppVersion-v3.5.2-informational?style=flat-square)
 
 Disclaimer - This chart is an extension of the official Cheetah Redpanda Console Helm Chart.
 The original source code can be found at https://github.com/redpanda-data/helm-charts/tree/main/charts/console.
