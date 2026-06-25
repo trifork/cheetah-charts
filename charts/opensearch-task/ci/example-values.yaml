@@ -1,0 +1,8 @@
+# helm template my-test charts/opensearch-task -f charts/opensearch-task/ci/example-values.yaml > output.yaml
+job.name: "ci-test"
+job:
+  name: "ci-test2"
+
+script:
+  content: |
+    curl -s --cacert /tmp/security/ca.crt -X GET "${OPENSEARCH_URL}/health" -H "Authorization: bearer $(printf '%s' "${ACCESSTOKEN}")"
