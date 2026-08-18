@@ -1,0 +1,124 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.job.name }}
+  namespace: {{ .Values.job.namespace }}
+  annotations:
+    {{- range $key, $value := .Values.job.annotations }}
+    {{ $key }}: "{{ $value }}"
+    {{- end }}
+  {{- with .Values.job.labels }}
+  labels:
+    {{- range $key, $val := .Values.job.labels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: init-access-token
+        image: redhat/ubi8-minimal:8.10
+        command: ["/bin/sh", "-c"]
+        args:
+          - cp /scripts/accesstoken.sh /tmp/accesstoken.sh;
+            chmod +x /tmp/accesstoken.sh;
+            source /tmp/accesstoken.sh > /tmp/accesstoken;
+            rm /tmp/accesstoken.sh;
+        env: 
+          - name: TOKEN_URL
+            value: "{{ .Values.env.TOKEN_URL }}"
+          - name: OPENSEARCH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secretNames.clientCredentials }}
+                key: {{ .Values.secretNameKeys.clientId }}
+          - name: OPENSEARCH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secretNames.clientCredentials }}
+                key: {{ .Values.secretNameKeys.clientId }}
+          - name: OAUTH2_SCOPE
+            value: "{{ .Values.env.OAUTH2_SCOPE }}"
+        volumeMounts:
+          - name: access-token-script-volume
+            mountPath: /scripts
+          - name: tmp-volume
+            mountPath: /tmp
+        securityContext:
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+      containers:
+      - name: example
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - cp /scripts/script.sh /tmp/script.sh;
+            chmod +x /tmp/script.sh;
+            ACCESSTOKEN=$(cat /tmp/accesstoken) /tmp/script.sh;
+        env: 
+          - name: OPENSEARCH_URL
+            value: "{{ .Values.env.OPENSEARCH_URL }}"
+          - name: OPENSEARCH_SSL_TRUSTSTORE_LOCATION
+            value: /tmp/security/ca.crt
+        volumeMounts:
+          - name: script-volume
+            mountPath: /scripts
+          - name: opensearch-ca
+            mountPath: /tmp/security/ca.crt
+            readOnly: false
+            subPath: {{ .Values.volumeConfig.opensearchCa.subPath }}
+          - name: tmp-volume
+            mountPath: /tmp
+        securityContext:
+          runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+          readOnlyRootFilesystem: {{ .Values.securityContext.readOnlyRootFilesystem }}
+          allowPrivilegeEscalation: {{ .Values.securityContext.allowPrivilegeEscalation }}
+          capabilities:
+            drop:
+              - ALL
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - name: script-volume
+        configMap:
+          name: "{{ .Values.job.name }}-script"
+      - name: access-token-script-volume
+        configMap:
+          name: "{{ .Values.job.name }}-init-script"
+      - name: opensearch-ca
+        secret:
+          secretName: {{ .Values.secretNames.opensearchCa }}
+      - name: tmp-volume
+        emptyDir: {}
+  backoffLimit: {{ .Values.backoffLimit }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}

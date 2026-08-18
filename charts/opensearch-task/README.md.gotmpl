@@ -1,0 +1,68 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Introduction
+
+This helm chart provides scaffolding for deploying a Kubernetes job for executing ad-hoc commands on an OpenSearch cluster via GitOps.  
+These tasks are typically necessary when they fall outside the scope of a specific service or cannot be addressed through the OpenSearch Dashboard by a personalized user 
+or by a personalized user with shell access to the cluster.
+
+### Prerequisites
+
+Ensure that the Kubernetes job is configured to obtain credentials for a user mapped to the appropriate OpenSearch role through `backendRoles`.  
+The `OpenSearchRole` must have the necessary permissions in OpenSearch to perform the desired actions.
+
+### Design
+
+```mermaid
+sequenceDiagram
+    participant Job as Kubernetes Job
+
+    box rgb(37,135,134)
+    participant InitContainer as InitContainer (init-access-token)
+    participant TokenScript as access-token.sh Script
+    end
+    participant Keycloak as IDP
+    
+    box rgb(42,155,106)
+    participant MainContainer as Main Container
+    participant Script as script.sh Script
+    participant AccessToken as "/tmp"
+    end
+
+    Job ->> InitContainer: Start initContainer
+    InitContainer ->> TokenScript: Execute accesstoken.sh
+    TokenScript ->> Keycloak: Request Access Token (POST /token)
+    Keycloak -->> TokenScript: Return Access Token
+    TokenScript ->> AccessToken: Store Access Token in /tmp/accesstoken
+    InitContainer -->> InitContainer: InitContainer completes
+
+    Job ->> MainContainer: Start main container
+    MainContainer ->> Script: Execute script.sh with Access Token
+    Script ->> AccessToken: Read Access Token from /tmp/accesstoken
+    Script ->> OpenSearch: Send request to OpenSearch
+
+    Job -->> Job: Job completes
+```
+
+### Values
+
+By default, it uses `redhat/ubi8` which contains `curl` and uses the `nobody` user.
+Secrets for client credentials and OpenSearch CA are mounted as volumes. These secrets needs 
+to be created before deploying the job.
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}
