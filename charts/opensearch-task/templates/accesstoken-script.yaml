@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.job.name }}-init-script"
+  namespace: {{ .Values.job.namespace }}
+data:
+  accesstoken.sh: |
+      #!/bin/bash
+      response=$(curl -s -X 'POST' \
+        --url ${TOKEN_URL} \
+        -H 'accept: */*' \
+        -H 'Content-Type: application/x-www-form-urlencoded' \
+        -d "grant_type=client_credentials&scope=${OAUTH2_SCOPE}&client_id=${OPENSEARCH_CLIENT_ID}&client_secret=${OPENSEARCH_CLIENT_SECRET}")
+      access_token=$(printf '%s' "$response" | awk -F'"' '/"access_token"/ {print $4}')
+
+      echo $access_token
