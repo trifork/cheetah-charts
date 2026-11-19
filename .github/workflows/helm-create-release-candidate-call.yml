@@ -9,6 +9,7 @@ on:
         options:
           - cheetah-application
           - flink-job
+          - opensearch-task
           - opensearchrole
           - redpanda-console-oauth2proxy
 jobs:

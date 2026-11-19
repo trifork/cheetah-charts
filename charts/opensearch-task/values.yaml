@@ -1,0 +1,82 @@
+# -- the image to use for the task
+image:
+  # -- The image repository to pull from
+  repository: redhat/ubi8
+  # -- The image tag to pull
+  tag: "8.10"
+  # -- The image pull policy
+  pullPolicy: IfNotPresent
+
+job:
+  # -- The name of the job
+  name: example-administrative-job
+  # -- The namespace to run the job in
+  namespace: opensearch-gitops
+  # -- The annotations to apply to the job
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: "true"
+  # -- The labels to apply to the job
+  labels: {}
+
+
+
+env:
+  # -- The OpenSearch URL
+  OPENSEARCH_URL: "https://opensearch.opensearch.svc:9200"
+  # -- The token URL
+  TOKEN_URL: "http://keycloak.keycloak.svc.cluster.local:8080/realms/cheetah/protocol/openid-connect/token"
+  OAUTH2_SCOPE: opensearch
+
+secretNames:
+  # -- The name of the secret containing the client ID and secret
+  clientCredentials: client-credentials
+  # -- The name of the secret containing the CA certificate
+  opensearchCa: opensearch-ca
+
+secretNameKeys:
+  # -- The key for the client ID in the client credentials secret
+  clientId: client-id
+  # -- The key for the client secret in the client credentials secret
+  clientSecret: client-secret
+
+# -- The resources to allocate to the job
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    cpu: 20m
+    memory: 32Mi
+
+script:
+  # -- The script to execute in the job
+  content: |
+    curl -s --cacert /tmp/security/ca.crt -X GET "${OPENSEARCH_URL}/_cat/indices" -H "Authorization: bearer $(printf '%s' "${ACCESSTOKEN}")"
+
+volumeConfig:
+  opensearchCa:
+    # -- The subpath to the CA certificate in the secret
+    subPath: ca.crt
+
+# -- The backoff limit for the job
+backoffLimit: 1
+
+securityContext:
+  # -- The user to run the container as
+  runAsNonRoot: true
+  # -- Whether the root filesystem is read-only
+  readOnlyRootFilesystem: true
+  # -- Whether to allow privilege escalation
+  allowPrivilegeEscalation: false
+  # -- The user to run the container as
+  runAsUser: 65534
+  # -- The group to run the container as
+  runAsGroup: 65534
+  # -- the filesystem group to run the container as
+  fsGroup: 65534
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
