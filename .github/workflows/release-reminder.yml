@@ -1,0 +1,27 @@
+name: Release Reminder
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  reminder:
+    strategy:
+      fail-fast: false
+      matrix:
+        chart:
+          - cheetah-application
+          - flink-job
+          - opensearchrole
+          - redpanda-console-oauth2proxy
+    uses: trifork/cheetah-infrastructure-utils-workflows/.github/workflows/create-release-reminder.yml@main
+    with:
+      project-name: ${{ matrix.chart }}
+      tag-prefix: ${{ matrix.chart }}-v
+    secrets:
+      PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
